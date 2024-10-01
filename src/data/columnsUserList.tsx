@@ -15,7 +15,7 @@ export const columns: TableProps<User>['columns'] = [
     title: 'ID',
     dataIndex: 'id',
     align: 'center',
-    render: (text: string) => <span> {text}</span>,
+    render: (text: string) => <span style={{ color: '#1890FF' }}> {text}</span>,
   },
   {
     title: 'Ảnh đại diện',

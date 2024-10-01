@@ -55,10 +55,13 @@ const UserList: React.FC = () => {
               flex: 1,
               overflow: 'auto',
               margin: '18px 26px 18px 18px',
-              height: 'calc(100vh - 250px)',
             }}
           >
-            <Table dataSource={mockUserListData} columns={columns} />
+            <Table
+              dataSource={mockUserListData}
+              columns={columns}
+              scroll={{ y: 'calc(100vh - 360px)' }}
+            />
           </div>
         </div>
       </div>

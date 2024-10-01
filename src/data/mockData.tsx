@@ -7,6 +7,15 @@ interface User {
   gender: string;
 }
 
+interface Survey {
+  id: number;
+  surveyName: string;
+  averageScore: number;
+  startDate: string;
+  endDate: string;
+  totalContent: number;
+}
+
 export const mockUserListData: User[] = [
   {
     id: 1,
@@ -127,5 +136,104 @@ export const mockUserListData: User[] = [
     email: 'levano@example.com',
     birthDate: '15/03/1994',
     gender: 'Nam',
+  },
+];
+
+export const mockSurveyListData: Survey[] = [
+  {
+    id: 1,
+    surveyName: 'Khảo sát 1',
+    averageScore: 85,
+    startDate: '01/01/2024',
+    endDate: '31/01/2024',
+    totalContent: 10,
+  },
+  {
+    id: 2,
+    surveyName: 'Khảo sát 2',
+    averageScore: 90,
+    startDate: '01/02/2024',
+    endDate: '28/02/2024',
+    totalContent: 15,
+  },
+  {
+    id: 3,
+    surveyName: 'Khảo sát 3',
+    averageScore: 78,
+    startDate: '01/03/2024',
+    endDate: '31/03/2024',
+    totalContent: 12,
+  },
+  {
+    id: 4,
+    surveyName: 'Khảo sát 4',
+    averageScore: 92,
+    startDate: '01/04/2024',
+    endDate: '30/04/2024',
+    totalContent: 8,
+  },
+  {
+    id: 5,
+    surveyName: 'Khảo sát 5',
+    averageScore: 76,
+    startDate: '01/05/2024',
+    endDate: '31/05/2024',
+    totalContent: 20,
+  },
+  {
+    id: 6,
+    surveyName: 'Khảo sát 6',
+    averageScore: 89,
+    startDate: '01/06/2024',
+    endDate: '30/06/2024',
+    totalContent: 14,
+  },
+  {
+    id: 7,
+    surveyName: 'Khảo sát 7',
+    averageScore: 81,
+    startDate: '01/07/2024',
+    endDate: '31/07/2024',
+    totalContent: 10,
+  },
+  {
+    id: 8,
+    surveyName: 'Khảo sát 8',
+    averageScore: 84,
+    startDate: '01/08/2024',
+    endDate: '31/08/2024',
+    totalContent: 16,
+  },
+  {
+    id: 9,
+    surveyName: 'Khảo sát 9',
+    averageScore: 87,
+    startDate: '01/09/2024',
+    endDate: '30/09/2024',
+    totalContent: 18,
+  },
+  {
+    id: 10,
+    surveyName: 'Khảo sát 10',
+    averageScore: 88,
+    startDate: '01/10/2024',
+    endDate: '31/10/2024',
+    totalContent: 25,
+  },
+  {
+    id: 11,
+    surveyName: 'Khảo sát 11',
+    averageScore: 80,
+    startDate: '01/11/2024',
+    endDate: '30/11/2024',
+    totalContent: 22,
+  },
+  {
+    id: 12,
+    surveyName: 'Khảo sát 12',
+    averageScore: 91,
+    startDate: '01/12/2024',
+    endDate: '31/12/2024',
+    totalContent: 30,
   },
 ];
