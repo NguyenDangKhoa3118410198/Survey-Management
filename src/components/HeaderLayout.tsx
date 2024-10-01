@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Button, Dropdown, Menu } from 'antd';
+import { Layout, Button, Dropdown, Menu, MenuProps } from 'antd';
 import { Link } from 'react-router-dom';
 import useStore from 'hooks/useStore';
 import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
@@ -9,11 +9,11 @@ const { Header } = Layout;
 const HeaderLayout: React.FC = () => {
   const { email, clearUser } = useStore();
 
-  const handleLogout = () => {
+  const handleLogout = (): void => {
     clearUser();
   };
 
-  const menuItems = [
+  const menuItems: MenuProps['items'] = [
     {
       key: 'logout',
       label: (

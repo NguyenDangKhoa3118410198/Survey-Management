@@ -2,16 +2,20 @@ import React from 'react';
 import { Breadcrumb } from 'antd';
 import { useLocation, Link } from 'react-router-dom';
 
+interface BreadcrumbMap {
+  [key: string]: string;
+}
+
 const Breadcrumbs: React.FC = () => {
   const location = useLocation();
-  const breadcrumbNameMap: { [key: string]: string } = {
+  const breadcrumbNameMap: BreadcrumbMap = {
     '/users': 'Danh sách người dùng',
     '/surveys': 'Danh sách khảo sát',
   };
 
-  const pathSnippets = location.pathname.split('/').filter((i) => i);
+  const pathSnippets: string[] = location.pathname.split('/').filter((i) => i);
 
-  const breadcrumbItems = pathSnippets.map((snippet, index) => {
+  const breadcrumbItems = pathSnippets.map((snippet: string, index: number) => {
     const url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
     const breadcrumbName = breadcrumbNameMap[url] || snippet;
 

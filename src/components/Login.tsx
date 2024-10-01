@@ -7,12 +7,12 @@ interface LoginFormValues {
   password: string;
 }
 
-export default function Login() {
+const Login: React.FC = () => {
   const { setUser } = useStore();
   const navigate = useNavigate();
-  const [form] = Form.useForm();
+  const [form] = Form.useForm<LoginFormValues>();
 
-  const onSubmit = (values: LoginFormValues) => {
+  const onSubmit = (values: LoginFormValues): void => {
     const { email, password } = values;
     const date = Date.now();
     const combied = `${email}+${password}+${date}`;
@@ -117,4 +117,6 @@ export default function Login() {
       </Form>
     </Flex>
   );
-}
+};
+
+export default Login;

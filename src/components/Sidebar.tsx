@@ -1,11 +1,11 @@
 import { FileTextOutlined, UserOutlined } from '@ant-design/icons';
-import { Menu } from 'antd';
+import { Menu, MenuProps } from 'antd';
 import Sider from 'antd/es/layout/Sider';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
 const Sidebar: React.FC = () => {
-  const items = [
+  const items: MenuProps['items'] = [
     {
       key: 'users',
       label: (

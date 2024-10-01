@@ -1,7 +1,7 @@
 import React from 'react';
 import Breadcrumbs from './Breadcrumbs';
 
-const SurveyList = () => {
+const SurveyList: React.FC = () => {
   return (
     <div>
       <Breadcrumbs />

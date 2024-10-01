@@ -1,7 +1,7 @@
 import React from 'react';
 import Breadcrumbs from './Breadcrumbs';
 
-const UserList = () => {
+const UserList: React.FC = () => {
   return (
     <div>
       <Breadcrumbs />
