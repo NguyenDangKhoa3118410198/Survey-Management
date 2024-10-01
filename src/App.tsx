@@ -1,12 +1,12 @@
 import "./App.css";
 import Login from "./components/Login";
 
-function App() {
+const App: React.FC = () => {
   return (
     <>
       <Login />
     </>
   );
-}
+};
 
 export default App;

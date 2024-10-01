@@ -1,7 +1,14 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-const useStore = create(
+interface UserState {
+  token: string | null;
+  email: string | null;
+  setUser: (email: string, token: string) => void;
+  clearUser: () => void;
+}
+
+const useStore = create<UserState>()(
   persist(
     (set) => ({
       token: null,
@@ -11,8 +18,8 @@ const useStore = create(
     }),
     {
       name: "info-user",
-      getStorage: () => localStorage,
     }
   )
 );
+
 export default useStore;
