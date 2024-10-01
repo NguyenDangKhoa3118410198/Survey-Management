@@ -32,7 +32,7 @@ const Sidebar: React.FC = () => {
         mode='inline'
         defaultSelectedKeys={['users']}
         items={items}
-        style={{ height: '100%', borderRight: 0 }}
+        style={{ height: '100%', borderRight: 0, paddingTop: '8px' }}
       />
     </Sider>
   );

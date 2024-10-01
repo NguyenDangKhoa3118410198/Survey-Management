@@ -35,7 +35,7 @@ const HeaderLayout: React.FC = () => {
             Đăng xuất
           </Link>
           <LogoutOutlined
-            style={{ marginLeft: '8px', color: '#1890ff', fontSize: '18px' }}
+            style={{ marginLeft: '8px', color: '#1890ff', fontSize: '16px' }}
           />
         </div>
       ),
@@ -46,7 +46,7 @@ const HeaderLayout: React.FC = () => {
     <Header style={{ padding: 0, backgroundColor: '#284698' }}>
       <div style={{ height: '100%' }}>
         <Dropdown overlay={<Menu items={menuItems} />} placement='bottomRight'>
-          <Button
+          <button
             style={{
               display: 'flex',
               marginLeft: 'auto',
@@ -55,15 +55,16 @@ const HeaderLayout: React.FC = () => {
               color: 'white',
               alignItems: 'center',
               height: '100%',
-              fontSize: '16px',
+              fontSize: '15px',
               fontWeight: 600,
               padding: '0 20px',
               borderRadius: '0',
+              cursor: 'pointer',
             }}
           >
-            <UserOutlined style={{ fontSize: '20px' }} />
+            <UserOutlined style={{ fontSize: '20px', marginRight: '4px' }} />
             {email}
-          </Button>
+          </button>
         </Dropdown>
       </div>
     </Header>
