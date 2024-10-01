@@ -1,8 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from 'components/Login';
 import MainLayout from 'layout';
-import Users from 'components/Users';
 import PrivateRoute from 'components/PrivateRoute';
+import SurveyList from 'components/SurveyList';
+import UserList from 'components/UserList';
 import './App.css';
 
 const App: React.FC = () => {
@@ -15,7 +16,15 @@ const App: React.FC = () => {
             path='/users'
             element={
               <PrivateRoute>
-                <Users />
+                <UserList />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path='/surveys'
+            element={
+              <PrivateRoute>
+                <SurveyList />
               </PrivateRoute>
             }
           />

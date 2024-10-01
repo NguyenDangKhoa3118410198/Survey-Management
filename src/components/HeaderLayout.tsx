@@ -24,16 +24,19 @@ const HeaderLayout: React.FC = () => {
             justifyContent: 'space-between',
             alignContent: 'center',
             width: '100%',
+            fontWeight: '600',
           }}
         >
           <Link
             to='/'
-            style={{ flex: 1, textAlign: 'left' }}
+            style={{ flex: 1, textAlign: 'left', fontSize: '14px' }}
             onClick={handleLogout}
           >
             Đăng xuất
           </Link>
-          <LogoutOutlined style={{ marginLeft: '8px', color: '#1890ff' }} />
+          <LogoutOutlined
+            style={{ marginLeft: '8px', color: '#1890ff', fontSize: '18px' }}
+          />
         </div>
       ),
     },
@@ -53,7 +56,7 @@ const HeaderLayout: React.FC = () => {
               alignItems: 'center',
               height: '100%',
               fontSize: '16px',
-              fontWeight: 700,
+              fontWeight: 600,
               padding: '0 20px',
               borderRadius: '0',
             }}
