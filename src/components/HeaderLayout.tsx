@@ -29,13 +29,18 @@ const HeaderLayout: React.FC = () => {
         >
           <Link
             to='/'
-            style={{ flex: 1, textAlign: 'left', fontSize: '14px' }}
+            style={{
+              flex: 1,
+              textAlign: 'left',
+              fontSize: '14px',
+              color: '#284698',
+            }}
             onClick={handleLogout}
           >
             Đăng xuất
           </Link>
           <LogoutOutlined
-            style={{ marginLeft: '8px', color: '#1890ff', fontSize: '16px' }}
+            style={{ marginLeft: '8px', color: '#284698', fontSize: '16px' }}
           />
         </div>
       ),
