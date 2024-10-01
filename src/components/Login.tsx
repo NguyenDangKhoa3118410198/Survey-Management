@@ -1,5 +1,6 @@
-import { Button, Flex, Form, Input, Typography } from "antd";
-import useStore from "../hooks/useStore";
+import { Button, Flex, Form, Input, Typography } from 'antd';
+import useStore from '../hooks/useStore';
+import { useNavigate } from 'react-router-dom';
 
 interface LoginFormValues {
   email: string;
@@ -8,6 +9,9 @@ interface LoginFormValues {
 
 export default function Login() {
   const { setUser } = useStore();
+  const navigate = useNavigate();
+  const [form] = Form.useForm();
+
   const onSubmit = (values: LoginFormValues) => {
     const { email, password } = values;
     const date = Date.now();
@@ -15,21 +19,31 @@ export default function Login() {
 
     const token = btoa(combied);
     setUser(email, token);
+    navigate('/users');
+  };
+
+  const handlePressEnter = (e: React.KeyboardEvent<HTMLFormElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      form.submit();
+    }
   };
 
   return (
-    <Flex justify='center' align='center' style={{ height: "100%" }}>
+    <Flex justify='center' align='center' style={{ height: '100%' }}>
       <Form
+        form={form}
         onFinish={onSubmit}
+        onKeyDown={handlePressEnter}
         autoComplete='off'
-        style={{ width: "350px", margin: "auto" }}
+        style={{ width: '350px', margin: 'auto' }}
       >
         <Typography.Title
           level={2}
           style={{
-            textAlign: "center",
+            textAlign: 'center',
             fontWeight: 700,
-            color: "var(--main-color)",
+            color: 'var(--main-color)',
           }}
         >
           Admin Panel
@@ -39,23 +53,23 @@ export default function Login() {
           rules={[
             {
               required: true,
-              message: "Vui lòng nhập email",
+              message: 'Vui lòng nhập email',
             },
             {
               pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-              message: "Email không hợp lệ",
+              message: 'Email không hợp lệ',
             },
           ]}
         >
           <Input
             placeholder='Email'
             style={{
-              width: "100%",
-              border: "3px solid var(--main-color)",
-              padding: "8px 11px",
-              borderRadius: "14px",
-              color: "var(--main-color)",
-              fontSize: "16px",
+              width: '100%',
+              border: '3px solid var(--main-color)',
+              padding: '8px 11px',
+              borderRadius: '14px',
+              color: 'var(--main-color)',
+              fontSize: '16px',
             }}
           />
         </Form.Item>
@@ -63,23 +77,23 @@ export default function Login() {
         <Form.Item
           name='password'
           rules={[
-            { required: true, message: "Vui lòng nhập mật khẩu" },
+            { required: true, message: 'Vui lòng nhập mật khẩu' },
             {
               pattern: /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
               message:
-                "Mật khẩu đảm bảo có ít nhất 8 ký tự, ít nhất 1 ký tự chữ và ít nhất 1 ký tự đặc biệt",
+                'Mật khẩu đảm bảo có ít nhất 8 ký tự, ít nhất 1 ký tự chữ và ít nhất 1 ký tự đặc biệt',
             },
           ]}
         >
           <Input.Password
             placeholder='Vui lòng nhập mật khẩu'
             style={{
-              width: "100%",
-              border: "3px solid var(--main-color)",
-              padding: "8px 11px",
-              borderRadius: "14px",
-              color: "var(--main-color)",
-              fontSize: "16px",
+              width: '100%',
+              border: '3px solid var(--main-color)',
+              padding: '8px 11px',
+              borderRadius: '14px',
+              color: 'var(--main-color)',
+              fontSize: '16px',
             }}
           />
         </Form.Item>
@@ -88,12 +102,12 @@ export default function Login() {
             type='primary'
             htmlType='submit'
             style={{
-              width: "100%",
-              backgroundColor: "var(--main-color)",
-              height: "49px",
-              borderRadius: "14px",
-              color: "white",
-              fontSize: "16px",
+              width: '100%',
+              backgroundColor: 'var(--main-color)',
+              height: '49px',
+              borderRadius: '14px',
+              color: 'white',
+              fontSize: '16px',
               fontWeight: 700,
             }}
           >
