@@ -7,6 +7,7 @@ import {
   Form,
   Input,
   Radio,
+  RadioChangeEvent,
   Select,
   Typography,
   Upload,
@@ -96,16 +97,16 @@ const NewUser: React.FC = () => {
 
   const handleCityChange = (value: string) => {
     setSelectedCity(value);
-    form.setFieldsValue({
-      addresses: [{ district: null, ward: null }],
-    });
+    // form.setFieldsValue({
+    //   addresses: [{ district: null, ward: null }],
+    // });
   };
 
   const handleDistrictChange = (value: string) => {
     setSelectedDistrict(value);
-    form.setFieldsValue({
-      addresses: [{ ward: null }],
-    });
+    // form.setFieldsValue({
+    //   addresses: [{ ward: null }],
+    // });
   };
 
   const handleWardChange = (value: string) => {
@@ -186,7 +187,7 @@ const NewUser: React.FC = () => {
           >
             <Input.Password placeholder='Vui lòng xác thực mật khẩu' />
           </Item>
-          <Item label='Giới tính' colon={false}>
+          <Item label='Giới tính' colon={false} name='gender'>
             <Radio.Group defaultValue='male'>
               <Radio value='male'>Nam</Radio>
               <Radio value='female'> Nữ </Radio>
