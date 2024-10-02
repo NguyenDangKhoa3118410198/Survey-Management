@@ -17,60 +17,51 @@ const UserList: React.FC = () => {
       style={{
         display: 'flex',
         flexDirection: 'column',
-        height: 'calc(100vh - 64px)',
+        height: 'calc(100vh - 150px)',
       }}
     >
       <div
         style={{
-          display: 'flex',
-          flexDirection: 'column',
-          flex: 1,
+          backgroundColor: '#fff',
+          padding: '4px 12px',
+          height: '100%',
         }}
       >
         <div
           style={{
-            backgroundColor: '#fff',
-            padding: '4px 12px',
-            height: '100%',
-            marginBottom: '20px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            margin: '10px 0',
           }}
         >
-          <div
+          <Typography.Title level={4} style={{ margin: 0 }}>
+            Danh sách người dùng
+          </Typography.Title>
+          <Button
             style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              margin: '10px 0',
+              backgroundColor: 'var(--main-color)',
+              color: '#fff',
+              borderRadius: '20px',
             }}
+            onClick={handleCreateUser}
           >
-            <Typography.Title level={4} style={{ margin: 0 }}>
-              Danh sách người dùng
-            </Typography.Title>
-            <Button
-              style={{
-                backgroundColor: 'var(--main-color)',
-                color: '#fff',
-                borderRadius: '20px',
-              }}
-              onClick={handleCreateUser}
-            >
-              Tạo mới
-            </Button>
-          </div>
-          <div
-            style={{
-              flex: 1,
-              overflow: 'auto',
-              margin: '18px 26px 18px 18px',
-            }}
-          >
-            <Table
-              rowKey='id'
-              dataSource={mockUserListData}
-              columns={columns}
-              scroll={{ y: 'calc(100vh - 360px)' }}
-            />
-          </div>
+            Tạo mới
+          </Button>
+        </div>
+        <div
+          style={{
+            flex: 1,
+            overflow: 'auto',
+            margin: '18px 26px 18px 18px',
+          }}
+        >
+          <Table
+            rowKey='id'
+            dataSource={mockUserListData}
+            columns={columns}
+            scroll={{ y: 'calc(100vh - 360px)' }}
+          />
         </div>
       </div>
     </div>

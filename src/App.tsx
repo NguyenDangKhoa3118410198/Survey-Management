@@ -7,23 +7,27 @@ import UserList from 'components/User/UserList';
 import NewUser from 'components/User/NewUser';
 import SurveyList from 'components/Survey/SurveyList';
 import NewSurvey from 'components/Survey/NewSurvey';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const App: React.FC = () => {
+  const queryClient = new QueryClient();
   return (
-    <Router>
-      <Routes>
-        <Route path='/login' element={<Login />} />
-        <Route element={<MainLayout />}>
-          <Route element={<LayoutManagement />}>
-            <Route path='/users' element={<UserList />} />
-            <Route path='/users/create' element={<NewUser />} />
-            <Route path='/surveys' element={<SurveyList />} />
-            <Route path='/surveys/create' element={<NewSurvey />} />
+    <QueryClientProvider client={queryClient}>
+      <Router>
+        <Routes>
+          <Route path='/login' element={<Login />} />
+          <Route element={<MainLayout />}>
+            <Route element={<LayoutManagement />}>
+              <Route path='/users' element={<UserList />} />
+              <Route path='/users/create' element={<NewUser />} />
+              <Route path='/surveys' element={<SurveyList />} />
+              <Route path='/surveys/create' element={<NewSurvey />} />
+            </Route>
           </Route>
-        </Route>
-        <Route path='/' element={<Login />} />
-      </Routes>
-    </Router>
+          <Route path='/' element={<Login />} />
+        </Routes>
+      </Router>
+    </QueryClientProvider>
   );
 };
 
