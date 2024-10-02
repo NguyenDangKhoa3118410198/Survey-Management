@@ -1,11 +1,7 @@
-import Breadcrumbs from 'components/Breadcrumbs';
-import PrivateRoute from 'components/PrivateRoute';
+import Breadcrumbs from 'components/common/Breadcrumbs';
+import PrivateRoute from 'components/common/PrivateRoute';
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-
-interface LayoutManagementProps {
-  children?: React.ReactNode;
-}
 
 const LayoutManagement: React.FC = () => {
   return (

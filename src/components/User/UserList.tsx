@@ -1,5 +1,5 @@
 import React from 'react';
-import Breadcrumbs from './Breadcrumbs';
+import Breadcrumbs from '../common/Breadcrumbs';
 import { Button, Table, Typography } from 'antd';
 import { mockUserListData } from 'data/mockData';
 import { columns } from 'data/columnsUserList';

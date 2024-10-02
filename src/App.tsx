@@ -1,12 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import './App.css';
 import Login from 'components/Login';
 import MainLayout from 'layout';
-import SurveyList from 'components/SurveyList';
-import UserList from 'components/UserList';
-import './App.css';
-import NewUser from 'components/NewUser';
 import LayoutManagement from 'layout/LayoutManagement';
-import NewSurvey from 'components/NewSurvey';
+import UserList from 'components/User/UserList';
+import NewUser from 'components/User/NewUser';
+import SurveyList from 'components/Survey/SurveyList';
+import NewSurvey from 'components/Survey/NewSurvey';
 
 const App: React.FC = () => {
   return (
