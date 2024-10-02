@@ -1,15 +1,14 @@
+import useStore from 'hooks/useStore';
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import useStore from 'hooks/useStore';
 
-const PrivateRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
+const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const token = useStore((state) => state.token);
+  const isAuthenticated = !!token;
 
-  if (!token) {
-    return <Navigate to='/login' replace />;
-  }
-
-  return children;
+  return isAuthenticated ? <>{children}</> : <Navigate to='/login' />;
 };
 
 export default PrivateRoute;

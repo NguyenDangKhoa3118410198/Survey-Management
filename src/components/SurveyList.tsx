@@ -3,8 +3,15 @@ import Breadcrumbs from './Breadcrumbs';
 import { Button, Table, Typography } from 'antd';
 import { mockSurveyListData } from 'data/mockData';
 import { columns } from 'data/columnsSurveyList';
+import { useNavigate } from 'react-router-dom';
 
 const SurveyList: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleCreateSurvey = () => {
+    navigate('/surveys/create');
+  };
+
   return (
     <div
       style={{
@@ -13,7 +20,6 @@ const SurveyList: React.FC = () => {
         height: 'calc(100vh - 64px)',
       }}
     >
-      <Breadcrumbs />
       <div
         style={{
           display: 'flex',
@@ -46,6 +52,7 @@ const SurveyList: React.FC = () => {
                 color: '#fff',
                 borderRadius: '20px',
               }}
+              onClick={handleCreateSurvey}
             >
               Tạo mới
             </Button>
@@ -58,6 +65,7 @@ const SurveyList: React.FC = () => {
             }}
           >
             <Table
+              rowKey='id'
               dataSource={mockSurveyListData}
               columns={columns}
               scroll={{ y: 'calc(100vh - 360px)' }}

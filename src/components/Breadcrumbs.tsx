@@ -10,7 +10,9 @@ const Breadcrumbs: React.FC = () => {
   const location = useLocation();
   const breadcrumbNameMap: BreadcrumbMap = {
     '/users': 'Danh sách người dùng',
+    '/users/create': 'Tạo người dùng',
     '/surveys': 'Danh sách khảo sát',
+    '/surveys/create': 'Tạo khảo sát',
   };
 
   const pathSnippets: string[] = location.pathname.split('/').filter((i) => i);

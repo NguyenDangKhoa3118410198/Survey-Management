@@ -1,10 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from 'components/Login';
 import MainLayout from 'layout';
-import PrivateRoute from 'components/PrivateRoute';
 import SurveyList from 'components/SurveyList';
 import UserList from 'components/UserList';
 import './App.css';
+import NewUser from 'components/NewUser';
+import LayoutManagement from 'layout/LayoutManagement';
+import NewSurvey from 'components/NewSurvey';
 
 const App: React.FC = () => {
   return (
@@ -12,22 +14,12 @@ const App: React.FC = () => {
       <Routes>
         <Route path='/login' element={<Login />} />
         <Route element={<MainLayout />}>
-          <Route
-            path='/users'
-            element={
-              <PrivateRoute>
-                <UserList />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path='/surveys'
-            element={
-              <PrivateRoute>
-                <SurveyList />
-              </PrivateRoute>
-            }
-          />
+          <Route element={<LayoutManagement />}>
+            <Route path='/users' element={<UserList />} />
+            <Route path='/users/create' element={<NewUser />} />
+            <Route path='/surveys' element={<SurveyList />} />
+            <Route path='/surveys/create' element={<NewSurvey />} />
+          </Route>
         </Route>
         <Route path='/' element={<Login />} />
       </Routes>

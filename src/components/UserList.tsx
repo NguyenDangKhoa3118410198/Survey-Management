@@ -3,8 +3,15 @@ import Breadcrumbs from './Breadcrumbs';
 import { Button, Table, Typography } from 'antd';
 import { mockUserListData } from 'data/mockData';
 import { columns } from 'data/columnsUserList';
+import { useNavigate } from 'react-router-dom';
 
 const UserList: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleCreateUser = () => {
+    navigate('/users/create');
+  };
+
   return (
     <div
       style={{
@@ -13,7 +20,6 @@ const UserList: React.FC = () => {
         height: 'calc(100vh - 64px)',
       }}
     >
-      <Breadcrumbs />
       <div
         style={{
           display: 'flex',
@@ -46,6 +52,7 @@ const UserList: React.FC = () => {
                 color: '#fff',
                 borderRadius: '20px',
               }}
+              onClick={handleCreateUser}
             >
               Tạo mới
             </Button>
@@ -58,6 +65,7 @@ const UserList: React.FC = () => {
             }}
           >
             <Table
+              rowKey='id'
               dataSource={mockUserListData}
               columns={columns}
               scroll={{ y: 'calc(100vh - 360px)' }}
