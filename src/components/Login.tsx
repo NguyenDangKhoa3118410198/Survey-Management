@@ -64,12 +64,9 @@ const Login: React.FC = () => {
           <Input
             placeholder='Email'
             style={{
-              width: '100%',
               border: '3px solid var(--main-color)',
               padding: '8px 11px',
-              borderRadius: '14px',
               color: 'var(--main-color)',
-              fontSize: '16px',
             }}
           />
         </Form.Item>
@@ -88,12 +85,9 @@ const Login: React.FC = () => {
           <Input.Password
             placeholder='Vui lòng nhập mật khẩu'
             style={{
-              width: '100%',
               border: '3px solid var(--main-color)',
               padding: '8px 11px',
-              borderRadius: '14px',
               color: 'var(--main-color)',
-              fontSize: '16px',
             }}
           />
         </Form.Item>
@@ -105,9 +99,7 @@ const Login: React.FC = () => {
               width: '100%',
               backgroundColor: 'var(--main-color)',
               height: '49px',
-              borderRadius: '14px',
               color: 'white',
-              fontSize: '16px',
               fontWeight: 700,
             }}
           >

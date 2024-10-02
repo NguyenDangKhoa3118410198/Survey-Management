@@ -10,7 +10,6 @@ const MainLayout: React.FC = () => {
       <HeaderLayout />
       <Layout>
         <Sidebar />
-
         <Layout.Content style={{ margin: '0 16px' }}>
           <Outlet />
         </Layout.Content>

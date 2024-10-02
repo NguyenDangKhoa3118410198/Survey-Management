@@ -1,10 +1,25 @@
 import { FileTextOutlined, UserOutlined } from '@ant-design/icons';
 import { Menu, MenuProps } from 'antd';
 import Sider from 'antd/es/layout/Sider';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const Sidebar: React.FC = () => {
+  const [selectedKey, setSelectedKey] = useState<string>('users');
+
+  useEffect(() => {
+    const currentPath = window.location.pathname;
+    if (currentPath.includes('survey')) {
+      setSelectedKey('survey');
+    } else {
+      setSelectedKey('users');
+    }
+  }, []);
+
+  const handleMenuClick: MenuProps['onClick'] = (e) => {
+    setSelectedKey(e.key);
+  };
+
   const items: MenuProps['items'] = [
     {
       key: 'users',
@@ -30,7 +45,8 @@ const Sidebar: React.FC = () => {
     <Sider width={230} className='site-layout-background'>
       <Menu
         mode='inline'
-        defaultSelectedKeys={['users']}
+        selectedKeys={[selectedKey]}
+        onClick={handleMenuClick}
         items={items}
         style={{ height: '100%', borderRight: 0, paddingTop: '8px' }}
       />
