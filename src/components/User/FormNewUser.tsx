@@ -50,6 +50,7 @@ const FormNewUser: React.FC = () => {
   const navigate = useNavigate();
   const { userList, addNewUser } = useUser();
   const { id } = useParams();
+  const [isUpload, setIsUpload] = useState(false);
 
   const { data: userDetail } = useQuery<IUser | undefined>({
     queryKey: ['userDetail', id],
@@ -180,7 +181,7 @@ const FormNewUser: React.FC = () => {
         )}
 
         <Item label='Ảnh đại diện' name='avatar' colon={false}>
-          {/* {!userDetail?.avatar ? (
+          {isUpload ? (
             <Upload
               action='https://api-dev.estuary.solutions:8443/fico-salex-mediafile-dev/files/upload'
               listType='picture-card'
@@ -193,30 +194,31 @@ const FormNewUser: React.FC = () => {
                 <div style={{ marginTop: 8 }}>Upload</div>
               </button>
             </Upload>
-          ) : (
+          ) : userDetail?.avatar ? (
             <>
               <Image
                 src={userDetail?.avatar}
                 style={{ width: '100px', height: '100px', objectFit: 'cover' }}
               />
-              <br />
               <CloseOutlined
-                onClick={() => form.setFieldValue('upload', undefined)}
+                onClick={() => setIsUpload(true)}
+                style={{ marginLeft: '10px' }}
               />
             </>
-          )} */}
-          <Upload
-            action='https://api-dev.estuary.solutions:8443/fico-salex-mediafile-dev/files/upload'
-            listType='picture-card'
-            fileList={fileList}
-            onChange={handleChange}
-            maxCount={1}
-          >
-            <button style={{ border: 0, background: 'none' }} type='button'>
-              <PlusOutlined />
-              <div style={{ marginTop: 8 }}>Upload</div>
-            </button>
-          </Upload>
+          ) : (
+            <Upload
+              action='https://api-dev.estuary.solutions:8443/fico-salex-mediafile-dev/files/upload'
+              listType='picture-card'
+              fileList={fileList}
+              onChange={handleChange}
+              maxCount={1}
+            >
+              <button style={{ border: 0, background: 'none' }} type='button'>
+                <PlusOutlined />
+                <div style={{ marginTop: 8 }}>Upload</div>
+              </button>
+            </Upload>
+          )}
         </Item>
         <Item
           label='Họ và tên'
