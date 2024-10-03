@@ -1,6 +1,7 @@
 import { EyeOutlined } from '@ant-design/icons';
 import { Button, TableProps } from 'antd';
 import { IUser } from 'hooks/useUser';
+import { Link } from 'react-router-dom';
 
 export const columns: TableProps<IUser>['columns'] = [
   {
@@ -21,6 +22,7 @@ export const columns: TableProps<IUser>['columns'] = [
           style={{
             width: 50,
             height: 50,
+            objectFit: 'cover',
           }}
         />
       ) : null,
@@ -48,12 +50,14 @@ export const columns: TableProps<IUser>['columns'] = [
   },
   {
     title: 'Xem chi tiết',
-    dataIndex: 'detail',
     align: 'center',
-    render: () => (
-      <Button style={{ border: 'none', backgroundColor: 'transparent' }}>
-        <EyeOutlined style={{ color: '#284698', fontSize: '20px' }} />
-      </Button>
-    ),
+    render: (record: IUser) =>
+      record && record.id ? (
+        <Link to={`/users/${record.id}`}>
+          <Button style={{ border: 'none', backgroundColor: 'transparent' }}>
+            <EyeOutlined style={{ color: '#284698', fontSize: '20px' }} />
+          </Button>
+        </Link>
+      ) : null,
   },
 ];

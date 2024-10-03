@@ -18,8 +18,13 @@ const Breadcrumbs: React.FC = () => {
   const pathSnippets: string[] = location.pathname.split('/').filter((i) => i);
 
   const breadcrumbItems = pathSnippets.map((snippet: string, index: number) => {
-    const url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
-    const breadcrumbName = breadcrumbNameMap[url] || snippet;
+    let url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
+    let breadcrumbName = breadcrumbNameMap[url] || snippet;
+
+    if (url.startsWith('/users') && /^\d+$/.test(snippet)) {
+      url = `/users/${snippet}`;
+      breadcrumbName = 'Chi tiết người dùng';
+    }
 
     return {
       key: url,

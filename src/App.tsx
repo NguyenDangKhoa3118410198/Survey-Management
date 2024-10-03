@@ -8,6 +8,7 @@ import NewUser from 'components/User/NewUser';
 import SurveyList from 'components/Survey/SurveyList';
 import NewSurvey from 'components/Survey/NewSurvey';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import UserDetail from 'components/User/UserDetail';
 
 const App: React.FC = () => {
   const queryClient = new QueryClient();
@@ -20,6 +21,7 @@ const App: React.FC = () => {
             <Route element={<LayoutManagement />}>
               <Route path='/users' element={<UserList />} />
               <Route path='/users/create' element={<NewUser />} />
+              <Route path='/users/:id' element={<UserDetail />} />
               <Route path='/surveys' element={<SurveyList />} />
               <Route path='/surveys/create' element={<NewSurvey />} />
             </Route>

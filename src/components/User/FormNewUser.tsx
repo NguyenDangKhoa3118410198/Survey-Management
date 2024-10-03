@@ -5,6 +5,7 @@ import {
   DatePicker,
   Flex,
   Form,
+  Image,
   Input,
   Radio,
   Select,
@@ -14,10 +15,15 @@ import {
   UploadProps,
 } from 'antd';
 import dayjs from 'dayjs';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { customizeRequiredMark } from 'utils';
-import { fetchCities, fetchDistricts, fetchWards } from './services/fetchAPI';
-import { useNavigate } from 'react-router-dom';
+import {
+  fetchCities,
+  fetchDistricts,
+  fetchUserbyId,
+  fetchWards,
+} from './services/fetchAPI';
+import { useNavigate, useParams } from 'react-router-dom';
 import useUser, { IAddress, IUser } from 'hooks/useUser';
 
 interface IApiAddress {
@@ -43,6 +49,18 @@ const FormNewUser: React.FC = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const { userList, addNewUser } = useUser();
+  const { id } = useParams();
+
+  const { data: userDetail } = useQuery<IUser | undefined>({
+    queryKey: ['userDetail', id],
+    queryFn: () => {
+      if (id) {
+        return fetchUserbyId(id);
+      }
+      return undefined;
+    },
+    enabled: !!id,
+  });
 
   const { data: cities } = useQuery({
     queryKey: ['cityVN'],
@@ -72,6 +90,25 @@ const FormNewUser: React.FC = () => {
     enabled: !!selectedDistrict,
   });
 
+  useEffect(() => {
+    if (userDetail) {
+      const { birthDate, originBirthDate, addresses, ...restUserDetail } =
+        userDetail;
+      const processedAddresses = addresses?.map((address) => ({
+        city: address?.city?.split('-')[1],
+        district: address?.district?.split('-')[1],
+        ward: address?.ward?.split('-')[1],
+      }));
+
+      form.setFieldsValue({
+        ...restUserDetail,
+        addresses: processedAddresses || [{}],
+        gender: restUserDetail.gender || 'Nam',
+        birthDate: dayjs(originBirthDate),
+      });
+    }
+  }, [userDetail, form]);
+
   const handleChange: UploadProps['onChange'] = (info) => {
     setFileList(info.fileList);
   };
@@ -80,26 +117,19 @@ const FormNewUser: React.FC = () => {
     try {
       const pathImg = values?.avatar?.file?.response?.physicalPath;
       const formattedBirthDate = dayjs(values.birthDate).format('DD/MM/YYYY');
-      const gender =
-        values?.gender === 'male'
-          ? 'Nam'
-          : values?.gender === 'female'
-          ? 'Nữ'
-          : 'Khác';
 
       const newUser = {
         ...values,
         id: userList.length + 1,
         avatar: pathImg,
         birthDate: formattedBirthDate,
-        gender: gender,
+        originBirthDate: values.birthDate,
       };
       addNewUser(newUser);
       navigate('/users');
     } catch (error) {
       console.log('Submit failed');
     }
-    console.log('Received values:', values);
   };
 
   const handleAddressesChange = (
@@ -138,9 +168,43 @@ const FormNewUser: React.FC = () => {
         onFinish={handleSubmit}
         layout='horizontal'
         requiredMark={customizeRequiredMark}
-        initialValues={{ addresses: [{}], gender: 'male' }}
+        initialValues={{
+          addresses: [{}],
+          gender: 'Nam',
+        }}
       >
+        {id && (
+          <Item label='ID' colon={false}>
+            <Typography.Text>{id}</Typography.Text>
+          </Item>
+        )}
+
         <Item label='Ảnh đại diện' name='avatar' colon={false}>
+          {/* {!userDetail?.avatar ? (
+            <Upload
+              action='https://api-dev.estuary.solutions:8443/fico-salex-mediafile-dev/files/upload'
+              listType='picture-card'
+              fileList={fileList}
+              onChange={handleChange}
+              maxCount={1}
+            >
+              <button style={{ border: 0, background: 'none' }} type='button'>
+                <PlusOutlined />
+                <div style={{ marginTop: 8 }}>Upload</div>
+              </button>
+            </Upload>
+          ) : (
+            <>
+              <Image
+                src={userDetail?.avatar}
+                style={{ width: '100px', height: '100px', objectFit: 'cover' }}
+              />
+              <br />
+              <CloseOutlined
+                onClick={() => form.setFieldValue('upload', undefined)}
+              />
+            </>
+          )} */}
           <Upload
             action='https://api-dev.estuary.solutions:8443/fico-salex-mediafile-dev/files/upload'
             listType='picture-card'
@@ -174,7 +238,7 @@ const FormNewUser: React.FC = () => {
             },
           ]}
         >
-          <Input placeholder='Nhập email' />
+          <Input placeholder='Nhập email' disabled={!!userDetail && !!id} />
         </Item>
         <Item
           label='Mật khẩu'
@@ -217,9 +281,9 @@ const FormNewUser: React.FC = () => {
         </Item>
         <Item label='Giới tính' colon={false} name='gender'>
           <Radio.Group>
-            <Radio value='male'>Nam</Radio>
-            <Radio value='female'> Nữ </Radio>
-            <Radio value='other'> Khác </Radio>
+            <Radio value='Nam'>Nam</Radio>
+            <Radio value='Nữ'> Nữ </Radio>
+            <Radio value='Khác'> Khác </Radio>
           </Radio.Group>
         </Item>
         <Item
@@ -264,8 +328,7 @@ const FormNewUser: React.FC = () => {
                       key={key}
                       style={{
                         display: 'flex',
-                        marginBottom: '8px',
-                        gap: '40px',
+                        gap: '20px',
                       }}
                     >
                       <Item
@@ -290,7 +353,10 @@ const FormNewUser: React.FC = () => {
                           {Array.isArray(cities) &&
                             cities.length > 0 &&
                             cities.map((city: IApiAddress) => (
-                              <Option key={city?.id} value={city?.id}>
+                              <Option
+                                key={city?.id}
+                                value={`${city?.id}-${city?.name}`}
+                              >
                                 {city?.name ?? city?.name_en}
                               </Option>
                             ))}
@@ -318,7 +384,10 @@ const FormNewUser: React.FC = () => {
                           {Array.isArray(districts) &&
                             districts.length > 0 &&
                             districts.map((district: IApiAddress) => (
-                              <Option key={district?.id} value={district?.id}>
+                              <Option
+                                key={district?.id}
+                                value={`${district?.id}-${district?.name}`}
+                              >
                                 {district?.name ?? district?.name_en}
                               </Option>
                             ))}
@@ -346,7 +415,10 @@ const FormNewUser: React.FC = () => {
                           {Array.isArray(wards) &&
                             wards.length > 0 &&
                             wards.map((ward: IApiAddress) => (
-                              <Option key={ward?.id} value={ward?.id}>
+                              <Option
+                                key={ward?.id}
+                                value={`${ward?.id}-${ward?.name}`}
+                              >
                                 {ward?.name ?? ward?.name_en}
                               </Option>
                             ))}
