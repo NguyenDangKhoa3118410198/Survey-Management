@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import {
   Button,
   DatePicker,
+  Flex,
   Form,
   Input,
   Radio,
@@ -16,6 +17,7 @@ import dayjs from 'dayjs';
 import React, { useState } from 'react';
 import { customizeRequiredMark } from 'utils';
 import { fetchCities, fetchDistricts, fetchWards } from './services/fetchAPI';
+import { useNavigate } from 'react-router-dom';
 
 interface IApiAddress {
   id?: string;
@@ -56,6 +58,7 @@ const FormNewUser: React.FC = () => {
   >();
   const [selectedWard, setSelectedWard] = useState<string | undefined>();
   const [form] = Form.useForm();
+  const navigate = useNavigate();
 
   const { data: cities } = useQuery({
     queryKey: ['cityVN'],
@@ -218,7 +221,6 @@ const FormNewUser: React.FC = () => {
           name='phoneNumber'
           colon={false}
           rules={[
-            { required: true, message: 'Vui lòng nhập số điện thoại' },
             {
               pattern: /^0[1-9]\d{8}$/,
               message: 'Số điện thoại nên bắt đầu với 0 và bao gồm 10 số',
@@ -239,118 +241,130 @@ const FormNewUser: React.FC = () => {
             disabledDate={(current) =>
               current && current.isAfter(dayjs().endOf('day'))
             }
+            style={{ borderRadius: '14px' }}
           />
         </Item>
         <List name='addresses'>
           {(fields, { add, remove }) => (
             <>
-              <>
-                <Typography.Text>Địa chỉ</Typography.Text>
-                {fields.map(({ key, name, ...restField }, index) => (
-                  <div
-                    key={key}
-                    style={{
-                      display: 'flex',
-                      marginBottom: '8px',
-                    }}
-                  >
-                    <Item
-                      {...restField}
-                      name={[name, 'city']}
-                      style={{ flex: 1, marginRight: '8px' }}
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Vui lòng chọn thành phố!',
-                        },
-                      ]}
+              <Flex>
+                <Typography.Text style={{ width: '190px', textAlign: 'left' }}>
+                  Địa chỉ
+                  <span style={{ color: 'red' }}> *</span>
+                </Typography.Text>
+                <Flex vertical style={{ width: '100%' }}>
+                  {fields.map(({ key, name, ...restField }, index) => (
+                    <div
+                      key={key}
+                      style={{
+                        display: 'flex',
+                        marginBottom: '8px',
+                        gap: '40px',
+                      }}
                     >
-                      <Select
-                        placeholder='Chọn thành phố'
-                        onChange={(value) =>
-                          handleAddressesChange(index, value, 'city')
-                        }
-                        allowClear
-                        value={selectedCity || undefined}
+                      <Item
+                        {...restField}
+                        name={[name, 'city']}
+                        style={{ flex: 1, marginRight: '8px' }}
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Vui lòng chọn thành phố!',
+                          },
+                        ]}
                       >
-                        {Array.isArray(cities) &&
-                          cities.length > 0 &&
-                          cities.map((city: IApiAddress) => (
-                            <Option key={city?.id} value={city?.id}>
-                              {city?.name ?? city?.name_en}
-                            </Option>
-                          ))}
-                      </Select>
-                    </Item>
-                    <Item
-                      {...restField}
-                      name={[name, 'district']}
-                      style={{ flex: 1, marginRight: '8px' }}
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Vui lòng chọn quận/huyện!',
-                        },
-                      ]}
+                        <Select
+                          placeholder='Chọn thành phố'
+                          onChange={(value) =>
+                            handleAddressesChange(index, value, 'city')
+                          }
+                          allowClear
+                          value={selectedCity || undefined}
+                        >
+                          {Array.isArray(cities) &&
+                            cities.length > 0 &&
+                            cities.map((city: IApiAddress) => (
+                              <Option key={city?.id} value={city?.id}>
+                                {city?.name ?? city?.name_en}
+                              </Option>
+                            ))}
+                        </Select>
+                      </Item>
+                      <Item
+                        {...restField}
+                        name={[name, 'district']}
+                        style={{ flex: 1, marginRight: '8px' }}
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Vui lòng chọn quận/huyện!',
+                          },
+                        ]}
+                      >
+                        <Select
+                          placeholder='Chọn quận/huyện'
+                          onChange={(value) =>
+                            handleAddressesChange(index, value, 'district')
+                          }
+                          value={selectedDistrict || undefined}
+                          allowClear
+                        >
+                          {Array.isArray(districts) &&
+                            districts.length > 0 &&
+                            districts.map((district: IApiAddress) => (
+                              <Option key={district?.id} value={district?.id}>
+                                {district?.name ?? district?.name_en}
+                              </Option>
+                            ))}
+                        </Select>
+                      </Item>
+                      <Item
+                        {...restField}
+                        name={[name, 'ward']}
+                        style={{ flex: 1 }}
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Vui lòng chọn phường/xã!',
+                          },
+                        ]}
+                      >
+                        <Select
+                          placeholder='Chọn phường/xã'
+                          onChange={(value) =>
+                            handleAddressesChange(index, value, 'ward')
+                          }
+                          value={selectedWard || undefined}
+                          allowClear
+                        >
+                          {Array.isArray(wards) &&
+                            wards.length > 0 &&
+                            wards.map((ward: IApiAddress) => (
+                              <Option key={ward?.id} value={ward?.id}>
+                                {ward?.name ?? ward?.name_en}
+                              </Option>
+                            ))}
+                        </Select>
+                      </Item>
+                      {fields.length > 1 && (
+                        <Button onClick={() => remove(name)} type='link'>
+                          <CloseOutlined />
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+                  <Item>
+                    <Button
+                      type='dashed'
+                      onClick={() => add()}
+                      block
+                      style={{ borderRadius: '14px' }}
                     >
-                      <Select
-                        placeholder='Chọn quận/huyện'
-                        onChange={(value) =>
-                          handleAddressesChange(index, value, 'district')
-                        }
-                        value={selectedDistrict || undefined}
-                        allowClear
-                      >
-                        {Array.isArray(districts) &&
-                          districts.length > 0 &&
-                          districts.map((district: IApiAddress) => (
-                            <Option key={district?.id} value={district?.id}>
-                              {district?.name ?? district?.name_en}
-                            </Option>
-                          ))}
-                      </Select>
-                    </Item>
-                    <Item
-                      {...restField}
-                      name={[name, 'ward']}
-                      style={{ flex: 1 }}
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Vui lòng chọn phường/xã!',
-                        },
-                      ]}
-                    >
-                      <Select
-                        placeholder='Chọn phường/xã'
-                        onChange={(value) =>
-                          handleAddressesChange(index, value, 'ward')
-                        }
-                        value={selectedWard || undefined}
-                        allowClear
-                      >
-                        {Array.isArray(wards) &&
-                          wards.length > 0 &&
-                          wards.map((ward: IApiAddress) => (
-                            <Option key={ward?.id} value={ward?.id}>
-                              {ward?.name ?? ward?.name_en}
-                            </Option>
-                          ))}
-                      </Select>
-                    </Item>
-                    {fields.length > 1 && (
-                      <Button onClick={() => remove(name)} type='link'>
-                        <CloseOutlined />
-                      </Button>
-                    )}
-                  </div>
-                ))}
-                <Item>
-                  <Button type='dashed' onClick={() => add()} block>
-                    + Thêm địa chỉ
-                  </Button>
-                </Item>
-              </>
+                      + Thêm địa chỉ
+                    </Button>
+                  </Item>
+                </Flex>
+              </Flex>
             </>
           )}
         </List>
@@ -362,10 +376,18 @@ const FormNewUser: React.FC = () => {
             width: '100%',
           }}
         >
-          <Button type='text' htmlType='reset'>
+          <Button
+            htmlType='button'
+            style={{ marginRight: '10px' }}
+            onClick={() => navigate('/users')}
+          >
             Hủy bỏ
           </Button>
-          <Button type='primary' htmlType='submit'>
+          <Button
+            type='primary'
+            htmlType='submit'
+            style={{ backgroundColor: 'var(--main-color)' }}
+          >
             Tạo mới
           </Button>
         </Item>

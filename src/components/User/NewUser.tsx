@@ -16,13 +16,13 @@ const NewUser: React.FC = () => {
           fontSize: '18px',
           fontWeight: '700',
           margin: '0',
-          padding: '8px 11px',
+          padding: '8px 24px',
         }}
       >
         Tạo người dùng
       </Typography.Paragraph>
       <Divider style={{ margin: '10px 0' }} />
-      <div style={{ padding: '8px 11px' }}>
+      <div style={{ padding: '8px 24px' }}>
         <FormNewUser />
       </div>
     </div>
