@@ -18,6 +18,7 @@ import React, { useState } from 'react';
 import { customizeRequiredMark } from 'utils';
 import { fetchCities, fetchDistricts, fetchWards } from './services/fetchAPI';
 import { useNavigate } from 'react-router-dom';
+import useUser, { IAddress, IUser } from 'hooks/useUser';
 
 interface IApiAddress {
   id?: string;
@@ -27,24 +28,6 @@ interface IApiAddress {
   full_name_en?: string;
   latitude?: string;
   longitude?: string;
-}
-
-interface IAddress {
-  city: string | undefined;
-  district: string | undefined;
-  ward: string | undefined;
-}
-
-interface IFormData {
-  addresses: string[];
-  avatar: {};
-  birthDate: Date;
-  email: string;
-  fullName: string;
-  gender: string;
-  password: string;
-  phoneNumber: string;
-  verifyPassword: string;
 }
 
 const { Option } = Select;
@@ -59,6 +42,7 @@ const FormNewUser: React.FC = () => {
   const [selectedWard, setSelectedWard] = useState<string | undefined>();
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const { userList, addNewUser } = useUser();
 
   const { data: cities } = useQuery({
     queryKey: ['cityVN'],
@@ -92,7 +76,29 @@ const FormNewUser: React.FC = () => {
     setFileList(info.fileList);
   };
 
-  const handleSubmit = (values: IFormData) => {
+  const handleSubmit = (values: IUser) => {
+    try {
+      const pathImg = values?.avatar?.file?.response?.physicalPath;
+      const formattedBirthDate = dayjs(values.birthDate).format('DD/MM/YYYY');
+      const gender =
+        values?.gender === 'male'
+          ? 'Nam'
+          : values?.gender === 'female'
+          ? 'Nữ'
+          : 'Khác';
+
+      const newUser = {
+        ...values,
+        id: userList.length + 1,
+        avatar: pathImg,
+        birthDate: formattedBirthDate,
+        gender: gender,
+      };
+      addNewUser(newUser);
+      navigate('/users');
+    } catch (error) {
+      console.log('Submit failed');
+    }
     console.log('Received values:', values);
   };
 

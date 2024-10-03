@@ -1,12 +1,12 @@
 import React from 'react';
-import Breadcrumbs from '../common/Breadcrumbs';
 import { Button, Table, Typography } from 'antd';
-import { mockUserListData } from 'data/mockData';
 import { columns } from 'data/columnsUserList';
 import { useNavigate } from 'react-router-dom';
+import useUser from 'hooks/useUser';
 
 const UserList: React.FC = () => {
   const navigate = useNavigate();
+  const { userList } = useUser();
 
   const handleCreateUser = () => {
     navigate('/users/create');
@@ -58,7 +58,7 @@ const UserList: React.FC = () => {
         >
           <Table
             rowKey='id'
-            dataSource={mockUserListData}
+            dataSource={userList ?? []}
             columns={columns}
             scroll={{ y: 'calc(100vh - 360px)' }}
           />

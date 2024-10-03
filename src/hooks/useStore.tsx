@@ -1,5 +1,5 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 interface UserState {
   token: string | null;
@@ -17,7 +17,7 @@ const useStore = create<UserState>()(
       clearUser: () => set({ email: null, token: null }),
     }),
     {
-      name: "info-user",
+      name: 'info-user',
     }
   )
 );

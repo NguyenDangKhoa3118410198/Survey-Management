@@ -1,16 +1,8 @@
 import { EyeOutlined } from '@ant-design/icons';
 import { Button, TableProps } from 'antd';
+import { IUser } from 'hooks/useUser';
 
-interface User {
-  id: number;
-  avatar: string;
-  fullName: string;
-  email: string;
-  birthDate: string;
-  gender: string;
-}
-
-export const columns: TableProps<User>['columns'] = [
+export const columns: TableProps<IUser>['columns'] = [
   {
     title: 'ID',
     dataIndex: 'id',
@@ -21,16 +13,17 @@ export const columns: TableProps<User>['columns'] = [
     title: 'Ảnh đại diện',
     dataIndex: 'avatar',
     align: 'center',
-    render: (avatar: string) => (
-      <img
-        src={avatar}
-        alt='avatar'
-        style={{
-          width: 50,
-          height: 50,
-        }}
-      />
-    ),
+    render: (avatar: string) =>
+      avatar ? (
+        <img
+          src={avatar}
+          alt='avatar'
+          style={{
+            width: 50,
+            height: 50,
+          }}
+        />
+      ) : null,
   },
   {
     title: 'Họ và tên',
