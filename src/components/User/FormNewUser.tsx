@@ -454,7 +454,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
                       </Item>
                       {fields.length > 1 && (
                         <Button onClick={() => remove(name)} type='link'>
-                          <CloseOutlined />
+                          <CloseOutlined style={{ color: 'red' }} />
                         </Button>
                       )}
                     </div>
