@@ -9,6 +9,7 @@ import SurveyList from 'components/Survey/SurveyList';
 import NewSurvey from 'components/Survey/NewSurvey';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import UserDetail from 'components/User/UserDetail';
+import Notfound from 'layout/Notfound';
 
 const App: React.FC = () => {
   const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App: React.FC = () => {
             </Route>
           </Route>
           <Route path='/' element={<Login />} />
+          <Route path='/*' element={<Notfound />} />
         </Routes>
       </Router>
     </QueryClientProvider>

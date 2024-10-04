@@ -2,8 +2,23 @@ import { Divider, Typography } from 'antd';
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import FormNewUser from './FormNewUser';
+import { IUser } from 'hooks/useUser';
+import { fetchUserbyId } from './services/fetchAPI';
+import { useQuery } from '@tanstack/react-query';
 
 const UserDetail: React.FC = () => {
+  const { id } = useParams();
+  const { data: userDetail } = useQuery<IUser | undefined>({
+    queryKey: ['userDetail', id],
+    queryFn: () => {
+      if (id) {
+        return fetchUserbyId(id);
+      }
+      return undefined;
+    },
+    enabled: !!id,
+  });
+
   return (
     <div
       style={{
@@ -24,7 +39,7 @@ const UserDetail: React.FC = () => {
       </Typography.Paragraph>
       <Divider style={{ margin: '10px 0' }} />
       <div style={{ padding: '8px 24px' }}>
-        <FormNewUser />
+        <FormNewUser userDetail={userDetail} />
       </div>
     </div>
   );

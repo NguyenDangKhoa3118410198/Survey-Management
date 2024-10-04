@@ -15,14 +15,9 @@ import {
   UploadProps,
 } from 'antd';
 import dayjs from 'dayjs';
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { customizeRequiredMark } from 'utils';
-import {
-  fetchCities,
-  fetchDistricts,
-  fetchUserbyId,
-  fetchWards,
-} from './services/fetchAPI';
+import { fetchCities, fetchDistricts, fetchWards } from './services/fetchAPI';
 import { useNavigate, useParams } from 'react-router-dom';
 import useUser, { IAddress, IUser } from 'hooks/useUser';
 
@@ -36,10 +31,14 @@ interface IApiAddress {
   longitude?: string;
 }
 
+interface FormNewUserProps {
+  userDetail?: IUser;
+}
+
 const { Option } = Select;
 const { Item, List } = Form;
 
-const FormNewUser: React.FC = () => {
+const FormNewUser: React.FC<FormNewUserProps> = ({ userDetail }) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [selectedCity, setSelectedCity] = useState<string | undefined>();
   const [selectedDistrict, setSelectedDistrict] = useState<
@@ -52,17 +51,6 @@ const FormNewUser: React.FC = () => {
   const { id } = useParams();
   const [isUpload, setIsUpload] = useState(false);
   const [deletedAvatar, setDeletedAvatar] = useState(false);
-
-  const { data: userDetail } = useQuery<IUser | undefined>({
-    queryKey: ['userDetail', id],
-    queryFn: () => {
-      if (id) {
-        return fetchUserbyId(id);
-      }
-      return undefined;
-    },
-    enabled: !!id,
-  });
 
   const { data: cities } = useQuery({
     queryKey: ['cityVN'],
@@ -205,25 +193,30 @@ const FormNewUser: React.FC = () => {
       >
         {id && (
           <Item label='ID' colon={false}>
-            <Typography.Text>{id}</Typography.Text>
+            <Typography.Text>{userDetail?.id}</Typography.Text>
           </Item>
         )}
 
-        <Item label='Ảnh đại diện' name='avatar' colon={false}>
-          <>
+        <Item label='Ảnh đại diện' colon={false}>
+          <div>
             {isUpload ? (
-              <Upload
-                action='https://api-dev.estuary.solutions:8443/fico-salex-mediafile-dev/files/upload'
-                listType='picture-card'
-                fileList={fileList}
-                onChange={handleChange}
-                maxCount={1}
-              >
-                <button style={{ border: 0, background: 'none' }} type='button'>
-                  <PlusOutlined />
-                  <div style={{ marginTop: 8 }}>Upload</div>
-                </button>
-              </Upload>
+              <Item name='avatar' noStyle>
+                <Upload
+                  action='https://api-dev.estuary.solutions:8443/fico-salex-mediafile-dev/files/upload'
+                  listType='picture-card'
+                  fileList={fileList}
+                  onChange={handleChange}
+                  maxCount={1}
+                >
+                  <button
+                    style={{ border: 0, background: 'none' }}
+                    type='button'
+                  >
+                    <PlusOutlined />
+                    <div style={{ marginTop: 8 }}>Upload</div>
+                  </button>
+                </Upload>
+              </Item>
             ) : userDetail?.avatar ? (
               <>
                 <Image
@@ -243,21 +236,27 @@ const FormNewUser: React.FC = () => {
                 />
               </>
             ) : (
-              <Upload
-                action='https://api-dev.estuary.solutions:8443/fico-salex-mediafile-dev/files/upload'
-                listType='picture-card'
-                fileList={fileList}
-                onChange={handleChange}
-                maxCount={1}
-              >
-                <button style={{ border: 0, background: 'none' }} type='button'>
-                  <PlusOutlined />
-                  <div style={{ marginTop: 8 }}>Upload</div>
-                </button>
-              </Upload>
+              <Item name='avatar' noStyle>
+                <Upload
+                  action='https://api-dev.estuary.solutions:8443/fico-salex-mediafile-dev/files/upload'
+                  listType='picture-card'
+                  fileList={fileList}
+                  onChange={handleChange}
+                  maxCount={1}
+                >
+                  <button
+                    style={{ border: 0, background: 'none' }}
+                    type='button'
+                  >
+                    <PlusOutlined />
+                    <div style={{ marginTop: 8 }}>Upload</div>
+                  </button>
+                </Upload>
+              </Item>
             )}
-          </>
+          </div>
         </Item>
+
         <Item
           label='Họ và tên'
           name='fullName'
