@@ -15,7 +15,7 @@ import {
   UploadProps,
 } from 'antd';
 import dayjs from 'dayjs';
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { customizeRequiredMark } from 'utils';
 import { fetchCities, fetchDistricts, fetchWards } from './services/fetchAPI';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -38,7 +38,7 @@ interface FormNewUserProps {
 const { Option } = Select;
 const { Item, List } = Form;
 
-const FormNewUser: React.FC<FormNewUserProps> = ({ userDetail }) => {
+const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [selectedCity, setSelectedCity] = useState<string | undefined>();
   const [selectedDistrict, setSelectedDistrict] = useState<
@@ -59,24 +59,13 @@ const FormNewUser: React.FC<FormNewUserProps> = ({ userDetail }) => {
 
   const { data: districts } = useQuery({
     queryKey: ['districtVN', selectedCity],
-    queryFn: () => {
-      if (selectedCity) {
-        return fetchDistricts(selectedCity);
-      }
-
-      return [];
-    },
+    queryFn: () => (selectedCity ? fetchDistricts(selectedCity) : []),
     enabled: !!selectedCity,
   });
 
   const { data: wards } = useQuery({
     queryKey: ['wardVN', selectedDistrict],
-    queryFn: () => {
-      if (selectedDistrict) {
-        return fetchWards(selectedDistrict);
-      }
-      return [];
-    },
+    queryFn: () => (selectedDistrict ? fetchWards(selectedDistrict) : []),
     enabled: !!selectedDistrict,
   });
 
@@ -511,6 +500,6 @@ const FormNewUser: React.FC<FormNewUserProps> = ({ userDetail }) => {
       </Form>
     </>
   );
-};
+});
 
 export default FormNewUser;
