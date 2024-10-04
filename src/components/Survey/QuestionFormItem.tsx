@@ -6,12 +6,14 @@ interface IQuestionFormItemProps {
   fieldName: number;
   restField: any;
   remove: (name: number) => void;
+  qtyField?: number;
 }
 
 const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
   fieldName,
   restField,
   remove,
+  qtyField,
 }) => {
   const [showExtraInput, setShowExtraInput] = useState(false);
 
@@ -54,7 +56,7 @@ const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
       <Form.Item
         {...restField}
         name={[fieldName, 'question']}
-        label={`Câu hỏi ${fieldName + 1}`}
+        label={`Câu hỏi ${Number(qtyField) - fieldName}`}
         colon={false}
         rules={[{ required: true, message: 'Vui lòng nhập tên câu hỏi' }]}
       >
@@ -76,6 +78,7 @@ const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
           <Flex>
             <Typography.Text style={{ width: '190px', textAlign: 'left' }}>
               Phương án
+              <span style={{ color: 'red' }}> *</span>
             </Typography.Text>
             <Flex vertical style={{ width: '100%' }}>
               <Form.List
@@ -138,7 +141,7 @@ const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
         onClick={() => remove(fieldName)}
         style={{ color: 'red', border: '1px solid red', borderRadius: '14px' }}
       >
-        Xoá câu hỏi {fieldName + 1}
+        Xoá câu hỏi {Number(qtyField) - fieldName}
       </Button>
     </div>
   );

@@ -52,7 +52,13 @@ const FormNewSurvey: React.FC = () => {
         layout='horizontal'
         requiredMark={customizeRequiredMark}
       >
-        <div style={{ backgroundColor: 'whitesmoke', padding: '20px' }}>
+        <div
+          style={{
+            backgroundColor: 'whitesmoke',
+            padding: '20px',
+            marginBottom: '20px',
+          }}
+        >
           <Item
             name='surveyName'
             label='Tên khảo sát'
@@ -101,9 +107,8 @@ const FormNewSurvey: React.FC = () => {
         <div
           style={{
             backgroundColor: 'whitesmoke',
-            border: '1px solid lightblue',
             position: 'relative',
-            minHeight: '250px',
+            minHeight: '320px',
           }}
         >
           <Item>
@@ -124,15 +129,16 @@ const FormNewSurvey: React.FC = () => {
                 {(fields, { add, remove }) => (
                   <>
                     <Button
-                      type='dashed'
-                      onClick={() => add()}
+                      onClick={() => add({}, 0)}
                       style={{
                         position: 'absolute',
                         right: '20px',
                         top: '10px',
+                        backgroundColor: 'var(--main-color)',
+                        color: '#fff',
                       }}
                     >
-                      Tạo câu hỏi
+                      + Thêm câu hỏi
                     </Button>
                     {fields.map(({ key, name, ...restField }) => (
                       <QuestionFormItem
@@ -140,6 +146,7 @@ const FormNewSurvey: React.FC = () => {
                         fieldName={name}
                         restField={restField}
                         remove={remove}
+                        qtyField={fields.length}
                       />
                     ))}
                   </>
