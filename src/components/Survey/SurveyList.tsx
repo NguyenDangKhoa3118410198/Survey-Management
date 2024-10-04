@@ -1,11 +1,13 @@
 import React from 'react';
 import { Button, Table, Typography } from 'antd';
-import { mockSurveyListData } from 'data/mockData';
 import { columns } from 'data/columnsSurveyList';
 import { useNavigate } from 'react-router-dom';
+import useSurvey from 'hooks/useSurvey';
 
 const SurveyList: React.FC = () => {
   const navigate = useNavigate();
+
+  const { surveyList } = useSurvey();
 
   const handleCreateSurvey = () => {
     navigate('/surveys/create');
@@ -65,7 +67,7 @@ const SurveyList: React.FC = () => {
           >
             <Table
               rowKey='id'
-              dataSource={mockSurveyListData}
+              dataSource={surveyList}
               columns={columns}
               scroll={{ y: 'calc(100vh - 360px)' }}
             />

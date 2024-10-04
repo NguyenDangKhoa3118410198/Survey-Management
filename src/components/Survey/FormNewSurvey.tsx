@@ -13,17 +13,30 @@ import React from 'react';
 import { customizeRequiredMark } from 'utils';
 import { useNavigate } from 'react-router-dom';
 import QuestionFormItem from './QuestionFormItem';
+import useSurvey, { ISurvey } from 'hooks/useSurvey';
 
 const { Item, List } = Form;
-const { Option } = Select;
 
 const FormNewSurvey: React.FC = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const { surveyList, addNewSurvey } = useSurvey();
 
-  const handleSubmit = (values: any) => {
-    values.totalContent = values.questions.length;
-    console.log(values);
+  const handleSubmit = (values: ISurvey) => {
+    try {
+      values.totalContent = values?.questions?.length ?? 0;
+      values.id = surveyList.length + 1;
+      const formattedStartDate = dayjs(values.startDate).format('DD/MM/YYYY');
+      const formattedEndDate = dayjs(values.endDate).format('DD/MM/YYYY');
+      values.startDate = formattedStartDate;
+      values.endDate = formattedEndDate;
+
+      console.log(values);
+      addNewSurvey(values);
+      navigate('/surveys');
+    } catch (error) {
+      console.log('Submit failed');
+    }
   };
 
   return (
@@ -67,7 +80,6 @@ const FormNewSurvey: React.FC = () => {
               disabledDate={(current) =>
                 current && current.isBefore(dayjs().startOf('day'))
               }
-              style={{ borderRadius: '14px' }}
             />
           </Item>
           <Item name='endDate' label='Ngày kết thúc' colon={false}>
@@ -76,7 +88,6 @@ const FormNewSurvey: React.FC = () => {
               disabledDate={(current) =>
                 current && current.isBefore(dayjs().startOf('day'))
               }
-              style={{ borderRadius: '14px' }}
             />
           </Item>
           <Item
@@ -84,10 +95,7 @@ const FormNewSurvey: React.FC = () => {
             label='Tổng nội dung khảo sát'
             colon={false}
           >
-            <InputNumber
-              disabled={true}
-              style={{ width: '100%', borderRadius: '14px' }}
-            />
+            <InputNumber disabled={true} style={{ width: '100%' }} />
           </Item>
         </div>
         <div
@@ -128,9 +136,7 @@ const FormNewSurvey: React.FC = () => {
                     </Button>
                     {fields.map(({ key, name, ...restField }) => (
                       <QuestionFormItem
-                        countFields={fields}
                         key={key}
-                        fieldKey={key}
                         fieldName={name}
                         restField={restField}
                         remove={remove}

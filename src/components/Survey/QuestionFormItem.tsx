@@ -2,7 +2,17 @@ import { CloseOutlined } from '@ant-design/icons';
 import { Button, Flex, Form, Input, Select, Switch, Typography } from 'antd';
 import { useState } from 'react';
 
-const QuestionFormItem = ({ fieldName, restField, remove }: any) => {
+interface IQuestionFormItemProps {
+  fieldName: number;
+  restField: any;
+  remove: (name: number) => void;
+}
+
+const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
+  fieldName,
+  restField,
+  remove,
+}) => {
   const [showExtraInput, setShowExtraInput] = useState(false);
 
   const handleQuestionTypeChange = (value: string) => {
@@ -95,7 +105,7 @@ const QuestionFormItem = ({ fieldName, restField, remove }: any) => {
                               marginRight: '8px',
                             }}
                           />
-                          {fields.length > 2 && (
+                          {fields?.length > 2 && (
                             <Button
                               type='link'
                               onClick={() => remove(name)}

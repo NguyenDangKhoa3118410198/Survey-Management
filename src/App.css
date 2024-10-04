@@ -9,6 +9,8 @@
   font-size: 14px;
 }
 
-.ant-btn {
+.ant-btn,
+.ant-picker,
+.ant-input-number {
   border-radius: 14px;
 }
