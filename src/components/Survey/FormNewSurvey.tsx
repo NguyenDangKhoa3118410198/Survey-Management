@@ -5,6 +5,7 @@ import {
    Form,
    Input,
    InputNumber,
+   message,
    Select,
    Typography,
 } from 'antd';
@@ -33,22 +34,28 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
    const disabledEndDate = (current: Dayjs | null) => {
       return current && startDate && current.isBefore(startDate, 'day');
    };
+
    const handleSubmit = (values: ISurvey) => {
       try {
          values.totalContent = values?.questions?.length ?? 0;
          values.id = surveyList.length + 1;
-         const formattedStartDate = dayjs(values.startDate).format(
-            'DD/MM/YYYY'
-         );
-         const formattedEndDate = dayjs(values.endDate).format('DD/MM/YYYY');
-         values.startDate = formattedStartDate;
-         values.endDate = formattedEndDate;
 
-         console.log(values);
+         const startDate = dayjs(values.startDate);
+         const endDate = dayjs(values.endDate);
+
+         values.startDate = startDate.format('DD/MM/YYYY');
+         values.endDate = endDate.format('DD/MM/YYYY');
+
+         if (endDate.isBefore(startDate, 'day')) {
+            message.error('Ngày kết thúc không được sớm hơn ngày bắt đầu');
+            return;
+         }
+
          addNewSurvey(values);
+         message.success('Tạo mới thành công');
          navigate('/surveys');
       } catch (error) {
-         console.log('Submit failed');
+         console.log('Submit failed', error);
       }
    };
 
