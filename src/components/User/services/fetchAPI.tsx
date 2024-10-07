@@ -8,7 +8,7 @@ export const fetchCities = async () => {
 };
 
 export const fetchDistricts = async (cityId: string) => {
-  const city = cityId.split('-')[0];
+  const city = cityId.split('_')[0];
 
   const data = await fetch(
     ` https://esgoo.net/api-tinhthanh/2/${city}.htm`
@@ -17,7 +17,7 @@ export const fetchDistricts = async (cityId: string) => {
 };
 
 export const fetchWards = async (districtId: string) => {
-  const district = districtId.split('-')[0];
+  const district = districtId.split('_')[0];
 
   const data = await fetch(
     `https://esgoo.net/api-tinhthanh/3/${district}.htm`
