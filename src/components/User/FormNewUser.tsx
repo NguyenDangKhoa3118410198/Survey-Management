@@ -53,7 +53,6 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
   const { id } = useParams();
   const [isUpload, setIsUpload] = useState(false);
   const [deletedAvatar, setDeletedAvatar] = useState(false);
-  const [disabledStates, setDisabledStates] = useState<boolean[]>([]);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
@@ -102,10 +101,6 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
         gender: restUserDetail.gender || 'Nam',
         birthDate: dayjs(originBirthDate) ?? null,
       });
-      if (userDetail.addresses) {
-        const initialDisabledStates = userDetail?.addresses.map(() => true);
-        setDisabledStates(initialDisabledStates);
-      }
     }
   }, [userDetail, form]);
 
@@ -149,41 +144,6 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
     } catch (error) {
       console.log('Submit failed', error);
     }
-  };
-
-  const handleAddressesChange = (
-    index: number,
-    value: string,
-    name: string
-  ) => {
-    if (name === 'city') setSelectedCity(value);
-    if (name === 'district') setSelectedDistrict(value);
-    if (name === 'ward') setSelectedWard(value);
-
-    const updatedAddresses = form
-      .getFieldValue('addresses')
-      ?.map((address: IAddress, i: number) => {
-        if (index === i) {
-          const newAddress = { ...address };
-          if (name === 'city') {
-            newAddress.district = undefined;
-            newAddress.ward = undefined;
-          } else if (name === 'district') {
-            newAddress.ward = undefined;
-          }
-
-          return newAddress;
-        }
-        return address;
-      });
-    form.setFieldsValue({ addresses: updatedAddresses });
-
-    const updatedDisabledStates = [...disabledStates];
-    if (name === 'city') {
-      updatedDisabledStates[index] = false;
-    }
-
-    setDisabledStates(updatedDisabledStates);
   };
 
   const getBase64 = (file: FileType): Promise<string> =>
@@ -441,12 +401,24 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
                         ]}
                       >
                         <Select
+                          showSearch
                           placeholder='Chọn thành phố'
-                          onChange={(value) =>
-                            handleAddressesChange(index, value, 'city')
-                          }
+                          onChange={(value) => {
+                            setSelectedCity(value);
+                            form.resetFields([
+                              ['addresses', name, 'district'],
+                              ['addresses', name, 'ward'],
+                            ]);
+                          }}
                           allowClear
                           value={selectedCity || undefined}
+                          filterSort={(optionA, optionB) =>
+                            (optionA?.name ?? '')
+                              .toLowerCase()
+                              .localeCompare(
+                                (optionB?.name ?? '').toLowerCase()
+                              )
+                          }
                         >
                           {Array.isArray(cities) &&
                             cities.length > 0 &&
@@ -470,15 +442,24 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
                             message: 'Vui lòng chọn quận/huyện!',
                           },
                         ]}
+                        dependencies={[['addresses', name, 'city']]}
                       >
                         <Select
+                          showSearch
                           placeholder='Chọn quận/huyện'
-                          onChange={(value) =>
-                            handleAddressesChange(index, value, 'district')
-                          }
+                          onChange={(value) => {
+                            setSelectedDistrict(value);
+                            form.resetFields([['addresses', name, 'ward']]);
+                          }}
                           value={selectedDistrict || undefined}
                           allowClear
-                          disabled={disabledStates[index]}
+                          filterSort={(optionA, optionB) =>
+                            (optionA?.name ?? '')
+                              .toLowerCase()
+                              .localeCompare(
+                                (optionB?.name ?? '').toLowerCase()
+                              )
+                          }
                         >
                           {Array.isArray(districts) &&
                             districts.length > 0 &&
@@ -502,15 +483,24 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
                             message: 'Vui lòng chọn phường/xã!',
                           },
                         ]}
+                        dependencies={[
+                          ['addresses', name, 'city'],
+                          ['addresses', name, 'district'],
+                        ]}
                       >
                         <Select
+                          showSearch
                           placeholder='Chọn phường/xã'
-                          onChange={(value) =>
-                            handleAddressesChange(index, value, 'ward')
-                          }
+                          onChange={(value) => setSelectedWard(value)}
                           value={selectedWard || undefined}
                           allowClear
-                          disabled={disabledStates[index]}
+                          filterSort={(optionA, optionB) =>
+                            (optionA?.name ?? '')
+                              .toLowerCase()
+                              .localeCompare(
+                                (optionB?.name ?? '').toLowerCase()
+                              )
+                          }
                         >
                           {Array.isArray(wards) &&
                             wards.length > 0 &&
