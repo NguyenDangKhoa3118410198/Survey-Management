@@ -4,7 +4,14 @@ import { persist } from 'zustand/middleware';
 interface UserState {
   token: string | null;
   email: string | null;
-  setUser: (email: string, token: string) => void;
+  password: string | null;
+  isRemembered: boolean;
+  setUser: (
+    email: string,
+    password: string,
+    token: string,
+    isRemembered: boolean
+  ) => void;
   clearUser: () => void;
 }
 
@@ -13,8 +20,11 @@ const useStore = create<UserState>()(
     (set) => ({
       token: null,
       email: null,
-      setUser: (email, token) => set({ email, token }),
-      clearUser: () => set({ email: null, token: null }),
+      password: null,
+      isRemembered: false,
+      setUser: (email, password, token, isRemembered) =>
+        set({ email, password, token, isRemembered }),
+      clearUser: () => set({ token: null }),
     }),
     {
       name: 'info-user',

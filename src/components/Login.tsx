@@ -1,14 +1,16 @@
-import { Button, Flex, Form, Input, Typography } from 'antd';
+import { Button, Checkbox, Flex, Form, Input, Typography } from 'antd';
 import useStore from '../hooks/useStore';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 interface LoginFormValues {
   email: string;
   password: string;
+  remember: boolean;
 }
 
 const Login: React.FC = () => {
-  const { setUser } = useStore();
+  const { setUser, email, password, isRemembered } = useStore();
   const navigate = useNavigate();
   const [form] = Form.useForm<LoginFormValues>();
 
@@ -16,11 +18,30 @@ const Login: React.FC = () => {
     const { email, password } = values;
     const date = Date.now();
     const combied = `${email}+${password}+${date}`;
+    const isRemembered = values.remember ?? false;
 
     const token = btoa(combied);
-    setUser(email, token);
+    setUser(email, password, token, isRemembered);
     navigate('/users');
   };
+
+  const { token } = useStore();
+
+  useEffect(() => {
+    if (token) {
+      navigate('/users');
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    if (email && password && isRemembered) {
+      form.setFieldsValue({
+        email,
+        password,
+        remember: isRemembered,
+      });
+    }
+  }, []);
 
   const handlePressEnter = (e: React.KeyboardEvent<HTMLFormElement>) => {
     if (e.key === 'Enter') {
@@ -81,6 +102,7 @@ const Login: React.FC = () => {
                 'Mật khẩu đảm bảo có ít nhất 8 ký tự, ít nhất 1 ký tự chữ và ít nhất 1 ký tự đặc biệt',
             },
           ]}
+          style={{ marginBottom: '5px' }}
         >
           <Input.Password
             placeholder='Vui lòng nhập mật khẩu'
@@ -91,6 +113,14 @@ const Login: React.FC = () => {
             }}
           />
         </Form.Item>
+        <Form.Item
+          name='remember'
+          valuePropName='checked'
+          style={{ margin: '5px' }}
+        >
+          <Checkbox>Remember me</Checkbox>
+        </Form.Item>
+
         <Form.Item>
           <Button
             type='primary'

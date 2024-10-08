@@ -96,7 +96,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
         ...restUserDetail,
         addresses: processedAddresses || [{}],
         gender: restUserDetail.gender || 'Nam',
-        birthDate: dayjs(originBirthDate),
+        birthDate: dayjs(originBirthDate) ?? null,
       });
       if (userDetail.addresses) {
         const initialDisabledStates = userDetail?.addresses.map(() => true);
@@ -120,7 +120,8 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
           values?.avatar?.file?.response?.physicalPath ?? userDetail?.avatar;
       }
 
-      const formattedBirthDate = dayjs(values.birthDate).format('DD/MM/YYYY');
+      const formattedBirthDate =
+        dayjs(values.birthDate).format('DD/MM/YYYY') ?? null;
 
       const updatedUser = {
         ...values,
