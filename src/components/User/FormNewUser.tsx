@@ -143,10 +143,9 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
           id: userList.length + 1,
         };
         addNewUser(newUser);
+        navigate('/users');
         message.success('Tạo mới thành công');
       }
-
-      navigate('/users');
     } catch (error) {
       console.log('Submit failed', error);
     }
