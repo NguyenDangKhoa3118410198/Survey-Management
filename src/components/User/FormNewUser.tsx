@@ -5,6 +5,7 @@ import {
   DatePicker,
   Flex,
   Form,
+  GetProp,
   Image,
   Input,
   message,
@@ -53,6 +54,9 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
   const [isUpload, setIsUpload] = useState(false);
   const [deletedAvatar, setDeletedAvatar] = useState(false);
   const [disabledStates, setDisabledStates] = useState<boolean[]>([]);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
+  type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
   const { data: cities } = useQuery({
     queryKey: ['cityVN'],
@@ -183,6 +187,23 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
     setDisabledStates(updatedDisabledStates);
   };
 
+  const getBase64 = (file: FileType): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
+
+  const handlePreview = async (file: UploadFile) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj as FileType);
+    }
+
+    setPreviewImage(file.url || (file.preview as string));
+    setPreviewOpen(true);
+  };
+
   return (
     <>
       <Form
@@ -205,23 +226,38 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
         <Item label='Ảnh đại diện' colon={false}>
           <div>
             {isUpload ? (
-              <Item name='avatar' noStyle>
-                <Upload
-                  action='https://api-dev.estuary.solutions:8443/fico-salex-mediafile-dev/files/upload'
-                  listType='picture-card'
-                  fileList={fileList}
-                  onChange={handleChange}
-                  maxCount={1}
-                >
-                  <button
-                    style={{ border: 0, background: 'none' }}
-                    type='button'
+              <>
+                <Item name='avatar' noStyle>
+                  <Upload
+                    action='https://api-dev.estuary.solutions:8443/fico-salex-mediafile-dev/files/upload'
+                    listType='picture-card'
+                    fileList={fileList}
+                    onChange={handleChange}
+                    maxCount={1}
+                    onPreview={handlePreview}
                   >
-                    <PlusOutlined />
-                    <div style={{ marginTop: 8 }}>Upload</div>
-                  </button>
-                </Upload>
-              </Item>
+                    <button
+                      style={{ border: 0, background: 'none' }}
+                      type='button'
+                    >
+                      <PlusOutlined />
+                      <div style={{ marginTop: 8 }}>Upload</div>
+                    </button>
+                  </Upload>
+                </Item>
+                {previewImage && (
+                  <Image
+                    wrapperStyle={{ display: 'none' }}
+                    preview={{
+                      visible: previewOpen,
+                      onVisibleChange: (visible) => setPreviewOpen(visible),
+                      afterOpenChange: (visible) =>
+                        !visible && setPreviewImage(''),
+                    }}
+                    src={previewImage}
+                  />
+                )}
+              </>
             ) : userDetail?.avatar ? (
               <>
                 <Image
@@ -241,23 +277,38 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
                 />
               </>
             ) : (
-              <Item name='avatar' noStyle>
-                <Upload
-                  action='https://api-dev.estuary.solutions:8443/fico-salex-mediafile-dev/files/upload'
-                  listType='picture-card'
-                  fileList={fileList}
-                  onChange={handleChange}
-                  maxCount={1}
-                >
-                  <button
-                    style={{ border: 0, background: 'none' }}
-                    type='button'
+              <>
+                <Item name='avatar' noStyle>
+                  <Upload
+                    action='https://api-dev.estuary.solutions:8443/fico-salex-mediafile-dev/files/upload'
+                    listType='picture-card'
+                    fileList={fileList}
+                    onChange={handleChange}
+                    maxCount={1}
+                    onPreview={handlePreview}
                   >
-                    <PlusOutlined />
-                    <div style={{ marginTop: 8 }}>Upload</div>
-                  </button>
-                </Upload>
-              </Item>
+                    <button
+                      style={{ border: 0, background: 'none' }}
+                      type='button'
+                    >
+                      <PlusOutlined />
+                      <div style={{ marginTop: 8 }}>Upload</div>
+                    </button>
+                  </Upload>
+                </Item>
+                {previewImage && (
+                  <Image
+                    wrapperStyle={{ display: 'none' }}
+                    preview={{
+                      visible: previewOpen,
+                      onVisibleChange: (visible) => setPreviewOpen(visible),
+                      afterOpenChange: (visible) =>
+                        !visible && setPreviewImage(''),
+                    }}
+                    src={previewImage}
+                  />
+                )}
+              </>
             )}
           </div>
         </Item>
