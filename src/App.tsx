@@ -11,30 +11,32 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import UserDetail from 'components/User/UserDetail';
 import Notfound from 'layout/Notfound';
 import SurveyDetail from 'components/Survey/SurveyDetail';
+import Profile from 'components/Profile';
 
 const App: React.FC = () => {
-   const queryClient = new QueryClient();
-   return (
-      <QueryClientProvider client={queryClient}>
-         <Router>
-            <Routes>
-               <Route path='/login' element={<Login />} />
-               <Route element={<MainLayout />}>
-                  <Route element={<LayoutManagement />}>
-                     <Route path='/users' element={<UserList />} />
-                     <Route path='/users/create' element={<NewUser />} />
-                     <Route path='/users/:id' element={<UserDetail />} />
-                     <Route path='/surveys' element={<SurveyList />} />
-                     <Route path='/surveys/create' element={<NewSurvey />} />
-                     <Route path='/surveys/:id' element={<SurveyDetail />} />
-                  </Route>
-               </Route>
-               <Route path='/' element={<Login />} />
-               <Route path='/*' element={<Notfound />} />
-            </Routes>
-         </Router>
-      </QueryClientProvider>
-   );
+  const queryClient = new QueryClient();
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Router>
+        <Routes>
+          <Route path='/login' element={<Login />} />
+          <Route element={<MainLayout />}>
+            <Route element={<LayoutManagement />}>
+              <Route path='/profile' element={<Profile />} />
+              <Route path='/users' element={<UserList />} />
+              <Route path='/users/create' element={<NewUser />} />
+              <Route path='/users/:id' element={<UserDetail />} />
+              <Route path='/surveys' element={<SurveyList />} />
+              <Route path='/surveys/create' element={<NewSurvey />} />
+              <Route path='/surveys/:id' element={<SurveyDetail />} />
+            </Route>
+          </Route>
+          <Route path='/' element={<Login />} />
+          <Route path='/*' element={<Notfound />} />
+        </Routes>
+      </Router>
+    </QueryClientProvider>
+  );
 };
 
 export default App;

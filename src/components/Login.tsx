@@ -65,9 +65,10 @@ const Login: React.FC = () => {
             textAlign: 'center',
             fontWeight: 700,
             color: 'var(--main-color)',
+            marginBottom: '30px',
           }}
         >
-          Admin Panel
+          Admin Panel Management Survey
         </Typography.Title>
         <Form.Item
           name='email'
@@ -116,7 +117,7 @@ const Login: React.FC = () => {
         <Form.Item
           name='remember'
           valuePropName='checked'
-          style={{ margin: '5px' }}
+          style={{ margin: '10px 0' }}
         >
           <Checkbox>Remember me</Checkbox>
         </Form.Item>
@@ -131,6 +132,7 @@ const Login: React.FC = () => {
               height: '49px',
               color: 'white',
               fontWeight: 700,
+              marginTop: '10px',
             }}
           >
             Đăng nhập

@@ -2,7 +2,11 @@ import React from 'react';
 import { Layout, Button, Dropdown, Menu, MenuProps } from 'antd';
 import { Link } from 'react-router-dom';
 import useStore from 'hooks/useStore';
-import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  InfoCircleOutlined,
+  LogoutOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 
 const { Header } = Layout;
 
@@ -14,6 +18,36 @@ const HeaderLayout: React.FC = () => {
   };
 
   const menuItems: MenuProps['items'] = [
+    {
+      key: 'profile',
+      label: (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            alignContent: 'center',
+            width: '100%',
+            fontWeight: '600',
+          }}
+        >
+          <Link
+            to='/profile'
+            style={{
+              flex: 1,
+              textAlign: 'left',
+              fontSize: '14px',
+              color: '#284698',
+            }}
+          >
+            Thông tin người dùng
+          </Link>
+          <InfoCircleOutlined
+            style={{ marginLeft: '8px', color: '#284698', fontSize: '16px' }}
+          />
+        </div>
+      ),
+    },
     {
       key: 'logout',
       label: (

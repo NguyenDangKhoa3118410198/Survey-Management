@@ -13,6 +13,7 @@ const Breadcrumbs: React.FC = () => {
     '/users/create': 'Tạo người dùng',
     '/surveys': 'Danh sách khảo sát',
     '/surveys/create': 'Tạo khảo sát',
+    '/profile': 'Thông tin người dùng',
   };
 
   const pathSnippets: string[] = location.pathname.split('/').filter((i) => i);
