@@ -36,6 +36,7 @@ export const columns: TableProps<IUser>['columns'] = [
   {
     title: 'Email',
     dataIndex: 'email',
+    minWidth: 250,
     render: (text: string) => <span>{text}</span>,
   },
   {
