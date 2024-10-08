@@ -9,6 +9,7 @@ import {
   Image,
   Input,
   message,
+  Modal,
   Radio,
   Select,
   Typography,
@@ -74,6 +75,17 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
     enabled: !!selectedDistrict,
   });
 
+  const showConfirm = (values: IUser) => {
+    Modal.confirm({
+      title: 'Xác nhận',
+      content: 'Bạn có chắc chắn muốn lưu thông tin này?',
+      onOk: () => submitForm(values),
+      onCancel() {
+        console.log('Canceled');
+      },
+    });
+  };
+
   useEffect(() => {
     if (userDetail) {
       const {
@@ -108,7 +120,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
     setFileList(info.fileList);
   };
 
-  const handleSubmit = (values: IUser) => {
+  const submitForm = (values: IUser) => {
     try {
       let pathImg;
 
@@ -137,6 +149,14 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
           ...updatedUser,
           id: userList.length + 1,
         };
+        const isEmailValid = userList.find(
+          (user) => user.email === newUser.email
+        );
+
+        if (!!isEmailValid) {
+          message.warning('Email đã tồn tại');
+          return;
+        }
         addNewUser(newUser);
         navigate('/users');
         message.success('Tạo mới thành công');
@@ -144,6 +164,10 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
     } catch (error) {
       console.log('Submit failed', error);
     }
+  };
+
+  const handleSubmit = (values: IUser) => {
+    showConfirm(values);
   };
 
   const getBase64 = (file: FileType): Promise<string> =>
@@ -280,7 +304,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
           label='Họ và tên'
           name='fullName'
           colon={false}
-          rules={[{ required: true, message: 'Vui lòng nhập họ và tên!' }]}
+          rules={[{ required: true, message: 'Vui lòng nhập họ và tên' }]}
         >
           <Input placeholder='Nhập họ và tên' />
         </Item>
@@ -396,7 +420,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
                         rules={[
                           {
                             required: true,
-                            message: 'Vui lòng chọn thành phố!',
+                            message: 'Vui lòng chọn thành phố',
                           },
                         ]}
                       >
@@ -436,7 +460,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
                         rules={[
                           {
                             required: true,
-                            message: 'Vui lòng chọn quận/huyện!',
+                            message: 'Vui lòng chọn quận/huyện',
                           },
                         ]}
                         dependencies={[['addresses', name, 'city']]}
