@@ -1,5 +1,5 @@
 import { EyeOutlined } from '@ant-design/icons';
-import { Button, TableProps } from 'antd';
+import { Button, Image, TableProps } from 'antd';
 import { IUser } from 'hooks/useUser';
 import { Link } from 'react-router-dom';
 
@@ -8,6 +8,7 @@ export const columns: TableProps<IUser>['columns'] = [
     title: 'ID',
     dataIndex: 'id',
     align: 'center',
+    width: 100,
     render: (text: string) => <span style={{ color: '#1890FF' }}> {text}</span>,
   },
   {
@@ -16,12 +17,12 @@ export const columns: TableProps<IUser>['columns'] = [
     align: 'center',
     render: (avatar: string) =>
       avatar ? (
-        <img
+        <Image
           src={avatar}
           alt='avatar'
           style={{
-            width: 50,
-            height: 50,
+            width: 80,
+            height: 80,
             objectFit: 'cover',
           }}
         />
@@ -41,16 +42,20 @@ export const columns: TableProps<IUser>['columns'] = [
     title: 'Ngày sinh',
     dataIndex: 'birthDate',
     align: 'center',
+    width: 150,
     render: (text: string) => <span>{text}</span>,
   },
   {
     title: 'Giới tính',
     dataIndex: 'gender',
+    width: 150,
     render: (text: string) => <span>{text}</span>,
   },
   {
     title: 'Xem chi tiết',
     align: 'center',
+    fixed: 'right',
+    width: 150,
     render: (record: IUser) =>
       record && record.id ? (
         <Link to={`/users/${record.id}`}>
