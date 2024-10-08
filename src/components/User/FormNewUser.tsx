@@ -1,5 +1,5 @@
 import { CloseOutlined, PlusOutlined } from '@ant-design/icons';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Button,
   DatePicker,
@@ -413,24 +413,21 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
                           allowClear
                           value={selectedCity || undefined}
                           filterSort={(optionA, optionB) =>
-                            (optionA?.name ?? '')
+                            (optionA?.label ?? '')
                               .toLowerCase()
                               .localeCompare(
-                                (optionB?.name ?? '').toLowerCase()
+                                (optionB?.label ?? '').toLowerCase()
                               )
                           }
-                        >
-                          {Array.isArray(cities) &&
-                            cities.length > 0 &&
-                            cities.map((city: IApiAddress) => (
-                              <Option
-                                key={city?.id}
-                                value={`${city?.id}_${city?.name}`}
-                              >
-                                {city?.name ?? city?.name_en}
-                              </Option>
-                            ))}
-                        </Select>
+                          options={
+                            Array.isArray(cities) && cities.length > 0
+                              ? cities.map((city) => ({
+                                  label: city?.name,
+                                  value: `${city?.id}_${city?.name}`,
+                                }))
+                              : []
+                          }
+                        />
                       </Item>
                       <Item
                         {...restField}
@@ -453,25 +450,15 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
                           }}
                           value={selectedDistrict || undefined}
                           allowClear
-                          filterSort={(optionA, optionB) =>
-                            (optionA?.name ?? '')
-                              .toLowerCase()
-                              .localeCompare(
-                                (optionB?.name ?? '').toLowerCase()
-                              )
+                          options={
+                            Array.isArray(districts) && districts.length > 0
+                              ? districts.map((district) => ({
+                                  label: district?.name,
+                                  value: `${district?.id}_${district?.name}`,
+                                }))
+                              : []
                           }
-                        >
-                          {Array.isArray(districts) &&
-                            districts.length > 0 &&
-                            districts.map((district: IApiAddress) => (
-                              <Option
-                                key={district?.id}
-                                value={`${district?.id}_${district?.name}`}
-                              >
-                                {district?.name ?? district?.name_en}
-                              </Option>
-                            ))}
-                        </Select>
+                        />
                       </Item>
                       <Item
                         {...restField}
@@ -494,25 +481,15 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
                           onChange={(value) => setSelectedWard(value)}
                           value={selectedWard || undefined}
                           allowClear
-                          filterSort={(optionA, optionB) =>
-                            (optionA?.name ?? '')
-                              .toLowerCase()
-                              .localeCompare(
-                                (optionB?.name ?? '').toLowerCase()
-                              )
+                          options={
+                            Array.isArray(wards) && wards.length > 0
+                              ? wards.map((ward) => ({
+                                  label: ward?.name,
+                                  value: `${ward?.id}_${ward?.name}`,
+                                }))
+                              : []
                           }
-                        >
-                          {Array.isArray(wards) &&
-                            wards.length > 0 &&
-                            wards.map((ward: IApiAddress) => (
-                              <Option
-                                key={ward?.id}
-                                value={`${ward?.id}_${ward?.name}`}
-                              >
-                                {ward?.name ?? ward?.name_en}
-                              </Option>
-                            ))}
-                        </Select>
+                        />
                       </Item>
                       {fields.length > 1 && (
                         <Button onClick={() => remove(name)} type='link'>
