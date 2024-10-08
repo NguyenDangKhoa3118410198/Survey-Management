@@ -236,13 +236,15 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
                     maxCount={1}
                     onPreview={handlePreview}
                   >
-                    <button
-                      style={{ border: 0, background: 'none' }}
-                      type='button'
-                    >
-                      <PlusOutlined />
-                      <div style={{ marginTop: 8 }}>Upload</div>
-                    </button>
+                    {fileList.length > 0 ? null : (
+                      <button
+                        style={{ border: 0, background: 'none' }}
+                        type='button'
+                      >
+                        <PlusOutlined />
+                        <div style={{ marginTop: 8 }}>Upload</div>
+                      </button>
+                    )}
                   </Upload>
                 </Item>
                 {previewImage && (
@@ -287,13 +289,15 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
                     maxCount={1}
                     onPreview={handlePreview}
                   >
-                    <button
-                      style={{ border: 0, background: 'none' }}
-                      type='button'
-                    >
-                      <PlusOutlined />
-                      <div style={{ marginTop: 8 }}>Upload</div>
-                    </button>
+                    {fileList.length > 0 ? null : (
+                      <button
+                        style={{ border: 0, background: 'none' }}
+                        type='button'
+                      >
+                        <PlusOutlined />
+                        <div style={{ marginTop: 8 }}>Upload</div>
+                      </button>
+                    )}
                   </Upload>
                 </Item>
                 {previewImage && (
