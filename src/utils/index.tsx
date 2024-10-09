@@ -19,14 +19,13 @@ export const generateRandomPassword = (length = 8) => {
 
   const lowerCaseLetters = 'abcdefghijklmnopqrstuvwxyz';
   const upperCaseLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const specialCharacters = '!@#$%^&*()_+[]{}|;:,.<>?';
+  const specialCharacters = '!@#$%^&*';
   const numbers = '0123456789';
 
   const passwordArray = [
     lowerCaseLetters[Math.floor(Math.random() * lowerCaseLetters.length)],
     upperCaseLetters[Math.floor(Math.random() * upperCaseLetters.length)],
     specialCharacters[Math.floor(Math.random() * specialCharacters.length)],
-    numbers[Math.floor(Math.random() * numbers.length)],
   ];
 
   const allCharacters =

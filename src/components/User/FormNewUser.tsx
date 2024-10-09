@@ -16,7 +16,7 @@ import {
 } from 'antd';
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
-import { customizeRequiredMark } from 'utils';
+import { customizeRequiredMark, generateRandomPassword } from 'utils';
 import { fetchCities, fetchDistricts, fetchWards } from './services/fetchAPI';
 import { useNavigate, useParams } from 'react-router-dom';
 import useUser, { IUser } from 'hooks/useUser';
@@ -174,7 +174,9 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
         dayjs(values.birthDate).format('DD/MM/YYYY') ?? null;
 
       const updatedUser = {
+        ...userDetail,
         ...values,
+        phoneNumber: userDetail?.phoneNumber || '',
         avatar: pathImg,
         birthDate: formattedBirthDate,
         originBirthDate: values.birthDate,
@@ -232,6 +234,15 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
 
   const handlePhoneChange = (value: string) => {
     form.setFieldsValue({ phoneNumber: value });
+  };
+
+  const handleCreateRandomPassword = () => {
+    const ramdomPassword = generateRandomPassword();
+
+    form.setFieldsValue({
+      password: ramdomPassword,
+      verifyPassword: ramdomPassword,
+    });
   };
 
   return (
@@ -335,6 +346,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
             >
               <Input.Password placeholder='Nhập mật khẩu' />
             </Item>
+
             <Item
               label='Xác thực mật khẩu'
               name='verifyPassword'
@@ -361,6 +373,11 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
               ]}
             >
               <Input.Password placeholder='Vui lòng xác thực mật khẩu' />
+            </Item>
+            <Item label='' colon={false} wrapperCol={{ span: 24, offset: 0 }}>
+              <Button onClick={handleCreateRandomPassword}>
+                Tạo mật khẩu ngẫu nhiên
+              </Button>
             </Item>
           </>
         )}
