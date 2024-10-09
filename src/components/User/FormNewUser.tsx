@@ -309,45 +309,54 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
         >
           <Input placeholder='Nhập email' disabled={!!userDetail && !!id} />
         </Item>
-        <Item
-          label='Mật khẩu'
-          name='password'
-          colon={false}
-          rules={[
-            { required: true, message: 'Vui lòng nhập mật khẩu' },
-            {
-              pattern: /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
-              message:
-                'Mật khẩu đảm bảo có ít nhất 8 ký tự, ít nhất 1 ký tự chữ và ít nhất 1 ký tự đặc biệt',
-            },
-          ]}
-        >
-          <Input.Password placeholder='Nhập mật khẩu' />
-        </Item>
-        <Item
-          label='Xác thực mật khẩu'
-          name='verifyPassword'
-          colon={false}
-          dependencies={['password']}
-          rules={[
-            { required: true, message: 'Vui lòng xác thực mật khẩu' },
-            {
-              pattern: /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
-              message:
-                'Mật khẩu đảm bảo có ít nhất 8 ký tự, ít nhất 1 ký tự chữ và ít nhất 1 ký tự đặc biệt',
-            },
-            ({ getFieldValue }) => ({
-              validator(_, value) {
-                if (!value || getFieldValue('password') === value) {
-                  return Promise.resolve();
-                }
-                return Promise.reject(new Error('Mật khẩu không trùng khớp'));
-              },
-            }),
-          ]}
-        >
-          <Input.Password placeholder='Vui lòng xác thực mật khẩu' />
-        </Item>
+        {!userDetail && (
+          <>
+            <Item
+              label='Mật khẩu'
+              name='password'
+              colon={false}
+              rules={[
+                { required: true, message: 'Vui lòng nhập mật khẩu' },
+                {
+                  pattern:
+                    /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
+                  message:
+                    'Mật khẩu đảm bảo có ít nhất 8 ký tự, ít nhất 1 ký tự chữ và ít nhất 1 ký tự đặc biệt',
+                },
+              ]}
+            >
+              <Input.Password placeholder='Nhập mật khẩu' />
+            </Item>
+            <Item
+              label='Xác thực mật khẩu'
+              name='verifyPassword'
+              colon={false}
+              dependencies={['password']}
+              rules={[
+                { required: true, message: 'Vui lòng xác thực mật khẩu' },
+                {
+                  pattern:
+                    /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
+                  message:
+                    'Mật khẩu đảm bảo có ít nhất 8 ký tự, ít nhất 1 ký tự chữ và ít nhất 1 ký tự đặc biệt',
+                },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue('password') === value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(
+                      new Error('Mật khẩu không trùng khớp')
+                    );
+                  },
+                }),
+              ]}
+            >
+              <Input.Password placeholder='Vui lòng xác thực mật khẩu' />
+            </Item>
+          </>
+        )}
+
         <Item label='Giới tính' colon={false} name='gender'>
           <Radio.Group>
             <Radio value='Nam'>Nam</Radio>
