@@ -213,6 +213,7 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
                         name,
                         'questionType',
                       ]);
+                      form.setFieldValue('totalContent', fields.length);
                       return (
                         <QuestionFormItem
                           key={key}
