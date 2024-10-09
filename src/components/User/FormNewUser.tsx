@@ -1,11 +1,10 @@
-import { CloseOutlined, PlusOutlined } from '@ant-design/icons';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { CloseOutlined } from '@ant-design/icons';
+import { useQuery } from '@tanstack/react-query';
 import {
   Button,
   DatePicker,
   Flex,
   Form,
-  GetProp,
   Image,
   Input,
   message,
@@ -13,9 +12,7 @@ import {
   Radio,
   Select,
   Typography,
-  Upload,
   UploadFile,
-  UploadProps,
 } from 'antd';
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
@@ -23,13 +20,12 @@ import { customizeRequiredMark } from 'utils';
 import { fetchCities, fetchDistricts, fetchWards } from './services/fetchAPI';
 import { useNavigate, useParams } from 'react-router-dom';
 import useUser, { IUser } from 'hooks/useUser';
-import ImgCrop from 'antd-img-crop';
+import UploadImage from 'components/common/UploadImage';
 
 interface FormNewUserProps {
   userDetail?: IUser;
 }
 
-const { Option } = Select;
 const { Item, List } = Form;
 
 const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
@@ -40,9 +36,6 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
   const { id } = useParams();
   const [isUpload, setIsUpload] = useState(false);
   const [deletedAvatar, setDeletedAvatar] = useState(false);
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState('');
-  type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
   const [selectedCity, setSelectedCity] = useState<string[]>([]);
   const [selectedDistrict, setSelectedDistrict] = useState<string[]>([]);
   const [selectedWard, setSelectedWard] = useState<string[]>([]);
@@ -160,10 +153,6 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
     }
   }, [userDetail, form]);
 
-  const handleChange: UploadProps['onChange'] = (info) => {
-    setFileList(info.fileList);
-  };
-
   const submitForm = (values: IUser) => {
     try {
       let pathImg = null;
@@ -217,23 +206,6 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
     showConfirm(values);
   };
 
-  const getBase64 = (file: FileType): Promise<string> =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (error) => reject(error);
-    });
-
-  const handlePreview = async (file: UploadFile) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj as FileType);
-    }
-
-    setPreviewImage(file.url || (file.preview as string));
-    setPreviewOpen(true);
-  };
-
   const handleRemoveAddress = (remove: any, name: number) => {
     remove(name);
 
@@ -248,6 +220,10 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
     const updatedWards = [...selectedWard];
     updatedWards.splice(name, 1);
     setSelectedWard(updatedWards);
+  };
+
+  const handleFileListChange = (newFileList: UploadFile[]) => {
+    setFileList(newFileList);
   };
 
   return (
@@ -274,39 +250,11 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
             {isUpload ? (
               <>
                 <Item name='avatar' noStyle>
-                  <ImgCrop rotationSlider>
-                    <Upload
-                      action='https://api-dev.estuary.solutions:8443/fico-salex-mediafile-dev/files/upload'
-                      listType='picture-card'
-                      fileList={fileList}
-                      onChange={handleChange}
-                      maxCount={1}
-                      onPreview={handlePreview}
-                    >
-                      {fileList.length > 0 ? null : (
-                        <button
-                          style={{ border: 0, background: 'none' }}
-                          type='button'
-                        >
-                          <PlusOutlined />
-                          <div style={{ marginTop: 8 }}>Upload</div>
-                        </button>
-                      )}
-                    </Upload>
-                  </ImgCrop>
-                </Item>
-                {previewImage && (
-                  <Image
-                    wrapperStyle={{ display: 'none' }}
-                    preview={{
-                      visible: previewOpen,
-                      onVisibleChange: (visible) => setPreviewOpen(visible),
-                      afterOpenChange: (visible) =>
-                        !visible && setPreviewImage(''),
-                    }}
-                    src={previewImage}
+                  <UploadImage
+                    fileList={fileList}
+                    onChange={handleFileListChange}
                   />
-                )}
+                </Item>
               </>
             ) : userDetail?.avatar ? (
               <>
@@ -329,39 +277,11 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
             ) : (
               <>
                 <Item name='avatar' noStyle>
-                  <ImgCrop rotationSlider>
-                    <Upload
-                      action='https://api-dev.estuary.solutions:8443/fico-salex-mediafile-dev/files/upload'
-                      listType='picture-card'
-                      fileList={fileList}
-                      onChange={handleChange}
-                      maxCount={1}
-                      onPreview={handlePreview}
-                    >
-                      {fileList.length > 0 ? null : (
-                        <button
-                          style={{ border: 0, background: 'none' }}
-                          type='button'
-                        >
-                          <PlusOutlined />
-                          <div style={{ marginTop: 8 }}>Upload</div>
-                        </button>
-                      )}
-                    </Upload>
-                  </ImgCrop>
-                </Item>
-                {previewImage && (
-                  <Image
-                    wrapperStyle={{ display: 'none' }}
-                    preview={{
-                      visible: previewOpen,
-                      onVisibleChange: (visible) => setPreviewOpen(visible),
-                      afterOpenChange: (visible) =>
-                        !visible && setPreviewImage(''),
-                    }}
-                    src={previewImage}
+                  <UploadImage
+                    fileList={fileList}
+                    onChange={handleFileListChange}
                   />
-                )}
+                </Item>
               </>
             )}
           </div>
