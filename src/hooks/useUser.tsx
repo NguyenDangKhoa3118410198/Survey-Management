@@ -13,6 +13,7 @@ export interface IUser {
   addresses?: IAddress[];
   originBirthDate?: string;
   idsAddress: any[];
+  phoneNumber?: string;
 }
 
 export interface IAddress {

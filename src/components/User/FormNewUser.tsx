@@ -21,6 +21,8 @@ import { fetchCities, fetchDistricts, fetchWards } from './services/fetchAPI';
 import { useNavigate, useParams } from 'react-router-dom';
 import useUser, { IUser } from 'hooks/useUser';
 import UploadImage from 'components/common/UploadImage';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 
 interface FormNewUserProps {
   userDetail?: IUser;
@@ -129,6 +131,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
         addresses,
         avatar,
         idsAddress,
+        phoneNumber,
         ...restUserDetail
       } = userDetail;
 
@@ -149,6 +152,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
         addresses: addresses || [{}],
         gender: restUserDetail.gender || 'Nam',
         birthDate: dayjs(originBirthDate) ?? null,
+        phoneNumber: phoneNumber ? phoneNumber : '',
       });
     }
   }, [userDetail, form]);
@@ -224,6 +228,10 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
 
   const handleFileListChange = (newFileList: UploadFile[]) => {
     setFileList(newFileList);
+  };
+
+  const handlePhoneChange = (value: string) => {
+    form.setFieldsValue({ phoneNumber: value });
   };
 
   return (
@@ -370,12 +378,17 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
           colon={false}
           rules={[
             {
-              pattern: /^0[1-9]\d{8}$/,
-              message: 'Số điện thoại nên bắt đầu với 0 và bao gồm 10 số',
+              pattern: /^\+?\d{10,15}$/,
+              message: 'Số điện thoại không hợp lệ',
             },
           ]}
         >
-          <Input placeholder='Nhập số điện thoại' />
+          <PhoneInput
+            country='vn'
+            value={form.getFieldValue('phoneNumber')}
+            onChange={handlePhoneChange}
+            placeholder='Nhập số điện thoại'
+          />
         </Item>
         <Item
           label='Ngày sinh'
