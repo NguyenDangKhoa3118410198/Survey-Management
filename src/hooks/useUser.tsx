@@ -12,6 +12,7 @@ export interface IUser {
   verifyPassword?: string;
   addresses?: IAddress[];
   originBirthDate?: string;
+  idsAddress: any[];
 }
 
 export interface IAddress {

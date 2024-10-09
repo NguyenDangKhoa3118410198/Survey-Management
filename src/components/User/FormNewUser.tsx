@@ -22,17 +22,7 @@ import React, { useEffect, useState } from 'react';
 import { customizeRequiredMark } from 'utils';
 import { fetchCities, fetchDistricts, fetchWards } from './services/fetchAPI';
 import { useNavigate, useParams } from 'react-router-dom';
-import useUser, { IAddress, IUser } from 'hooks/useUser';
-
-interface IApiAddress {
-  id?: string;
-  name?: string;
-  name_en?: string;
-  full_name?: string;
-  full_name_en?: string;
-  latitude?: string;
-  longitude?: string;
-}
+import useUser, { IUser } from 'hooks/useUser';
 
 interface FormNewUserProps {
   userDetail?: IUser;
@@ -43,11 +33,6 @@ const { Item, List } = Form;
 
 const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const [selectedCity, setSelectedCity] = useState<string | undefined>();
-  const [selectedDistrict, setSelectedDistrict] = useState<
-    string | undefined
-  >();
-  const [selectedWard, setSelectedWard] = useState<string | undefined>();
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const { userList, addNewUser, editUser } = useUser();
@@ -57,23 +42,79 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
+  const [selectedCity, setSelectedCity] = useState<string[]>([]);
+  const [selectedDistrict, setSelectedDistrict] = useState<string[]>([]);
+  const [selectedWard, setSelectedWard] = useState<string[]>([]);
 
   const { data: cities } = useQuery({
     queryKey: ['cityVN'],
     queryFn: fetchCities,
   });
 
+  const fetchDistrictsByCityId = (cityId: string) => {
+    return cityId?.length ? fetchDistricts(cityId) : [];
+  };
+
+  const fetchWardsByDistrictId = (districtId: string) => {
+    return districtId?.length ? fetchWards(districtId) : [];
+  };
+
   const { data: districts } = useQuery({
     queryKey: ['districtVN', selectedCity],
-    queryFn: () => (selectedCity ? fetchDistricts(selectedCity) : []),
-    enabled: !!selectedCity,
+    queryFn: () => {
+      return Promise.all(
+        selectedCity.map((cityId) => fetchDistrictsByCityId(cityId))
+      );
+    },
+    enabled: selectedCity.length > 0,
   });
 
   const { data: wards } = useQuery({
     queryKey: ['wardVN', selectedDistrict],
-    queryFn: () => (selectedDistrict ? fetchWards(selectedDistrict) : []),
-    enabled: !!selectedDistrict,
+    queryFn: () => {
+      return Promise.all(
+        selectedDistrict.map((districtId) => fetchWardsByDistrictId(districtId))
+      );
+    },
+    enabled: selectedDistrict.length > 0,
   });
+
+  const handleCityChange = (value: string, index: number) => {
+    const updatedCities = [...selectedCity];
+    updatedCities[index] = value;
+    setSelectedCity(updatedCities);
+
+    const updatedDistricts = [...selectedDistrict];
+    updatedDistricts[index] = '';
+    setSelectedDistrict(updatedDistricts);
+
+    const updatedWards = [...selectedWard];
+    updatedWards[index] = '';
+    setSelectedWard(updatedWards);
+
+    form.resetFields([
+      ['addresses', index, 'district'],
+      ['addresses', index, 'ward'],
+    ]);
+  };
+
+  const handleDistrictChange = (value: string, index: number) => {
+    const updatedDistricts = [...selectedDistrict];
+    updatedDistricts[index] = value;
+    setSelectedDistrict(updatedDistricts);
+
+    const updatedWards = [...selectedWard];
+    updatedWards[index] = '';
+    setSelectedWard(updatedWards);
+
+    form.resetFields([['addresses', index, 'ward']]);
+  };
+
+  const handleWardChange = (value: string, index: number) => {
+    const updatedWards = [...selectedWard];
+    updatedWards[index] = value;
+    setSelectedWard(updatedWards);
+  };
 
   const showConfirm = (values: IUser) => {
     Modal.confirm({
@@ -81,7 +122,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
       content: 'Bạn có chắc chắn muốn lưu thông tin này?',
       onOk: () => submitForm(values),
       onCancel() {
-        console.log('Canceled');
+        return;
       },
     });
   };
@@ -93,23 +134,25 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
         originBirthDate,
         addresses,
         avatar,
+        idsAddress,
         ...restUserDetail
       } = userDetail;
-      const processedAddresses = addresses?.map((address) => ({
-        city: address?.city?.includes('_')
-          ? address.city.split('_')[1]
-          : address.city,
-        district: address?.district?.includes('_')
-          ? address.district.split('_')[1]
-          : address.district,
-        ward: address?.ward?.includes('_')
-          ? address.ward.split('_')[1]
-          : address.ward,
-      }));
+
+      if (idsAddress) {
+        idsAddress.forEach((element, index) => {
+          if (index === 0) {
+            setSelectedCity([...selectedCity, ...element]);
+          } else if (index === 1) {
+            setSelectedDistrict([...selectedDistrict, ...element]);
+          } else if (index === 2) {
+            setSelectedWard([...selectedWard, ...element]);
+          }
+        });
+      }
 
       form.setFieldsValue({
         ...restUserDetail,
-        addresses: processedAddresses || [{}],
+        addresses: addresses || [{}],
         gender: restUserDetail.gender || 'Nam',
         birthDate: dayjs(originBirthDate) ?? null,
       });
@@ -139,6 +182,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
         avatar: pathImg,
         birthDate: formattedBirthDate,
         originBirthDate: values.birthDate,
+        idsAddress: [selectedCity, selectedDistrict, selectedWard],
       };
 
       if (userDetail?.id) {
@@ -185,6 +229,22 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
 
     setPreviewImage(file.url || (file.preview as string));
     setPreviewOpen(true);
+  };
+
+  const handleRemoveAddress = (remove: any, name: number) => {
+    remove(name);
+
+    const updatedCities = [...selectedCity];
+    updatedCities.splice(name, 1);
+    setSelectedCity(updatedCities);
+
+    const updatedDistricts = [...selectedDistrict];
+    updatedDistricts.splice(name, 1);
+    setSelectedDistrict(updatedDistricts);
+
+    const updatedWards = [...selectedWard];
+    updatedWards.splice(name, 1);
+    setSelectedWard(updatedWards);
   };
 
   return (
@@ -427,15 +487,10 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
                         <Select
                           showSearch
                           placeholder='Chọn thành phố'
-                          onChange={(value) => {
-                            setSelectedCity(value);
-                            form.resetFields([
-                              ['addresses', name, 'district'],
-                              ['addresses', name, 'ward'],
-                            ]);
-                          }}
+                          onChange={(value) => handleCityChange(value, index)}
                           allowClear
-                          value={selectedCity || undefined}
+                          value={selectedCity[index] || undefined}
+                          optionFilterProp='label'
                           filterSort={(optionA, optionB) =>
                             (optionA?.label ?? '')
                               .toLowerCase()
@@ -447,7 +502,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
                             Array.isArray(cities) && cities.length > 0
                               ? cities.map((city) => ({
                                   label: city?.name,
-                                  value: `${city?.id}_${city?.name}`,
+                                  value: city?.id,
                                 }))
                               : []
                           }
@@ -468,17 +523,17 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
                         <Select
                           showSearch
                           placeholder='Chọn quận/huyện'
-                          onChange={(value) => {
-                            setSelectedDistrict(value);
-                            form.resetFields([['addresses', name, 'ward']]);
-                          }}
-                          value={selectedDistrict || undefined}
+                          onChange={(value) =>
+                            handleDistrictChange(value, index)
+                          }
                           allowClear
+                          optionFilterProp='label'
+                          value={selectedDistrict[index] || undefined}
                           options={
-                            Array.isArray(districts) && districts.length > 0
-                              ? districts.map((district) => ({
+                            Array.isArray(districts) && districts[index]
+                              ? districts[index].map((district: any) => ({
                                   label: district?.name,
-                                  value: `${district?.id}_${district?.name}`,
+                                  value: district?.id,
                                 }))
                               : []
                           }
@@ -502,21 +557,25 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
                         <Select
                           showSearch
                           placeholder='Chọn phường/xã'
-                          onChange={(value) => setSelectedWard(value)}
-                          value={selectedWard || undefined}
+                          onChange={(value) => handleWardChange(value, index)}
                           allowClear
+                          value={selectedWard[index] || undefined}
+                          optionFilterProp='label'
                           options={
-                            Array.isArray(wards) && wards.length > 0
-                              ? wards.map((ward) => ({
+                            Array.isArray(wards) && wards[index]
+                              ? wards[index]?.map((ward: any) => ({
                                   label: ward?.name,
-                                  value: `${ward?.id}_${ward?.name}`,
+                                  value: ward?.id,
                                 }))
                               : []
                           }
                         />
                       </Item>
                       {fields.length > 1 && (
-                        <Button onClick={() => remove(name)} type='link'>
+                        <Button
+                          onClick={() => handleRemoveAddress(remove, name)}
+                          type='link'
+                        >
                           <CloseOutlined style={{ color: 'red' }} />
                         </Button>
                       )}
