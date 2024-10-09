@@ -23,6 +23,7 @@ import { customizeRequiredMark } from 'utils';
 import { fetchCities, fetchDistricts, fetchWards } from './services/fetchAPI';
 import { useNavigate, useParams } from 'react-router-dom';
 import useUser, { IUser } from 'hooks/useUser';
+import ImgCrop from 'antd-img-crop';
 
 interface FormNewUserProps {
   userDetail?: IUser;
@@ -165,13 +166,15 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
 
   const submitForm = (values: IUser) => {
     try {
-      let pathImg;
+      let pathImg = null;
+      if (fileList.length > 0 && fileList[0].response) {
+        pathImg = fileList[0].response.physicalPath ?? null;
+      }
 
-      if (deletedAvatar && !values?.avatar?.file?.response?.physicalPath) {
+      if (deletedAvatar && !pathImg) {
         pathImg = null;
       } else {
-        pathImg =
-          values?.avatar?.file?.response?.physicalPath ?? userDetail?.avatar;
+        pathImg = pathImg ?? userDetail?.avatar;
       }
 
       const formattedBirthDate =
@@ -271,24 +274,26 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
             {isUpload ? (
               <>
                 <Item name='avatar' noStyle>
-                  <Upload
-                    action='https://api-dev.estuary.solutions:8443/fico-salex-mediafile-dev/files/upload'
-                    listType='picture-card'
-                    fileList={fileList}
-                    onChange={handleChange}
-                    maxCount={1}
-                    onPreview={handlePreview}
-                  >
-                    {fileList.length > 0 ? null : (
-                      <button
-                        style={{ border: 0, background: 'none' }}
-                        type='button'
-                      >
-                        <PlusOutlined />
-                        <div style={{ marginTop: 8 }}>Upload</div>
-                      </button>
-                    )}
-                  </Upload>
+                  <ImgCrop rotationSlider>
+                    <Upload
+                      action='https://api-dev.estuary.solutions:8443/fico-salex-mediafile-dev/files/upload'
+                      listType='picture-card'
+                      fileList={fileList}
+                      onChange={handleChange}
+                      maxCount={1}
+                      onPreview={handlePreview}
+                    >
+                      {fileList.length > 0 ? null : (
+                        <button
+                          style={{ border: 0, background: 'none' }}
+                          type='button'
+                        >
+                          <PlusOutlined />
+                          <div style={{ marginTop: 8 }}>Upload</div>
+                        </button>
+                      )}
+                    </Upload>
+                  </ImgCrop>
                 </Item>
                 {previewImage && (
                   <Image
@@ -324,24 +329,26 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
             ) : (
               <>
                 <Item name='avatar' noStyle>
-                  <Upload
-                    action='https://api-dev.estuary.solutions:8443/fico-salex-mediafile-dev/files/upload'
-                    listType='picture-card'
-                    fileList={fileList}
-                    onChange={handleChange}
-                    maxCount={1}
-                    onPreview={handlePreview}
-                  >
-                    {fileList.length > 0 ? null : (
-                      <button
-                        style={{ border: 0, background: 'none' }}
-                        type='button'
-                      >
-                        <PlusOutlined />
-                        <div style={{ marginTop: 8 }}>Upload</div>
-                      </button>
-                    )}
-                  </Upload>
+                  <ImgCrop rotationSlider>
+                    <Upload
+                      action='https://api-dev.estuary.solutions:8443/fico-salex-mediafile-dev/files/upload'
+                      listType='picture-card'
+                      fileList={fileList}
+                      onChange={handleChange}
+                      maxCount={1}
+                      onPreview={handlePreview}
+                    >
+                      {fileList.length > 0 ? null : (
+                        <button
+                          style={{ border: 0, background: 'none' }}
+                          type='button'
+                        >
+                          <PlusOutlined />
+                          <div style={{ marginTop: 8 }}>Upload</div>
+                        </button>
+                      )}
+                    </Upload>
+                  </ImgCrop>
                 </Item>
                 {previewImage && (
                   <Image
