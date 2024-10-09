@@ -85,8 +85,8 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
       form.setFieldsValue({
         ...restUserDetail,
 
-        startDate: originalStartDate,
-        endDate: originalEndDate ?? null,
+        startDate: dayjs(originalStartDate),
+        endDate: originalEndDate ? dayjs(originalEndDate) : null,
         questions: questions?.map((question) => ({
           ...question,
           extraOptions: question.extraOptions || [
