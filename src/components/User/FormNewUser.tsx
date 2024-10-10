@@ -470,14 +470,18 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
                       <Item
                         {...restField}
                         name={[name, 'addressNumber']}
-                        style={{ flex: 1, marginRight: '8px' }}
+                        style={{ flex: 1 }}
                       >
-                        <Input placeholder='Nhập địa chỉ' allowClear />
+                        <Input
+                          className='radius'
+                          placeholder='Nhập địa chỉ'
+                          allowClear
+                        />
                       </Item>
                       <Item
                         {...restField}
                         name={[name, 'city']}
-                        style={{ flex: 1, marginRight: '8px' }}
+                        style={{ flex: 1 }}
                         rules={[
                           {
                             required: true,
@@ -511,7 +515,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
                       <Item
                         {...restField}
                         name={[name, 'district']}
-                        style={{ flex: 1, marginRight: '8px' }}
+                        style={{ flex: 1 }}
                         rules={[
                           {
                             required: true,
