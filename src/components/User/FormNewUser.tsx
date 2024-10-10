@@ -469,6 +469,13 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
                     >
                       <Item
                         {...restField}
+                        name={[name, 'addressNumber']}
+                        style={{ flex: 1, marginRight: '8px' }}
+                      >
+                        <Input placeholder='Nhập địa chỉ' allowClear />
+                      </Item>
+                      <Item
+                        {...restField}
                         name={[name, 'city']}
                         style={{ flex: 1, marginRight: '8px' }}
                         rules={[
@@ -483,7 +490,6 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
                           placeholder='Chọn thành phố'
                           onChange={(value) => handleCityChange(value, index)}
                           allowClear
-                          value={selectedCity[index] || undefined}
                           optionFilterProp='label'
                           filterSort={(optionA, optionB) =>
                             (optionA?.label ?? '')
@@ -523,7 +529,6 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
                           disabled={!userDetail && !selectedCity[index]}
                           allowClear
                           optionFilterProp='label'
-                          value={selectedDistrict[index] || undefined}
                           options={
                             Array.isArray(districts) && districts[index]
                               ? districts[index].map((district: any) => ({
@@ -554,7 +559,6 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
                           placeholder='Chọn phường/xã'
                           onChange={(value) => handleWardChange(value, index)}
                           allowClear
-                          value={selectedWard[index] || undefined}
                           disabled={!userDetail && !selectedDistrict[index]}
                           optionFilterProp='label'
                           options={
