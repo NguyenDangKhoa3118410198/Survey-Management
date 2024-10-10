@@ -253,6 +253,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
   const handleResetImage = () => {
     setIsUpload(true);
     setDeletedAvatar(true);
+    setIsFormModified(true);
   };
 
   return (
