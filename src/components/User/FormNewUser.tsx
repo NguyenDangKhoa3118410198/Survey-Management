@@ -42,6 +42,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
   const [selectedDistrict, setSelectedDistrict] = useState<string[]>([]);
   const [selectedWard, setSelectedWard] = useState<string[]>([]);
   const [isFormModified, setIsFormModified] = useState<boolean>(false);
+  const [isDisabledEmail, setIsDisabledEmail] = useState<boolean>(false);
 
   const { data: cities } = useQuery({
     queryKey: ['cityVN'],
@@ -359,7 +360,10 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
             },
           ]}
         >
-          <Input placeholder='Nhập email' disabled={!!userDetail && !!id} />
+          <Input
+            placeholder='Nhập email'
+            disabled={!!userDetail && !!id && !isDisabledEmail}
+          />
         </Item>
         {!userDetail && (
           <>
@@ -613,6 +617,22 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
             width: '100%',
           }}
         >
+          <Button
+            htmlType='button'
+            style={{
+              marginRight: '10px',
+              border: '1px solid var(--main-color)',
+            }}
+            onClick={() => {
+              form.resetFields();
+              setFileList([]);
+              setIsUpload(true);
+              setDeletedAvatar(true);
+              setIsDisabledEmail(true);
+            }}
+          >
+            Reset
+          </Button>
           <Button
             htmlType='button'
             style={{ marginRight: '10px' }}
