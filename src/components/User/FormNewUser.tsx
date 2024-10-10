@@ -45,6 +45,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
   const [selectedWard, setSelectedWard] = useState<string[]>([]);
   const [isFormModified, setIsFormModified] = useState<boolean>(false);
   const [isDisabledEmail, setIsDisabledEmail] = useState<boolean>(false);
+  const [isResetPassword, setIsResetPassword] = useState<boolean>(false);
 
   const { data: cities } = useQuery({
     queryKey: ['cityVN'],
@@ -239,7 +240,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
 
   const handleCreateRandomPassword = () => {
     const ramdomPassword = generateRandomPassword();
-
+    setIsFormModified(true);
     form.setFieldsValue({
       password: ramdomPassword,
       verifyPassword: ramdomPassword,
@@ -332,7 +333,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
             disabled={!!userDetail && !!id && !isDisabledEmail}
           />
         </Item>
-        {!userDetail && (
+        {(!userDetail || (userDetail && isResetPassword)) && (
           <>
             <Item
               label='Mật khẩu'
@@ -480,6 +481,18 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
             width: '100%',
           }}
         >
+          {userDetail && (
+            <Button
+              htmlType='button'
+              style={{
+                marginRight: '10px',
+                border: '1px solid var(--main-color)',
+              }}
+              onClick={() => setIsResetPassword(true)}
+            >
+              Reset Password
+            </Button>
+          )}
           <Button
             htmlType='button'
             style={{
