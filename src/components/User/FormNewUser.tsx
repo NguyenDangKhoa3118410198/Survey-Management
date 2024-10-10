@@ -23,6 +23,7 @@ import useUser, { IUser } from 'hooks/useUser';
 import UploadImage from 'components/common/UploadImage';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
+import CImage from 'components/common/CImage';
 
 interface FormNewUserProps {
   userDetail?: IUser;
@@ -31,13 +32,13 @@ interface FormNewUserProps {
 const { Item, List } = Form;
 
 const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const { id } = useParams();
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const { userList, addNewUser, editUser } = useUser();
-  const { id } = useParams();
-  const [isUpload, setIsUpload] = useState(false);
-  const [deletedAvatar, setDeletedAvatar] = useState(false);
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [isUpload, setIsUpload] = useState<boolean>(false);
+  const [deletedAvatar, setDeletedAvatar] = useState<boolean>(false);
   const [selectedCity, setSelectedCity] = useState<string[]>([]);
   const [selectedDistrict, setSelectedDistrict] = useState<string[]>([]);
   const [selectedWard, setSelectedWard] = useState<string[]>([]);
@@ -250,6 +251,11 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
     setIsFormModified(true);
   };
 
+  const handleResetImage = () => {
+    setIsUpload(true);
+    setDeletedAvatar(true);
+  };
+
   return (
     <>
       <Form
@@ -264,7 +270,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
         }}
         onValuesChange={handleValuesChange}
       >
-        {id && (
+        {userDetail?.id && (
           <Item label='ID' colon={false}>
             <Typography.Text>{userDetail?.id}</Typography.Text>
           </Item>
@@ -283,49 +289,10 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
               </>
             ) : userDetail?.avatar ? (
               <>
-                <div
-                  style={{
-                    width: '102px',
-                    border: '1px solid #d9d9d9',
-                    borderRadius: '8px',
-                    padding: '8px',
-                    display: 'grid',
-                    placeItems: 'center',
-                  }}
-                >
-                  <Image
-                    src={userDetail?.avatar}
-                    style={{
-                      width: '84px',
-                      height: '84px',
-                      objectFit: 'cover',
-                      display: 'block',
-                      margin: '0 auto',
-                    }}
-                  />
-                </div>
-                <Button
-                  type='text'
-                  icon={
-                    <DeleteOutlined
-                      style={{
-                        color: 'red',
-                        fontSize: 20,
-                      }}
-                    />
-                  }
-                  onClick={() => {
-                    setIsUpload(true);
-                    setDeletedAvatar(true);
-                  }}
-                  style={{
-                    marginTop: '4px',
-                    display: 'flex',
-                    width: '102px',
-                  }}
-                >
-                  Xóa ảnh
-                </Button>
+                <CImage
+                  userDetail={userDetail}
+                  handleResetImage={handleResetImage}
+                />
               </>
             ) : (
               <>
@@ -626,8 +593,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
             onClick={() => {
               form.resetFields();
               setFileList([]);
-              setIsUpload(true);
-              setDeletedAvatar(true);
+              handleResetImage();
               setIsDisabledEmail(true);
             }}
           >
