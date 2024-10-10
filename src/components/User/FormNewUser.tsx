@@ -24,6 +24,7 @@ import UploadImage from 'components/common/UploadImage';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import CImage from 'components/common/CImage';
+import AddressFormItem from './AddressFormItem';
 
 interface FormNewUserProps {
   userDetail?: IUser;
@@ -78,18 +79,21 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
     enabled: selectedDistrict.length > 0,
   });
 
+  const updateAddressAtIndex = (
+    setter: React.Dispatch<React.SetStateAction<string[]>>,
+    array: string[],
+    index: number,
+    value: string
+  ) => {
+    const updatedArray = [...array];
+    updatedArray[index] = value;
+    setter(updatedArray);
+  };
+
   const handleCityChange = (value: string, index: number) => {
-    const updatedCities = [...selectedCity];
-    updatedCities[index] = value;
-    setSelectedCity(updatedCities);
-
-    const updatedDistricts = [...selectedDistrict];
-    updatedDistricts[index] = '';
-    setSelectedDistrict(updatedDistricts);
-
-    const updatedWards = [...selectedWard];
-    updatedWards[index] = '';
-    setSelectedWard(updatedWards);
+    updateAddressAtIndex(setSelectedCity, selectedCity, index, value);
+    updateAddressAtIndex(setSelectedDistrict, selectedDistrict, index, '');
+    updateAddressAtIndex(setSelectedWard, selectedWard, index, '');
 
     form.resetFields([
       ['addresses', index, 'district'],
@@ -98,21 +102,14 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
   };
 
   const handleDistrictChange = (value: string, index: number) => {
-    const updatedDistricts = [...selectedDistrict];
-    updatedDistricts[index] = value;
-    setSelectedDistrict(updatedDistricts);
-
-    const updatedWards = [...selectedWard];
-    updatedWards[index] = '';
-    setSelectedWard(updatedWards);
+    updateAddressAtIndex(setSelectedDistrict, selectedDistrict, index, value);
+    updateAddressAtIndex(setSelectedWard, selectedWard, index, ''); // Reset ward
 
     form.resetFields([['addresses', index, 'ward']]);
   };
 
   const handleWardChange = (value: string, index: number) => {
-    const updatedWards = [...selectedWard];
-    updatedWards[index] = value;
-    setSelectedWard(updatedWards);
+    updateAddressAtIndex(setSelectedWard, selectedWard, index, value);
   };
 
   const showConfirm = (values: IUser) => {
@@ -193,6 +190,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
           ...updatedUser,
           id: userList.length + 1,
         };
+
         const isEmailValid = userList.find(
           (user) => user.email === newUser.email
         );
@@ -201,6 +199,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
           message.warning('Email đã tồn tại');
           return;
         }
+
         addNewUser(newUser);
         navigate('/users');
         message.success('Tạo mới thành công');
@@ -435,132 +434,28 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
                   <span style={{ color: 'red' }}> *</span>
                 </Typography.Text>
                 <Flex vertical style={{ width: '100%' }}>
-                  {fields.map(({ key, name, ...restField }, index) => (
-                    <div
-                      key={key}
-                      style={{
-                        display: 'flex',
-                        gap: '20px',
-                      }}
-                    >
-                      <Item
-                        {...restField}
-                        name={[name, 'addressNumber']}
-                        style={{ flex: 1 }}
-                      >
-                        <Input
-                          className='radius'
-                          placeholder='Nhập địa chỉ'
-                          allowClear
-                        />
-                      </Item>
-                      <Item
-                        {...restField}
-                        name={[name, 'city']}
-                        style={{ flex: 1 }}
-                        rules={[
-                          {
-                            required: true,
-                            message: 'Vui lòng chọn thành phố',
-                          },
-                        ]}
-                      >
-                        <Select
-                          showSearch
-                          placeholder='Chọn thành phố'
-                          onChange={(value) => handleCityChange(value, index)}
-                          allowClear
-                          optionFilterProp='label'
-                          filterSort={(optionA, optionB) =>
-                            (optionA?.label ?? '')
-                              .toLowerCase()
-                              .localeCompare(
-                                (optionB?.label ?? '').toLowerCase()
-                              )
-                          }
-                          options={
-                            Array.isArray(cities) && cities.length > 0
-                              ? cities.map((city) => ({
-                                  label: city?.name,
-                                  value: city?.id,
-                                }))
-                              : []
-                          }
-                        />
-                      </Item>
-                      <Item
-                        {...restField}
-                        name={[name, 'district']}
-                        style={{ flex: 1 }}
-                        rules={[
-                          {
-                            required: true,
-                            message: 'Vui lòng chọn quận/huyện',
-                          },
-                        ]}
-                        dependencies={[['addresses', name, 'city']]}
-                      >
-                        <Select
-                          showSearch
-                          placeholder='Chọn quận/huyện'
-                          onChange={(value) =>
-                            handleDistrictChange(value, index)
-                          }
-                          disabled={!userDetail && !selectedCity[index]}
-                          allowClear
-                          optionFilterProp='label'
-                          options={
-                            Array.isArray(districts) && districts[index]
-                              ? districts[index].map((district: any) => ({
-                                  label: district?.name,
-                                  value: district?.id,
-                                }))
-                              : []
-                          }
-                        />
-                      </Item>
-                      <Item
-                        {...restField}
-                        name={[name, 'ward']}
-                        style={{ flex: 1 }}
-                        rules={[
-                          {
-                            required: true,
-                            message: 'Vui lòng chọn phường/xã!',
-                          },
-                        ]}
-                        dependencies={[
-                          ['addresses', name, 'city'],
-                          ['addresses', name, 'district'],
-                        ]}
-                      >
-                        <Select
-                          showSearch
-                          placeholder='Chọn phường/xã'
-                          onChange={(value) => handleWardChange(value, index)}
-                          allowClear
-                          disabled={!userDetail && !selectedDistrict[index]}
-                          optionFilterProp='label'
-                          options={
-                            Array.isArray(wards) && wards[index]
-                              ? wards[index]?.map((ward: any) => ({
-                                  label: ward?.name,
-                                  value: ward?.id,
-                                }))
-                              : []
-                          }
-                        />
-                      </Item>
-                      {fields.length > 1 && (
-                        <Button
-                          onClick={() => handleRemoveAddress(remove, name)}
-                          type='link'
-                        >
-                          <CloseOutlined style={{ color: 'red' }} />
-                        </Button>
-                      )}
-                    </div>
-                  ))}
+                  {fields.map(({ key, name, ...restField }, index) => {
+                    return (
+                      <AddressFormItem
+                        itemKey={name}
+                        restField={restField}
+                        name={name}
+                        index={index}
+                        cities={cities ?? []}
+                        districts={districts ?? []}
+                        wards={wards ?? []}
+                        selectedCity={selectedCity ?? []}
+                        selectedDistrict={selectedDistrict ?? []}
+                        handleCityChange={handleCityChange}
+                        handleDistrictChange={handleDistrictChange}
+                        handleWardChange={handleWardChange}
+                        handleRemoveAddress={handleRemoveAddress}
+                        userDetail={userDetail}
+                        remove={remove}
+                        fields={fields}
+                      />
+                    );
+                  })}
                   <Item>
                     <Button
                       type='dashed'
