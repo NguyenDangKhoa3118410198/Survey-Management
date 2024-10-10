@@ -1,4 +1,4 @@
-import { CloseOutlined } from '@ant-design/icons';
+import { CloseOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useQuery } from '@tanstack/react-query';
 import {
   Button,
@@ -277,21 +277,49 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
               </>
             ) : userDetail?.avatar ? (
               <>
-                <Image
-                  src={userDetail?.avatar}
+                <div
                   style={{
-                    width: '100px',
-                    height: '100px',
-                    objectFit: 'cover',
+                    width: '102px',
+                    border: '1px solid #d9d9d9',
+                    borderRadius: '8px',
+                    padding: '8px',
+                    display: 'grid',
+                    placeItems: 'center',
                   }}
-                />
-                <CloseOutlined
+                >
+                  <Image
+                    src={userDetail?.avatar}
+                    style={{
+                      width: '84px',
+                      height: '84px',
+                      objectFit: 'cover',
+                      display: 'block',
+                      margin: '0 auto',
+                    }}
+                  />
+                </div>
+                <Button
+                  type='text'
+                  icon={
+                    <DeleteOutlined
+                      style={{
+                        color: 'red',
+                        fontSize: 20,
+                      }}
+                    />
+                  }
                   onClick={() => {
                     setIsUpload(true);
                     setDeletedAvatar(true);
                   }}
-                  style={{ marginLeft: '10px' }}
-                />
+                  style={{
+                    marginTop: '4px',
+                    display: 'flex',
+                    width: '102px',
+                  }}
+                >
+                  Xóa ảnh
+                </Button>
               </>
             ) : (
               <>
