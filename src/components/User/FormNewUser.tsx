@@ -520,6 +520,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
                           onChange={(value) =>
                             handleDistrictChange(value, index)
                           }
+                          disabled={!userDetail && !selectedCity[index]}
                           allowClear
                           optionFilterProp='label'
                           value={selectedDistrict[index] || undefined}
@@ -554,6 +555,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
                           onChange={(value) => handleWardChange(value, index)}
                           allowClear
                           value={selectedWard[index] || undefined}
+                          disabled={!userDetail && !selectedDistrict[index]}
                           optionFilterProp='label'
                           options={
                             Array.isArray(wards) && wards[index]
