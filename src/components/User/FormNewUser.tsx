@@ -41,6 +41,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
   const [selectedCity, setSelectedCity] = useState<string[]>([]);
   const [selectedDistrict, setSelectedDistrict] = useState<string[]>([]);
   const [selectedWard, setSelectedWard] = useState<string[]>([]);
+  const [isFormModified, setIsFormModified] = useState<boolean>(false);
 
   const { data: cities } = useQuery({
     queryKey: ['cityVN'],
@@ -152,7 +153,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
         addresses: addresses || [{}],
         gender: restUserDetail.gender || 'Nam',
         birthDate: dayjs(originBirthDate) ?? null,
-        phoneNumber: phoneNumber ? phoneNumber : '',
+        phoneNumber: phoneNumber,
       });
     }
   }, [userDetail, form]);
@@ -176,7 +177,6 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
       const updatedUser = {
         ...userDetail,
         ...values,
-        phoneNumber: userDetail?.phoneNumber || '',
         avatar: pathImg,
         birthDate: formattedBirthDate,
         originBirthDate: values.birthDate,
@@ -245,6 +245,10 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
     });
   };
 
+  const handleValuesChange = () => {
+    setIsFormModified(true);
+  };
+
   return (
     <>
       <Form
@@ -257,6 +261,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
           addresses: [{}],
           gender: 'Nam',
         }}
+        onValuesChange={handleValuesChange}
       >
         {id && (
           <Item label='ID' colon={false}>
@@ -618,7 +623,12 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
           <Button
             type='primary'
             htmlType='submit'
-            style={{ backgroundColor: 'var(--main-color)' }}
+            style={{
+              backgroundColor: !isFormModified
+                ? 'lightgray'
+                : 'var(--main-color)',
+            }}
+            disabled={!isFormModified}
           >
             {userDetail ? 'Cập nhật' : 'Tạo mới'}
           </Button>
