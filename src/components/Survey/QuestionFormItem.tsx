@@ -188,10 +188,6 @@ const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
                     type='dashed'
                     onClick={() => {
                       add();
-                      form.setFieldValue(
-                        'totalContent',
-                        form.getFieldValue('totalContent') + 1
-                      );
                     }}
                     style={{ width: '100%', marginBottom: '8px' }}
                   >
