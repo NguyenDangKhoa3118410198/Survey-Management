@@ -196,6 +196,17 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
                 {(fields, { add, remove }) => (
                   <>
                     <Button
+                      onClick={() => form.resetFields(['questions'])}
+                      style={{
+                        position: 'absolute',
+                        right: '160px',
+                        top: '10px',
+                        border: '1px solid var(--main-color)',
+                      }}
+                    >
+                      Clear
+                    </Button>
+                    <Button
                       onClick={() => add({}, 0)}
                       style={{
                         position: 'absolute',
@@ -236,9 +247,19 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
             display: 'flex',
             justifyContent: 'flex-end',
             width: '100%',
-            marginTop: '10px',
+            padding: '5px 0 10px 0',
           }}
         >
+          <Button
+            htmlType='button'
+            style={{
+              marginRight: '10px',
+              border: '1px solid var(--main-color)',
+            }}
+            onClick={() => form.resetFields()}
+          >
+            Reset
+          </Button>
           <Button
             htmlType='button'
             style={{ marginRight: '10px' }}
