@@ -132,7 +132,7 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
             colon={false}
             rules={[{ required: true, message: 'Vui lòng nhập điểm thưởng' }]}
           >
-            <InputNumber min={0} style={{ width: '100%' }} />
+            <InputNumber min={0} style={{ width: '100%' }} defaultValue={0} />
           </Item>
           <Item
             name='startDate'
