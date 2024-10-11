@@ -14,6 +14,7 @@ import { customizeRequiredMark } from 'utils';
 import { useNavigate } from 'react-router-dom';
 import QuestionFormItem from './QuestionFormItem';
 import useSurvey, { ISurvey } from 'hooks/useSurvey';
+import { RedoOutlined } from '@ant-design/icons';
 
 const { Item, List } = Form;
 
@@ -196,6 +197,7 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
                 {(fields, { add, remove }) => (
                   <>
                     <Button
+                      icon={<RedoOutlined />}
                       onClick={() => form.resetFields(['questions'])}
                       style={{
                         position: 'absolute',
@@ -247,7 +249,7 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
             display: 'flex',
             justifyContent: 'flex-end',
             width: '100%',
-            padding: '5px 0 10px 0',
+            padding: '10px 0 10px 0',
           }}
         >
           <Button
