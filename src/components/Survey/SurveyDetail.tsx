@@ -7,51 +7,51 @@ import { Divider, Typography } from 'antd';
 import FormNewSurvey from './FormNewSurvey';
 
 const SurveyDetail = () => {
-   const { id } = useParams();
-   const navigate = useNavigate();
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-   const {
-      data: surveyDetail,
-      isLoading,
-      isError,
-   } = useQuery<ISurvey | undefined>({
-      queryKey: ['userSurvey', id],
-      queryFn: () => (id ? fetchSurveybyId(id) : undefined),
-      enabled: !!id,
-   });
+  const {
+    data: surveyDetail,
+    isLoading,
+    isError,
+  } = useQuery<ISurvey | undefined>({
+    queryKey: ['userSurvey', id],
+    queryFn: () => (id ? fetchSurveybyId(id) : undefined),
+    enabled: !!id,
+  });
 
-   useEffect(() => {
-      if (!isLoading && surveyDetail === undefined) {
-         navigate('/404');
-      }
-   }, [id, surveyDetail, isLoading, isError, navigate]);
+  useEffect(() => {
+    if (!isLoading && surveyDetail === undefined) {
+      navigate('/404');
+    }
+  }, [id, surveyDetail, isLoading, isError, navigate]);
 
-   const memoizedSurveyDetail = useMemo(() => surveyDetail, [surveyDetail]);
+  const memoizedSurveyDetail = useMemo(() => surveyDetail, [surveyDetail]);
 
-   return (
-      <div
-         style={{
-            backgroundColor: '#fff',
-            height: 'calc(100vh - 150px)',
-            overflowY: 'auto',
-         }}
+  return (
+    <div
+      style={{
+        backgroundColor: '#fff',
+        height: 'calc(100vh - 150px)',
+        overflowY: 'auto',
+      }}
+    >
+      <Typography.Paragraph
+        style={{
+          fontSize: '18px',
+          fontWeight: '700',
+          margin: '0',
+          padding: '8px 24px',
+        }}
       >
-         <Typography.Paragraph
-            style={{
-               fontSize: '18px',
-               fontWeight: '700',
-               margin: '0',
-               padding: '8px 24px',
-            }}
-         >
-            Chi tiết người dùng
-         </Typography.Paragraph>
-         <Divider style={{ margin: '10px 0' }} />
-         <div style={{ padding: '8px 24px' }}>
-            <FormNewSurvey surveyDetail={memoizedSurveyDetail} />
-         </div>
+        Thông tin chung
+      </Typography.Paragraph>
+      <Divider style={{ margin: '10px 0' }} />
+      <div style={{ padding: '8px 24px' }}>
+        <FormNewSurvey surveyDetail={memoizedSurveyDetail} />
       </div>
-   );
+    </div>
+  );
 };
 
 export default SurveyDetail;

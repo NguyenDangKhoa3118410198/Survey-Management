@@ -27,6 +27,11 @@ const Breadcrumbs: React.FC = () => {
       breadcrumbName = 'Chi tiết người dùng';
     }
 
+    if (url.startsWith('/surveys') && /^\d+$/.test(snippet)) {
+      url = `/surveys/${snippet}`;
+      breadcrumbName = 'Chi tiết khảo sát';
+    }
+
     return {
       key: url,
       title: <Link to={url}>{breadcrumbName}</Link>,
