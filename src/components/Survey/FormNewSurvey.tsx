@@ -282,7 +282,7 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
                         'questionType',
                       ]);
                       return (
-                        <>
+                        <div key={key}>
                           <QuestionFormItem
                             key={key}
                             fieldName={name}
@@ -293,7 +293,7 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
                             add={add}
                             form={form}
                           />
-                        </>
+                        </div>
                       );
                     })}
                   </>
