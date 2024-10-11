@@ -25,6 +25,7 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import CImage from 'components/common/CImage';
 import AddressFormItem from './AddressFormItem';
+import { useWatch } from 'antd/es/form/Form';
 
 interface FormNewUserProps {
   userDetail?: IUser;
@@ -46,6 +47,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
   const [isFormModified, setIsFormModified] = useState<boolean>(false);
   const [isDisabledEmail, setIsDisabledEmail] = useState<boolean>(false);
   const [isResetPassword, setIsResetPassword] = useState<boolean>(false);
+  const phoneNumber = useWatch('phoneNumber', form);
 
   const { data: cities } = useQuery({
     queryKey: ['cityVN'],
@@ -234,10 +236,6 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
     setFileList(newFileList);
   };
 
-  const handlePhoneChange = (value: string) => {
-    form.setFieldsValue({ phoneNumber: value });
-  };
-
   const handleCreateRandomPassword = () => {
     const ramdomPassword = generateRandomPassword();
     setIsFormModified(true);
@@ -410,8 +408,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
         >
           <PhoneInput
             country='vn'
-            value={form.getFieldValue('phoneNumber')}
-            onChange={handlePhoneChange}
+            value={phoneNumber}
             placeholder='Nhập số điện thoại'
           />
         </Item>

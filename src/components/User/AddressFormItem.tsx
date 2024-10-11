@@ -1,6 +1,7 @@
 import { CloseOutlined } from '@ant-design/icons';
 import { Button, Divider, Form, Input, Select } from 'antd';
 import React from 'react';
+const { Item } = Form;
 
 interface AddressFormItemProps {
   itemKey: number;
@@ -50,7 +51,7 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
           margin: '0 0 10px 0',
         }}
       >
-        <Form.Item
+        <Item
           {...restField}
           name={[name, 'addressNumber']}
           style={{ flex: 1, height: '52px' }}
@@ -58,8 +59,8 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
           label='Số nhà'
         >
           <Input className='radius' placeholder='Nhập địa chỉ' allowClear />
-        </Form.Item>
-        <Form.Item
+        </Item>
+        <Item
           {...restField}
           name={[name, 'city']}
           style={{ flex: 1, height: '52px' }}
@@ -92,8 +93,8 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
                 : []
             }
           />
-        </Form.Item>
-        <Form.Item
+        </Item>
+        <Item
           {...restField}
           name={[name, 'district']}
           style={{ flex: 1, height: '52px' }}
@@ -123,8 +124,8 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
                 : []
             }
           />
-        </Form.Item>
-        <Form.Item
+        </Item>
+        <Item
           {...restField}
           name={[name, 'ward']}
           style={{ flex: 1, height: '52px' }}
@@ -157,7 +158,7 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
                 : []
             }
           />
-        </Form.Item>
+        </Item>
         {fields.length > 1 && (
           <Button onClick={() => handleRemoveAddress(remove, name)} type='link'>
             <CloseOutlined style={{ color: 'red' }} />
