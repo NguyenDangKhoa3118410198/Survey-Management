@@ -18,6 +18,7 @@ interface IQuestion {
   question: string;
   questionType: string;
   extraOptions?: IOption[];
+  ratingOption?: number;
 }
 interface IOption {
   option: string;

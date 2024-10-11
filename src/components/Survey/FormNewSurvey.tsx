@@ -37,6 +37,23 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
 
   const handleSubmit = (values: ISurvey) => {
     try {
+      values.questions = values.questions.map((question) => {
+        const updatedQuestion = { ...question };
+
+        if (question.questionType !== 'rating') {
+          delete updatedQuestion.ratingOption;
+        }
+
+        if (
+          question.questionType !== 'single' &&
+          question.questionType !== 'multiple'
+        ) {
+          delete updatedQuestion.extraOptions;
+        }
+
+        return updatedQuestion;
+      });
+
       const isEditing = !!surveyDetail?.id;
       if (!isEditing) {
         values.id = surveyList.length + 1;
@@ -246,10 +263,8 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
                             qtyField={fields.length}
                             questionType={questionType}
                             add={add}
+                            form={form}
                           />
-                          {fields.length > 1 && name !== fields.length - 1 && (
-                            <Divider />
-                          )}
                         </>
                       );
                     })}

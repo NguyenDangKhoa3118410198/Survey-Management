@@ -7,13 +7,13 @@ import {
   Button,
   Flex,
   Form,
-  FormInstance,
   Input,
+  Radio,
   Select,
   Switch,
   Typography,
 } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface IQuestionFormItemProps {
   fieldName: number;
@@ -22,6 +22,7 @@ interface IQuestionFormItemProps {
   qtyField?: number;
   questionType?: string;
   add: any;
+  form: any;
 }
 
 const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
@@ -31,24 +32,42 @@ const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
   qtyField,
   questionType,
   add,
+  form,
 }) => {
-  const [showExtraInput, setShowExtraInput] = useState(false);
+  const [showExtraInputByType, setShowExtraInputByType] = useState('text');
 
-  const handleQuestionTypeChange = (value: string) => {
-    if (value === 'multiple' || value === 'single') {
-      setShowExtraInput(true);
-    } else {
-      setShowExtraInput(false);
+  useEffect(() => {
+    if (questionType) {
+      setShowExtraInputByType(questionType);
     }
+  }, [questionType]);
+
+  const handleGetExtraInput = (value: string) => {
+    setShowExtraInputByType(value);
+
+    if (value === 'single' || value === 'multiple') {
+      form.setFields([
+        {
+          name: ['questions', fieldName, 'extraOptions'],
+          value: [{ option: '' }, { option: '' }],
+        },
+      ]);
+    }
+
+    form.resetFields([
+      ['questions', fieldName, 'question'],
+      ['questions', fieldName, 'isRequired'],
+      ['questions', fieldName, 'ratingOption'],
+    ]);
   };
 
   return (
     <div
       style={{
-        border: '1px solid #d9d9d9',
-        padding: '16px',
+        border: '1px double lightgray',
+        padding: '24px',
         borderRadius: '8px',
-        marginBottom: '16px',
+        marginBottom: '35px',
       }}
     >
       <Form.Item
@@ -61,7 +80,7 @@ const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
         <Select
           placeholder='Chọn loại câu hỏi'
           style={{ width: '100%' }}
-          onChange={handleQuestionTypeChange}
+          onChange={handleGetExtraInput}
         >
           <Select.Option value='rating'>Rating</Select.Option>
           <Select.Option value='text'>Văn bản</Select.Option>
@@ -93,76 +112,89 @@ const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
         />
       </Form.Item>
 
-      {(showExtraInput ||
-        questionType === 'multiple' ||
-        questionType === 'single') && (
-        <>
-          <Flex>
-            <Typography.Text style={{ width: '190px', textAlign: 'left' }}>
-              Phương án
-              <span style={{ color: 'red' }}> *</span>
-            </Typography.Text>
-            <Flex vertical style={{ width: '100%' }}>
-              <Form.List
-                name={[fieldName, 'extraOptions']}
-                initialValue={[{ option: '' }, { option: '' }]}
-              >
-                {(fields, { add, remove }) => (
-                  <>
-                    {fields.map(({ key, name, ...restField }) => (
-                      <div
-                        key={key}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                        }}
-                      >
-                        <Form.Item
-                          style={{ width: '100%' }}
-                          {...restField}
-                          key={key}
-                          name={[name, 'option']}
-                          colon={false}
-                          rules={[
-                            {
-                              required: true,
-                              message: 'Vui lòng nhập phương án',
-                            },
-                          ]}
-                        >
-                          <Input
-                            placeholder={`Nhập phương án ${name + 1}`}
-                            style={{
-                              marginRight: '8px',
-                            }}
-                          />
-                        </Form.Item>
-                        {fields.length > 2 && (
-                          <Form.Item>
-                            <Button
-                              type='link'
-                              onClick={() => remove(name)}
-                              style={{ color: 'red' }}
-                            >
-                              <CloseOutlined style={{ color: 'red' }} />
-                            </Button>
-                          </Form.Item>
-                        )}
-                      </div>
-                    ))}
-                    <Button
-                      type='dashed'
-                      onClick={() => add()}
-                      style={{ width: '100%', marginBottom: '8px' }}
+      {showExtraInputByType === 'rating' && (
+        <Form.Item
+          label='Đánh giá'
+          colon={false}
+          name={[fieldName, 'ratingOption']}
+        >
+          <Radio.Group defaultValue={1}>
+            <Radio value={1}>1 Sao</Radio>
+            <Radio value={2}>2 Sao</Radio>
+            <Radio value={3}>3 Sao</Radio>
+            <Radio value={4}>4 Sao</Radio>
+            <Radio value={5}>5 Sao</Radio>
+          </Radio.Group>
+        </Form.Item>
+      )}
+
+      {(showExtraInputByType === 'multiple' ||
+        showExtraInputByType === 'single') && (
+        <Flex>
+          <Typography.Text style={{ width: '190px', textAlign: 'left' }}>
+            Phương án
+            <span style={{ color: 'red' }}> *</span>
+          </Typography.Text>
+          <Flex vertical style={{ width: '100%' }}>
+            <Form.List
+              name={[fieldName, 'extraOptions']}
+              initialValue={[{ option: '' }, { option: '' }]}
+            >
+              {(fields, { add, remove }) => (
+                <>
+                  {fields.map(({ key, name, ...restField }) => (
+                    <div
+                      key={key}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                      }}
                     >
-                      Thêm phương án
-                    </Button>
-                  </>
-                )}
-              </Form.List>
-            </Flex>
+                      <Form.Item
+                        style={{ width: '100%' }}
+                        {...restField}
+                        key={key}
+                        name={[name, 'option']}
+                        colon={false}
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Vui lòng nhập phương án',
+                          },
+                        ]}
+                      >
+                        <Input
+                          placeholder={`Nhập phương án ${name + 1}`}
+                          style={{
+                            marginRight: '8px',
+                          }}
+                        />
+                      </Form.Item>
+                      {fields.length > 2 && (
+                        <Form.Item>
+                          <Button
+                            type='link'
+                            onClick={() => remove(name)}
+                            style={{ color: 'red' }}
+                          >
+                            <CloseOutlined style={{ color: 'red' }} />
+                          </Button>
+                        </Form.Item>
+                      )}
+                    </div>
+                  ))}
+                  <Button
+                    type='dashed'
+                    onClick={() => add()}
+                    style={{ width: '100%', marginBottom: '8px' }}
+                  >
+                    Thêm phương án
+                  </Button>
+                </>
+              )}
+            </Form.List>
           </Flex>
-        </>
+        </Flex>
       )}
 
       <Button
