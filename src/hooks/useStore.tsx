@@ -12,6 +12,7 @@ interface UserState {
     token: string,
     isRemembered: boolean
   ) => void;
+  changePassword: (password: string) => void;
   clearUser: () => void;
 }
 
@@ -24,6 +25,7 @@ const useStore = create<UserState>()(
       isRemembered: false,
       setUser: (email, password, token, isRemembered) =>
         set({ email, password, token, isRemembered }),
+      changePassword: (password) => set({ password }),
       clearUser: () => set({ token: null }),
     }),
     {
