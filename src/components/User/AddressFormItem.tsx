@@ -45,25 +45,31 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
       style={{
         display: 'flex',
         gap: '20px',
+        margin: ' 0 0 28px 0',
+        width: '100%',
       }}
     >
       <Form.Item
         {...restField}
         name={[name, 'addressNumber']}
-        style={{ flex: 1 }}
+        style={{ flex: 1, height: '52px' }}
+        layout='vertical'
+        label='Số nhà'
       >
         <Input className='radius' placeholder='Nhập địa chỉ' allowClear />
       </Form.Item>
       <Form.Item
         {...restField}
         name={[name, 'city']}
-        style={{ flex: 1 }}
+        style={{ flex: 1, height: '52px' }}
         rules={[
           {
             required: true,
             message: 'Vui lòng chọn thành phố',
           },
         ]}
+        layout='vertical'
+        label='Thành phố'
       >
         <Select
           showSearch
@@ -89,7 +95,7 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
       <Form.Item
         {...restField}
         name={[name, 'district']}
-        style={{ flex: 1 }}
+        style={{ flex: 1, height: '52px' }}
         rules={[
           {
             required: true,
@@ -97,6 +103,8 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
           },
         ]}
         dependencies={[['addresses', name, 'city']]}
+        layout='vertical'
+        label='Quận huyện'
       >
         <Select
           showSearch
@@ -118,7 +126,7 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
       <Form.Item
         {...restField}
         name={[name, 'ward']}
-        style={{ flex: 1 }}
+        style={{ flex: 1, height: '52px' }}
         rules={[
           {
             required: true,
@@ -129,6 +137,8 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
           ['addresses', name, 'city'],
           ['addresses', name, 'district'],
         ]}
+        layout='vertical'
+        label='Phường xã'
       >
         <Select
           showSearch
