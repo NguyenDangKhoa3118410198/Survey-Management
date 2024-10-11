@@ -1,4 +1,4 @@
-import { CloseOutlined, DeleteOutlined } from '@ant-design/icons';
+import { RetweetOutlined } from '@ant-design/icons';
 import { useQuery } from '@tanstack/react-query';
 import {
   Button,
@@ -379,8 +379,11 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
             >
               <Input.Password placeholder='Vui lòng xác thực mật khẩu' />
             </Item>
-            <Item label='' colon={false} wrapperCol={{ span: 24, offset: 0 }}>
-              <Button onClick={handleCreateRandomPassword}>
+            <Item label=' ' colon={false} wrapperCol={{ span: 24, offset: 0 }}>
+              <Button
+                icon={<RetweetOutlined />}
+                onClick={handleCreateRandomPassword}
+              >
                 Tạo mật khẩu ngẫu nhiên
               </Button>
             </Item>
