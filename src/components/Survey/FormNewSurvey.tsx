@@ -237,14 +237,20 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
                       ]);
                       form.setFieldValue('totalContent', fields.length);
                       return (
-                        <QuestionFormItem
-                          key={key}
-                          fieldName={name}
-                          restField={restField}
-                          remove={remove}
-                          qtyField={fields.length}
-                          questionType={questionType}
-                        />
+                        <>
+                          <QuestionFormItem
+                            key={key}
+                            fieldName={name}
+                            restField={restField}
+                            remove={remove}
+                            qtyField={fields.length}
+                            questionType={questionType}
+                            add={add}
+                          />
+                          {fields.length > 1 && name !== fields.length - 1 && (
+                            <Divider />
+                          )}
+                        </>
                       );
                     })}
                   </>

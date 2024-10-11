@@ -1,4 +1,8 @@
-import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
+import {
+  CheckOutlined,
+  CloseOutlined,
+  PlusCircleOutlined,
+} from '@ant-design/icons';
 import {
   Button,
   Flex,
@@ -17,6 +21,7 @@ interface IQuestionFormItemProps {
   remove: (name: number) => void;
   qtyField?: number;
   questionType?: string;
+  add: any;
 }
 
 const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
@@ -25,6 +30,7 @@ const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
   remove,
   qtyField,
   questionType,
+  add,
 }) => {
   const [showExtraInput, setShowExtraInput] = useState(false);
 
@@ -169,6 +175,14 @@ const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
         }}
       >
         Xoá câu hỏi {Number(qtyField) - fieldName}
+      </Button>
+      <Button
+        type='link'
+        onClick={() => add({}, fieldName + 1)}
+        icon={<PlusCircleOutlined />}
+        style={{ color: 'green' }}
+      >
+        Thêm câu hỏi
       </Button>
     </div>
   );
