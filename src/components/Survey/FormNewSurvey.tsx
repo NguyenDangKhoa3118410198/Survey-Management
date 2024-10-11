@@ -111,6 +111,7 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
         onFinish={handleSubmit}
         layout='horizontal'
         requiredMark={customizeRequiredMark}
+        initialValues={{ averageScore: 0, totalContent: 0 }}
       >
         <div
           style={{
@@ -125,7 +126,7 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
             colon={false}
             rules={[{ required: true, message: 'Vui lòng nhập tên khảo sát' }]}
           >
-            <Input />
+            <Input placeholder='Nhập tên khảo sát' />
           </Item>
           <Item
             name='averageScore'
@@ -133,7 +134,11 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
             colon={false}
             rules={[{ required: true, message: 'Vui lòng nhập điểm thưởng' }]}
           >
-            <InputNumber min={0} style={{ width: '100%' }} defaultValue={0} />
+            <InputNumber
+              min={0}
+              style={{ width: '100%' }}
+              placeholder='Nhập điểm thưởng'
+            />
           </Item>
           <Item
             name='startDate'
@@ -147,6 +152,7 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
               disabledDate={(current) =>
                 current && current.isBefore(dayjs().startOf('day'))
               }
+              placeholder='Ngày bắt đầu'
             />
           </Item>
           <Item name='endDate' label='Ngày kết thúc' colon={false}>
@@ -162,6 +168,7 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
                   false
                 );
               }}
+              placeholder='Ngày kết thúc'
             />
           </Item>
           <Item
@@ -198,7 +205,9 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
                   <>
                     <Button
                       icon={<RedoOutlined />}
-                      onClick={() => form.resetFields(['questions'])}
+                      onClick={() =>
+                        form.resetFields(['questions', 'totalContent'])
+                      }
                       style={{
                         position: 'absolute',
                         right: '160px',
