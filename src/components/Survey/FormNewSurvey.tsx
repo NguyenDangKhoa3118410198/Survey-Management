@@ -6,6 +6,7 @@ import {
   Input,
   InputNumber,
   message,
+  Modal,
   Typography,
 } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
@@ -26,6 +27,7 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
   const navigate = useNavigate();
   const { surveyList, addNewSurvey, editSurvey } = useSurvey();
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
+  const [isFormModified, setIsFormModified] = useState<boolean>(false);
 
   const onStartChange = (date: Dayjs | null) => {
     setStartDate(date);
@@ -35,9 +37,9 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
     return current && startDate && current.isBefore(startDate, 'day');
   };
 
-  const handleSubmit = (values: ISurvey) => {
+  const submitForm = (values: ISurvey) => {
     try {
-      values.questions = values.questions.map((question) => {
+      values.questions = (values.questions || []).map((question) => {
         const updatedQuestion = { ...question };
 
         if (question.questionType !== 'rating') {
@@ -116,6 +118,25 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
     }
   }, [surveyDetail, form]);
 
+  const handleValuesChange = () => {
+    setIsFormModified(true);
+  };
+
+  const showConfirm = (values: ISurvey) => {
+    Modal.confirm({
+      title: 'Xác nhận',
+      content: 'Bạn có chắc chắn muốn lưu thông tin này?',
+      onOk: () => submitForm(values),
+      onCancel() {
+        return;
+      },
+    });
+  };
+
+  const handleSubmit = (values: ISurvey) => {
+    showConfirm(values);
+  };
+
   return (
     <div
       style={{
@@ -129,6 +150,7 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
         layout='horizontal'
         requiredMark={customizeRequiredMark}
         initialValues={{ averageScore: 0, totalContent: 0 }}
+        onValuesChange={handleValuesChange}
       >
         <div
           style={{
@@ -222,9 +244,10 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
                   <>
                     <Button
                       icon={<RedoOutlined />}
-                      onClick={() =>
-                        form.resetFields(['questions', 'totalContent'])
-                      }
+                      onClick={() => {
+                        form.resetFields(['questions', 'totalContent']);
+                        setIsFormModified(true);
+                      }}
                       style={{
                         position: 'absolute',
                         right: '160px',
@@ -235,7 +258,13 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
                       Clear
                     </Button>
                     <Button
-                      onClick={() => add({}, 0)}
+                      onClick={() => {
+                        add({}, 0);
+                        form.setFieldValue(
+                          'totalContent',
+                          form.getFieldValue('totalContent') + 1
+                        );
+                      }}
                       style={{
                         position: 'absolute',
                         right: '20px',
@@ -252,7 +281,6 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
                         name,
                         'questionType',
                       ]);
-                      form.setFieldValue('totalContent', fields.length);
                       return (
                         <>
                           <QuestionFormItem
@@ -288,7 +316,10 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
               marginRight: '10px',
               border: '1px solid var(--main-color)',
             }}
-            onClick={() => form.resetFields()}
+            onClick={() => {
+              form.resetFields();
+              setIsFormModified(true);
+            }}
           >
             Reset
           </Button>
@@ -303,8 +334,11 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
             type='primary'
             htmlType='submit'
             style={{
-              backgroundColor: 'var(--main-color)',
+              backgroundColor: !isFormModified
+                ? 'lightgray'
+                : 'var(--main-color)',
             }}
+            disabled={!isFormModified}
           >
             {surveyDetail ? 'Cập nhật' : 'Tạo mới'}
           </Button>

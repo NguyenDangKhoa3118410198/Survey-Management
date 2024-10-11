@@ -46,12 +46,13 @@ const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
     setShowExtraInputByType(value);
 
     if (value === 'single' || value === 'multiple') {
-      form.setFields([
-        {
-          name: ['questions', fieldName, 'extraOptions'],
-          value: [{ option: '' }, { option: '' }],
+      form.setFieldsValue({
+        ['questions']: {
+          [fieldName]: {
+            extraOptions: [{ option: '' }, { option: '' }],
+          },
         },
-      ]);
+      });
     }
 
     form.resetFields([
@@ -185,7 +186,13 @@ const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
                   ))}
                   <Button
                     type='dashed'
-                    onClick={() => add()}
+                    onClick={() => {
+                      add();
+                      form.setFieldValue(
+                        'totalContent',
+                        form.getFieldValue('totalContent') + 1
+                      );
+                    }}
                     style={{ width: '100%', marginBottom: '8px' }}
                   >
                     Thêm phương án
@@ -199,7 +206,13 @@ const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
 
       <Button
         type='link'
-        onClick={() => remove(fieldName)}
+        onClick={() => {
+          remove(fieldName);
+          form.setFieldValue(
+            'totalContent',
+            form.getFieldValue('totalContent') - 1
+          );
+        }}
         style={{
           color: 'red',
           border: '1px solid red',
@@ -210,7 +223,13 @@ const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
       </Button>
       <Button
         type='link'
-        onClick={() => add({}, fieldName + 1)}
+        onClick={() => {
+          add({}, fieldName + 1);
+          form.setFieldValue(
+            'totalContent',
+            form.getFieldValue('totalContent') + 1
+          );
+        }}
         icon={<PlusCircleOutlined />}
         style={{ color: 'green' }}
       >
