@@ -29,6 +29,7 @@ const HeaderLayout: React.FC = () => {
             alignContent: 'center',
             width: '100%',
             fontWeight: '600',
+            padding: 1,
           }}
         >
           <Link
@@ -59,6 +60,7 @@ const HeaderLayout: React.FC = () => {
             alignContent: 'center',
             width: '100%',
             fontWeight: '600',
+            padding: 1,
           }}
         >
           <Link
@@ -67,14 +69,14 @@ const HeaderLayout: React.FC = () => {
               flex: 1,
               textAlign: 'left',
               fontSize: '14px',
-              color: '#284698',
+              color: '#f54848',
             }}
             onClick={handleLogout}
           >
             Đăng xuất
           </Link>
           <LogoutOutlined
-            style={{ marginLeft: '8px', color: '#284698', fontSize: '16px' }}
+            style={{ marginLeft: '8px', color: '#f54848', fontSize: '16px' }}
           />
         </div>
       ),

@@ -165,7 +165,9 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
           </Button>
         )}
       </div>
-      {fields.length > 1 && name !== fields.length - 1 && <Divider />}
+      {fields.length > 1 && name !== fields.length - 1 && (
+        <Divider style={{ margin: '16px 0' }} />
+      )}
     </>
   );
 };
