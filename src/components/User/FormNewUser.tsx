@@ -438,24 +438,26 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
                 <Flex vertical style={{ width: '100%' }}>
                   {fields.map(({ key, name, ...restField }, index) => {
                     return (
-                      <AddressFormItem
-                        itemKey={name}
-                        restField={restField}
-                        name={name}
-                        index={index}
-                        cities={cities ?? []}
-                        districts={districts ?? []}
-                        wards={wards ?? []}
-                        selectedCity={selectedCity ?? []}
-                        selectedDistrict={selectedDistrict ?? []}
-                        handleCityChange={handleCityChange}
-                        handleDistrictChange={handleDistrictChange}
-                        handleWardChange={handleWardChange}
-                        handleRemoveAddress={handleRemoveAddress}
-                        userDetail={userDetail}
-                        remove={remove}
-                        fields={fields}
-                      />
+                      <div key={key}>
+                        <AddressFormItem
+                          itemKey={name}
+                          restField={restField}
+                          name={name}
+                          index={index}
+                          cities={cities ?? []}
+                          districts={districts ?? []}
+                          wards={wards ?? []}
+                          selectedCity={selectedCity ?? []}
+                          selectedDistrict={selectedDistrict ?? []}
+                          handleCityChange={handleCityChange}
+                          handleDistrictChange={handleDistrictChange}
+                          handleWardChange={handleWardChange}
+                          handleRemoveAddress={handleRemoveAddress}
+                          userDetail={userDetail}
+                          remove={remove}
+                          fields={fields}
+                        />
+                      </div>
                     );
                   })}
                   <Item>
