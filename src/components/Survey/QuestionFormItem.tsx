@@ -61,6 +61,7 @@ const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
       ['questions', fieldName, 'question'],
       ['questions', fieldName, 'isRequired'],
       ['questions', fieldName, 'ratingOption'],
+      ['questions', fieldName, 'description'],
     ]);
   };
 
@@ -100,6 +101,18 @@ const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
         rules={[{ required: true, message: 'Vui lòng nhập tên câu hỏi' }]}
       >
         <Input placeholder='Nhập tên câu hỏi' />
+      </Form.Item>
+
+      <Form.Item
+        {...restField}
+        name={[fieldName, 'description']}
+        label='Mô tả'
+        colon={false}
+        rules={[
+          { required: false, message: 'Vui lòng nhập mô tả (không bắt buộc)' },
+        ]}
+      >
+        <Input.TextArea placeholder='Nhập mô tả (không bắt buộc)' />
       </Form.Item>
 
       <Form.Item

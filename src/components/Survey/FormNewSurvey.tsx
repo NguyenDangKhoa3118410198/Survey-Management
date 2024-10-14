@@ -84,8 +84,8 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
       } else {
         addNewSurvey(values);
         message.success('Tạo mới thành công');
+        navigate('/surveys');
       }
-      navigate('/surveys');
     } catch (error) {
       console.log('Submit failed', error);
     }
@@ -141,7 +141,7 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
     const startDate = form.getFieldValue('startDate');
     const endDate = form.getFieldValue('endDate');
 
-    if (!value) {
+    if (!value || !endDate) {
       return Promise.resolve();
     }
     if (dayjs(endDate).isBefore(startDate, 'day')) {
