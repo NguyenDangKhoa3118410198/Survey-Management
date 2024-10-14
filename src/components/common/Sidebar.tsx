@@ -42,7 +42,7 @@ const Sidebar: React.FC = () => {
   ];
 
   return (
-    <Sider width={230} className='site-layout-background'>
+    <Sider width={280} className='site-layout-background'>
       <Menu
         mode='inline'
         selectedKeys={[selectedKey]}

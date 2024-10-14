@@ -137,6 +137,24 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
     showConfirm(values);
   };
 
+  const validateEndDate = (value: any) => {
+    const startDate = form.getFieldValue('startDate');
+    const endDate = form.getFieldValue('endDate');
+
+    console.log(startDate);
+    console.log(value);
+
+    if (!value) {
+      return Promise.resolve();
+    }
+    if (dayjs(endDate).isBefore(startDate, 'day')) {
+      return Promise.reject(
+        new Error('Ngày kết thúc không được nhỏ hơn ngày bắt đầu')
+      );
+    }
+    return Promise.resolve();
+  };
+
   return (
     <div
       style={{
@@ -194,7 +212,12 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
               placeholder='Ngày bắt đầu'
             />
           </Item>
-          <Item name='endDate' label='Ngày kết thúc' colon={false}>
+          <Item
+            name='endDate'
+            label='Ngày kết thúc'
+            colon={false}
+            rules={[{ validator: validateEndDate }]}
+          >
             <DatePicker
               format='DD/MM/YYYY'
               disabledDate={(current) => {
