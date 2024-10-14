@@ -227,8 +227,8 @@ const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
               );
             }}
             style={{
-              color: 'red',
-              border: '1px solid red',
+              color: '#f32323',
+              border: '1px solid #f32323',
               borderRadius: '14px',
             }}
           >
@@ -244,7 +244,7 @@ const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
               );
             }}
             icon={<PlusCircleOutlined />}
-            style={{ color: 'green' }}
+            style={{ color: '#52c41a' }}
           >
             Thêm câu hỏi
           </Button>
