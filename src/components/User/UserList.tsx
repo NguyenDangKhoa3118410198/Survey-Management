@@ -1,5 +1,5 @@
-import React from 'react';
-import { Button, Table, Typography } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Button, Input, Table, Typography } from 'antd';
 import { columns } from 'data/columnsUserList';
 import { useNavigate } from 'react-router-dom';
 import useUser from 'hooks/useUser';
@@ -7,9 +7,24 @@ import useUser from 'hooks/useUser';
 const UserList: React.FC = () => {
   const navigate = useNavigate();
   const { userList } = useUser();
+  const [filteredUserList, setFilteredUserList] = useState(userList);
+
+  useEffect(() => {
+    setFilteredUserList(userList);
+  }, [userList]);
 
   const handleCreateUser = () => {
     navigate('/users/create');
+  };
+
+  const onSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const filteredList = userList.filter(
+      (user) =>
+        user.fullName.toLowerCase().includes(value.toLowerCase()) ||
+        user.email.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredUserList(filteredList);
   };
 
   return (
@@ -38,16 +53,28 @@ const UserList: React.FC = () => {
           <Typography.Title level={4} style={{ margin: 0 }}>
             Danh sách người dùng
           </Typography.Title>
-          <Button
-            style={{
-              backgroundColor: 'var(--main-color)',
-              color: '#fff',
-              borderRadius: '20px',
-            }}
-            onClick={handleCreateUser}
-          >
-            Tạo mới
-          </Button>
+          <div>
+            <Input
+              placeholder='Nhập từ khóa tìm kiếm'
+              allowClear
+              onChange={onSearch}
+              style={{
+                width: 200,
+                marginRight: '12px',
+                borderRadius: '14px',
+              }}
+            />
+            <Button
+              style={{
+                backgroundColor: 'var(--main-color)',
+                color: '#fff',
+                borderRadius: '20px',
+              }}
+              onClick={handleCreateUser}
+            >
+              Tạo mới
+            </Button>
+          </div>
         </div>
         <div
           style={{
@@ -58,7 +85,7 @@ const UserList: React.FC = () => {
         >
           <Table
             rowKey='id'
-            dataSource={userList ?? []}
+            dataSource={filteredUserList ?? []}
             columns={columns}
             scroll={{ y: 'calc(100vh - 360px)' }}
           />
