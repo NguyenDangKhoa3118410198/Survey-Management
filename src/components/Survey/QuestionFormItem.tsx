@@ -1,6 +1,7 @@
 import {
   CheckOutlined,
   CloseOutlined,
+  CopyOutlined,
   PlusCircleOutlined,
 } from '@ant-design/icons';
 import {
@@ -11,6 +12,7 @@ import {
   Radio,
   Select,
   Switch,
+  Tooltip,
   Typography,
 } from 'antd';
 import { useEffect, useState } from 'react';
@@ -200,37 +202,51 @@ const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
         </Flex>
       )}
 
-      <Button
-        type='link'
-        onClick={() => {
-          remove(fieldName);
-          form.setFieldValue(
-            'totalContent',
-            form.getFieldValue('totalContent') - 1
-          );
-        }}
-        style={{
-          color: 'red',
-          border: '1px solid red',
-          borderRadius: '14px',
-        }}
-      >
-        Xoá câu hỏi {Number(qtyField) - fieldName}
-      </Button>
-      <Button
-        type='link'
-        onClick={() => {
-          add({}, fieldName + 1);
-          form.setFieldValue(
-            'totalContent',
-            form.getFieldValue('totalContent') + 1
-          );
-        }}
-        icon={<PlusCircleOutlined />}
-        style={{ color: 'green' }}
-      >
-        Thêm câu hỏi
-      </Button>
+      <Flex justify='space-between'>
+        <div>
+          <Button
+            type='link'
+            onClick={() => {
+              remove(fieldName);
+              form.setFieldValue(
+                'totalContent',
+                form.getFieldValue('totalContent') - 1
+              );
+            }}
+            style={{
+              color: 'red',
+              border: '1px solid red',
+              borderRadius: '14px',
+            }}
+          >
+            Xoá câu hỏi {Number(qtyField) - fieldName}
+          </Button>
+          <Button
+            type='link'
+            onClick={() => {
+              add({}, fieldName + 1);
+              form.setFieldValue(
+                'totalContent',
+                form.getFieldValue('totalContent') + 1
+              );
+            }}
+            icon={<PlusCircleOutlined />}
+            style={{ color: 'green' }}
+          >
+            Thêm câu hỏi
+          </Button>
+        </div>
+        <Tooltip title='Sao chép'>
+          <Button
+            icon={<CopyOutlined />}
+            onClick={() => {
+              const newQuestion = form.getFieldValue(['questions', fieldName]);
+              add({ ...newQuestion }, fieldName + 1);
+            }}
+            style={{ marginLeft: 8 }}
+          />
+        </Tooltip>
+      </Flex>
     </div>
   );
 };
