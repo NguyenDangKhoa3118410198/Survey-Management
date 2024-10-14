@@ -141,9 +141,6 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
     const startDate = form.getFieldValue('startDate');
     const endDate = form.getFieldValue('endDate');
 
-    console.log(startDate);
-    console.log(value);
-
     if (!value) {
       return Promise.resolve();
     }
