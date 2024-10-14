@@ -78,7 +78,7 @@ const Login: React.FC = () => {
           alt='error image'
           style={{ width: '350px', marginRight: '50px' }}
         />
-        <Flex vertical>
+        <Flex vertical style={{ width: '380px' }}>
           <Typography.Title
             level={4}
             style={{

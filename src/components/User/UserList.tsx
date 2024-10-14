@@ -3,6 +3,7 @@ import { Button, Input, Table, Typography } from 'antd';
 import { columns } from 'data/columnsUserList';
 import { useNavigate } from 'react-router-dom';
 import useUser from 'hooks/useUser';
+import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 
 const UserList: React.FC = () => {
   const navigate = useNavigate();
@@ -55,6 +56,7 @@ const UserList: React.FC = () => {
           </Typography.Title>
           <div>
             <Input
+              prefix={<SearchOutlined />}
               placeholder='Nhập từ khóa tìm kiếm'
               allowClear
               onChange={onSearch}
@@ -71,6 +73,7 @@ const UserList: React.FC = () => {
                 borderRadius: '20px',
               }}
               onClick={handleCreateUser}
+              icon={<PlusOutlined />}
             >
               Tạo mới
             </Button>

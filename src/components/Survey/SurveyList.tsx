@@ -3,6 +3,7 @@ import { Button, Input, Table, Typography } from 'antd';
 import { columns } from 'data/columnsSurveyList';
 import { useNavigate } from 'react-router-dom';
 import useSurvey from 'hooks/useSurvey';
+import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 
 const SurveyList: React.FC = () => {
   const navigate = useNavigate();
@@ -62,6 +63,7 @@ const SurveyList: React.FC = () => {
 
             <div>
               <Input
+                prefix={<SearchOutlined />}
                 placeholder='Nhập từ khóa tìm kiếm'
                 allowClear
                 onChange={onSearch}
@@ -79,6 +81,7 @@ const SurveyList: React.FC = () => {
                   borderRadius: '20px',
                 }}
                 onClick={handleCreateSurvey}
+                icon={<PlusOutlined />}
               >
                 Tạo mới
               </Button>
