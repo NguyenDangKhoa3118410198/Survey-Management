@@ -15,7 +15,7 @@ import {
   UploadFile,
 } from 'antd';
 import dayjs from 'dayjs';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { customizeRequiredMark, generateRandomPassword } from 'utils';
 import { fetchCities, fetchDistricts, fetchWards } from './services/fetchAPI';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -126,7 +126,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
     });
   };
 
-  useEffect(() => {
+  const fillValue = useCallback(() => {
     if (userDetail) {
       const {
         birthDate,
@@ -158,6 +158,10 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
         phoneNumber: phoneNumber,
       });
     }
+  }, [userDetail]);
+
+  useEffect(() => {
+    fillValue();
   }, [userDetail, form]);
 
   const submitForm = (values: IUser) => {
@@ -502,9 +506,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
               border: '1px solid var(--main-color)',
             }}
             onClick={() => {
-              form.resetFields();
-              setFileList([]);
-              handleResetImage();
+              fillValue();
               setIsDisabledEmail(true);
             }}
           >

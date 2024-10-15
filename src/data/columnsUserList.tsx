@@ -15,6 +15,7 @@ export const columns: TableProps<IUser>['columns'] = [
     title: 'Ảnh đại diện',
     dataIndex: 'avatar',
     align: 'center',
+    width: 180,
     render: (avatar: string) =>
       avatar ? (
         <Image
@@ -32,6 +33,7 @@ export const columns: TableProps<IUser>['columns'] = [
     title: 'Họ và tên',
     dataIndex: 'fullName',
     render: (text: string) => <span>{text}</span>,
+    width: 250,
   },
   {
     title: 'Email',

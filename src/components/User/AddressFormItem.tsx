@@ -48,7 +48,7 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
           display: 'flex',
           gap: '20px',
           width: '100%',
-          margin: '0 0 10px 0',
+          margin: '0 0 24px 0',
         }}
       >
         <Item
@@ -172,7 +172,7 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
         )}
       </div>
       {fields.length > 1 && name !== fields.length - 1 && (
-        <Divider style={{ margin: '16px 0' }} />
+        <Divider style={{ marginBottom: '10px' }} />
       )}
     </>
   );

@@ -18,3 +18,7 @@
 .radius {
   border-radius: 14px;
 }
+
+.ant-form-item {
+  margin-bottom: 16px;
+}
