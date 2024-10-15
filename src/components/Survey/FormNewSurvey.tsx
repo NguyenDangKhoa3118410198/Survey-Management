@@ -209,7 +209,8 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
             rules={[{ required: true, message: 'Vui lòng nhập ngày bắt đầu' }]}
           >
             <DatePicker
-              format='DD/MM/YYYY'
+              showTime={{ format: 'HH:mm' }}
+              format='DD/MM/YYYY HH:mm'
               onChange={onStartChange}
               disabledDate={(current) =>
                 current && current.isBefore(dayjs().startOf('day'))
@@ -224,7 +225,8 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
             rules={[{ validator: validateEndDate }]}
           >
             <DatePicker
-              format='DD/MM/YYYY'
+              showTime={{ format: 'HH:mm' }}
+              format='DD/MM/YYYY HH:mm'
               disabledDate={(current) => {
                 if (!current) {
                   return false;
