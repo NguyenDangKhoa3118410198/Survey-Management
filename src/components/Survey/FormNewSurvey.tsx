@@ -216,7 +216,7 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
                >
                   <DatePicker
                      showTime={{ format: 'HH:mm' }}
-                     format='DD/MM/YYYY HH:mm'
+                     format='DD/MM/YYYY - HH:mm'
                      onChange={onStartChange}
                      disabledDate={(current) =>
                         current && current.isBefore(dayjs().startOf('day'))
@@ -232,7 +232,7 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
                >
                   <DatePicker
                      showTime={{ format: 'HH:mm' }}
-                     format='DD/MM/YYYY HH:mm'
+                     format='DD/MM/YYYY - HH:mm'
                      disabledDate={(current) => {
                         if (!current) {
                            return false;
@@ -261,7 +261,7 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
                   minHeight: '320px',
                }}
             >
-               <Item>
+               <Item style={{ marginBottom: '0' }}>
                   <Typography.Paragraph
                      style={{
                         fontSize: '18px',
@@ -348,7 +348,7 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
                   display: 'flex',
                   justifyContent: 'flex-end',
                   width: '100%',
-                  padding: '0 0 10px 0',
+                  padding: '10px 0 10px 0',
                }}
             >
                {isFormModified && (
