@@ -273,12 +273,6 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
         }}
         onValuesChange={handleValuesChange}
       >
-        {userDetail?.id && (
-          <Item label='ID' colon={false}>
-            <Typography.Text>{userDetail?.id}</Typography.Text>
-          </Item>
-        )}
-
         <Item label='Ảnh đại diện' colon={false}>
           <div>
             {isUpload ? (

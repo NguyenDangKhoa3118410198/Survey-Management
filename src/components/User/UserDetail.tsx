@@ -1,4 +1,4 @@
-import { Divider, Typography } from 'antd';
+import { Divider, Flex, Space, Typography } from 'antd';
 import React, { useEffect, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import FormNewUser from './FormNewUser';
@@ -36,16 +36,24 @@ const UserDetail: React.FC = () => {
         overflowY: 'auto',
       }}
     >
-      <Typography.Paragraph
-        style={{
-          fontSize: '18px',
-          fontWeight: '700',
-          margin: '0',
-          padding: '8px 24px',
-        }}
-      >
-        Chi tiết người dùng
-      </Typography.Paragraph>
+      <Flex>
+        <Typography.Paragraph
+          style={{
+            fontSize: '18px',
+            fontWeight: '700',
+            margin: '0',
+            padding: '8px 24px',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          Chi tiết người dùng
+          {userDetail?.id && (
+            <span style={{ marginLeft: '8px' }}>#{userDetail?.id}</span>
+          )}
+        </Typography.Paragraph>
+      </Flex>
+
       <Divider style={{ margin: '10px 0' }} />
       <div style={{ padding: '8px 24px' }}>
         <FormNewUser userDetail={memoizedUserDetail} />
