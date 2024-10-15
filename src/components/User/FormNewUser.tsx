@@ -26,6 +26,7 @@ import 'react-phone-input-2/lib/style.css';
 import CImage from 'components/common/CImage';
 import AddressFormItem from './AddressFormItem';
 import { useWatch } from 'antd/es/form/Form';
+import isEqual from 'lodash/isEqual';
 
 interface FormNewUserProps {
   userDetail?: IUser;
@@ -45,9 +46,31 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
   const [selectedDistrict, setSelectedDistrict] = useState<string[]>([]);
   const [selectedWard, setSelectedWard] = useState<string[]>([]);
   const [isFormModified, setIsFormModified] = useState<boolean>(false);
-  const [isDisabledEmail, setIsDisabledEmail] = useState<boolean>(false);
   const [isResetPassword, setIsResetPassword] = useState<boolean>(false);
   const phoneNumber = useWatch('phoneNumber', form);
+
+  const handleValuesChange = (changedValues: any) => {
+    const initData = { ...userDetail };
+    const newData = { ...initData, ...changedValues };
+
+    if (changedValues.birthDate) {
+      newData.birthDate = dayjs(changedValues.birthDate).format('DD/MM/YYYY');
+    }
+
+    setIsFormModified(!isEqual(initData, newData));
+  };
+
+  const isAddressUpdated = (initialAddress: any) => {
+    const currentAddress = [selectedCity, selectedDistrict, selectedWard];
+
+    return !isEqual(initialAddress, currentAddress);
+  };
+
+  useEffect(() => {
+    const initData = { ...userDetail };
+    const addressUpdated = isAddressUpdated(initData.idsAddress);
+    setIsFormModified(addressUpdated);
+  }, [selectedCity, selectedDistrict, selectedWard]);
 
   const { data: cities } = useQuery({
     queryKey: ['cityVN'],
@@ -249,10 +272,6 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
     });
   };
 
-  const handleValuesChange = () => {
-    setIsFormModified(true);
-  };
-
   const handleResetImage = () => {
     setIsUpload(true);
     setDeletedAvatar(true);
@@ -324,10 +343,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
             },
           ]}
         >
-          <Input
-            placeholder='Nhập email'
-            disabled={!!userDetail && !!id && !isDisabledEmail}
-          />
+          <Input placeholder='Nhập email' disabled={!!userDetail && !!id} />
         </Item>
         {(!userDetail || (userDetail && isResetPassword)) && (
           <>
@@ -408,7 +424,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
             country={'vn'}
             value={phoneNumber}
             countryCodeEditable={false}
-            placeholder='Nhập số điện thoại'
+            placeholder='Nhập số điện thoại (không bắt buộc)'
           />
         </Item>
         <Item
@@ -503,10 +519,9 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
             }}
             onClick={() => {
               fillValue();
-              setIsDisabledEmail(true);
             }}
           >
-            Reset
+            Unchange
           </Button>
           <Button
             htmlType='button'
