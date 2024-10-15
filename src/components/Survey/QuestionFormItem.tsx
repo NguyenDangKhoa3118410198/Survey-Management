@@ -60,7 +60,6 @@ const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
     form.resetFields([
       ['questions', fieldName, 'question'],
       ['questions', fieldName, 'isRequired'],
-      ['questions', fieldName, 'ratingOption'],
       ['questions', fieldName, 'description'],
     ]);
   };
@@ -127,22 +126,6 @@ const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
           unCheckedChildren={<CloseOutlined />}
         />
       </Form.Item>
-
-      {showExtraInputByType === 'rating' && (
-        <Form.Item
-          label='Đánh giá'
-          colon={false}
-          name={[fieldName, 'ratingOption']}
-        >
-          <Radio.Group defaultValue={1}>
-            <Radio value={1}>1 Sao</Radio>
-            <Radio value={2}>2 Sao</Radio>
-            <Radio value={3}>3 Sao</Radio>
-            <Radio value={4}>4 Sao</Radio>
-            <Radio value={5}>5 Sao</Radio>
-          </Radio.Group>
-        </Form.Item>
-      )}
 
       {(showExtraInputByType === 'multiple' ||
         showExtraInputByType === 'single') && (

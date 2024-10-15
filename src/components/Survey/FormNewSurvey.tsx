@@ -7,6 +7,8 @@ import {
   InputNumber,
   message,
   Modal,
+  Popconfirm,
+  PopconfirmProps,
   Typography,
 } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
@@ -76,6 +78,7 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
       }
 
       values.endDate = endDate ? endDate.format('DD/MM/YYYY') : undefined;
+      setIsFormModified(false);
 
       if (isEditing) {
         values.id = surveyDetail.id;
@@ -150,6 +153,11 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
       );
     }
     return Promise.resolve();
+  };
+
+  const confirm: PopconfirmProps['onConfirm'] = (e) => {
+    form.resetFields(['questions', 'totalContent']);
+    setIsFormModified(true);
   };
 
   return (
@@ -262,21 +270,26 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
               <List name='questions'>
                 {(fields, { add, remove }) => (
                   <>
-                    <Button
-                      icon={<RedoOutlined />}
-                      onClick={() => {
-                        form.resetFields(['questions', 'totalContent']);
-                        setIsFormModified(true);
-                      }}
-                      style={{
-                        position: 'absolute',
-                        right: '160px',
-                        top: '10px',
-                        border: '1px solid var(--main-color)',
-                      }}
+                    <Popconfirm
+                      title='Xóa tất cả khảo sát'
+                      description='Bạn có chắc chắn muốn xóa tất cả khảo sát?'
+                      onConfirm={confirm}
+                      okText='Yes'
+                      cancelText='No'
                     >
-                      Clear
-                    </Button>
+                      <Button
+                        icon={<RedoOutlined />}
+                        style={{
+                          position: 'absolute',
+                          right: '160px',
+                          top: '10px',
+                          border: '1px solid var(--main-color)',
+                        }}
+                      >
+                        Xóa tất cả
+                      </Button>
+                    </Popconfirm>
+
                     <Button
                       onClick={() => {
                         add({}, 0);
@@ -330,19 +343,22 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
             padding: '10px 0 10px 0',
           }}
         >
-          <Button
-            htmlType='button'
-            style={{
-              marginRight: '10px',
-              border: '1px solid var(--main-color)',
-            }}
-            onClick={() => {
-              form.resetFields();
-              setIsFormModified(true);
-            }}
-          >
-            Reset
-          </Button>
+          {isFormModified && (
+            <Button
+              htmlType='button'
+              style={{
+                marginRight: '10px',
+                border: '1px solid var(--main-color)',
+              }}
+              onClick={() => {
+                form.resetFields();
+                setIsFormModified(true);
+              }}
+            >
+              Reset
+            </Button>
+          )}
+
           <Button
             htmlType='button'
             style={{ marginRight: '10px' }}
