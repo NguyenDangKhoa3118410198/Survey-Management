@@ -16,7 +16,7 @@ import {
 } from 'antd';
 import dayjs from 'dayjs';
 import React, { useCallback, useEffect, useState } from 'react';
-import { customizeRequiredMark, generateRandomPassword } from 'utils';
+import { customizeRequiredMark, defaultPassword } from 'utils';
 import { fetchCities, fetchDistricts, fetchWards } from './services/fetchAPI';
 import { useNavigate, useParams } from 'react-router-dom';
 import useUser, { IUser } from 'hooks/useUser';
@@ -264,7 +264,8 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
   };
 
   const handleCreateRandomPassword = () => {
-    const ramdomPassword = generateRandomPassword();
+    const ramdomPassword = defaultPassword;
+
     setIsFormModified(true);
     form.setFieldsValue({
       password: ramdomPassword,
@@ -506,7 +507,10 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
                 marginRight: '10px',
                 border: '1px solid var(--main-color)',
               }}
-              onClick={() => setIsResetPassword(true)}
+              onClick={() => {
+                setIsResetPassword(true);
+                handleCreateRandomPassword();
+              }}
             >
               Reset Password
             </Button>

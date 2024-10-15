@@ -1,3 +1,5 @@
+export const defaultPassword = '1234@abcd';
+
 export const customizeRequiredMark = (
   label: React.ReactNode,
   { required }: { required: boolean }
