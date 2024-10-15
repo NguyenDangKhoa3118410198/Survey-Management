@@ -20,6 +20,7 @@ interface AddressFormItemProps {
   selectedCity: string[];
   selectedDistrict: string[];
   remove: (index: number) => void;
+  form: any;
 }
 
 const AddressFormItem: React.FC<AddressFormItemProps> = ({
@@ -39,6 +40,7 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
   selectedCity,
   selectedDistrict,
   remove,
+  form,
 }) => {
   return (
     <>
@@ -118,7 +120,10 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
             showSearch
             placeholder='Chọn quận/huyện'
             onChange={(value) => handleDistrictChange(value, index)}
-            disabled={!userDetail && !selectedCity[index]}
+            disabled={
+              (!userDetail && !selectedCity[index]) ||
+              !form.getFieldValue(['addresses', index, 'city'])
+            }
             allowClear
             optionFilterProp='label'
             options={
@@ -153,7 +158,10 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
             placeholder='Chọn phường/xã'
             onChange={(value) => handleWardChange(value, index)}
             allowClear
-            disabled={!userDetail && !selectedDistrict[index]}
+            disabled={
+              (!userDetail && !selectedDistrict[index]) ||
+              !form.getFieldValue(['addresses', index, 'district'])
+            }
             optionFilterProp='label'
             options={
               Array.isArray(wards) && wards[index]

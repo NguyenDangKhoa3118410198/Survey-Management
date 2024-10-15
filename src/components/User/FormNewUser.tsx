@@ -455,6 +455,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
                           userDetail={userDetail}
                           remove={remove}
                           fields={fields}
+                          form={form}
                         />
                       </div>
                     );
