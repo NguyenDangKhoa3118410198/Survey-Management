@@ -405,8 +405,9 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
           ]}
         >
           <PhoneInput
-            country='vn'
+            country={'vn'}
             value={phoneNumber}
+            countryCodeEditable={false}
             placeholder='Nhập số điện thoại'
           />
         </Item>

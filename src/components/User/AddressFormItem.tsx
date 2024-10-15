@@ -93,7 +93,7 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
             options={
               Array.isArray(cities) && cities.length > 0
                 ? cities.map((city) => ({
-                    label: city?.name,
+                    label: city?.full_name,
                     value: city?.id,
                   }))
                 : []
@@ -124,7 +124,7 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
             options={
               Array.isArray(districts) && districts[index]
                 ? districts[index].map((district: any) => ({
-                    label: district?.name,
+                    label: district?.full_name,
                     value: district?.id,
                   }))
                 : []
@@ -158,7 +158,7 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
             options={
               Array.isArray(wards) && wards[index]
                 ? wards[index]?.map((ward: any) => ({
-                    label: ward?.name,
+                    label: ward?.full_name,
                     value: ward?.id,
                   }))
                 : []
