@@ -8,7 +8,7 @@ export const columns: TableProps<IUser>['columns'] = [
     title: 'ID',
     dataIndex: 'id',
     align: 'center',
-    width: 100,
+    width: 120,
     render: (text: string) => <span style={{ color: '#1890FF' }}> {text}</span>,
   },
   {

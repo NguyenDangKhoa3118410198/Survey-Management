@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Input, Table, Typography } from 'antd';
+import { Button, Input, Space, Table, Typography } from 'antd';
 import { columns } from 'data/columnsUserList';
 import { useNavigate } from 'react-router-dom';
 import useUser from 'hooks/useUser';
@@ -54,7 +54,7 @@ const UserList: React.FC = () => {
           <Typography.Title level={4} style={{ margin: 0 }}>
             Danh sách người dùng
           </Typography.Title>
-          <div>
+          <Space>
             <Input
               prefix={<SearchOutlined />}
               placeholder='Nhập từ khóa tìm kiếm'
@@ -77,7 +77,7 @@ const UserList: React.FC = () => {
             >
               Tạo mới
             </Button>
-          </div>
+          </Space>
         </div>
         <div
           style={{
@@ -90,7 +90,7 @@ const UserList: React.FC = () => {
             rowKey='id'
             dataSource={filteredUserList ?? []}
             columns={columns}
-            scroll={{ y: 'calc(100vh - 360px)' }}
+            scroll={{ y: 'calc(100vh - 360px)', x: 'auto' }}
           />
         </div>
       </div>

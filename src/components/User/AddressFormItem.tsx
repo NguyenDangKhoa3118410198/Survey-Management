@@ -57,6 +57,12 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
           style={{ flex: 1, height: '52px' }}
           layout='vertical'
           label='Số nhà'
+          rules={[
+            {
+              required: true,
+              message: 'Vui lòng nhập số nhà',
+            },
+          ]}
         >
           <Input className='radius' placeholder='Nhập địa chỉ' allowClear />
         </Item>
