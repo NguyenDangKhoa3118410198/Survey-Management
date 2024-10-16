@@ -1,3 +1,4 @@
+import { defaultPassword } from 'utils';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -28,6 +29,7 @@ interface IUseUser {
   addNewUser: (newUser: IUser) => void;
   editUser: (newUser: IUser) => void;
   deleteUser: (userId: number) => void;
+  resetPassword: (userId: number) => void;
   clearUser: () => void;
 }
 
@@ -37,19 +39,30 @@ const useUser = create<IUseUser>()(
       userList: [],
       setUserList: (userList: IUser[]) => set({ userList }),
 
-      addNewUser: (newUser: IUser) =>
-        set((state) => ({ userList: [...state.userList, newUser] })),
+      addNewUser: (newUser: IUser) => set((state) => ({ userList: [...state.userList, newUser] })),
 
       editUser: (updatedUser: IUser) =>
         set((state) => ({
-          userList: state.userList.map((user) =>
-            user.id === updatedUser.id ? updatedUser : user
-          ),
+          userList: state.userList.map((user) => (user.id === updatedUser.id ? updatedUser : user)),
         })),
 
       deleteUser: (userId: number) =>
         set((state) => ({
           userList: state.userList.filter((user) => user.id !== userId),
+        })),
+
+      resetPassword: (userId: number) =>
+        set((state) => ({
+          userList: state.userList.map((user) => {
+            if (user.id === userId) {
+              return {
+                ...user,
+                password: defaultPassword,
+                verifyPassword: defaultPassword,
+              };
+            }
+            return user;
+          }),
         })),
 
       clearUser: () => set({ userList: [] }),

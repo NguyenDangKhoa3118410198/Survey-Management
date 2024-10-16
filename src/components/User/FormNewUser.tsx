@@ -1,19 +1,6 @@
 import { RetweetOutlined } from '@ant-design/icons';
 import { useQuery } from '@tanstack/react-query';
-import {
-  Button,
-  DatePicker,
-  Flex,
-  Form,
-  Image,
-  Input,
-  message,
-  Modal,
-  Radio,
-  Select,
-  Typography,
-  UploadFile,
-} from 'antd';
+import { Button, DatePicker, Flex, Form, Input, message, Modal, Radio, UploadFile } from 'antd';
 import dayjs from 'dayjs';
 import React, { useCallback, useEffect, useState } from 'react';
 import { customizeRequiredMark, defaultPassword } from 'utils';
@@ -23,7 +10,6 @@ import useUser, { IUser } from 'hooks/useUser';
 import UploadImage from 'components/common/UploadImage';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
-import CImage from 'components/common/CImage';
 import AddressFormItem from './AddressFormItem';
 import { useWatch } from 'antd/es/form/Form';
 import isEqual from 'lodash/isEqual';
@@ -43,8 +29,6 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(
     const navigate = useNavigate();
     const { userList, addNewUser, editUser } = useUser();
     const [fileList, setFileList] = useState<UploadFile[]>([]);
-    const [isUpload, setIsUpload] = useState<boolean>(false);
-    const [deletedAvatar, setDeletedAvatar] = useState<boolean>(false);
     const [selectedCity, setSelectedCity] = useState<string[]>([]);
     const [selectedDistrict, setSelectedDistrict] = useState<string[]>([]);
     const [selectedWard, setSelectedWard] = useState<string[]>([]);
@@ -68,10 +52,6 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(
 
       return !isEqual(initialAddress, currentAddress);
     };
-
-    useEffect(() => {
-      if (isResetPassword) handleCreateRandomPassword();
-    }, [isResetPassword]);
 
     useEffect(() => {
       const initData = { ...userDetail };
@@ -268,22 +248,6 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(
 
     const handleFileListChange = (newFileList: UploadFile[]) => {
       setFileList(newFileList);
-    };
-
-    const handleCreateRandomPassword = () => {
-      const ramdomPassword = defaultPassword;
-
-      setIsFormModified(true);
-      form.setFieldsValue({
-        password: ramdomPassword,
-        verifyPassword: ramdomPassword,
-      });
-    };
-
-    const handleResetImage = () => {
-      setIsUpload(true);
-      setDeletedAvatar(true);
-      setIsFormModified(true);
     };
 
     const handleChangeAddressNumber = (value: string, index: number) => {

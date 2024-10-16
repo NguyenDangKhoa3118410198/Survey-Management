@@ -1,17 +1,8 @@
-import {
-  Button,
-  Divider,
-  Dropdown,
-  Flex,
-  Menu,
-  MenuProps,
-  Space,
-  Typography,
-} from 'antd';
+import { Divider, Dropdown, Flex, Menu, MenuProps, Popconfirm, Space, Typography } from 'antd';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import FormNewUser from './FormNewUser';
-import { IUser } from 'hooks/useUser';
+import useUser, { IUser } from 'hooks/useUser';
 import { fetchUserbyId } from './services/fetchAPI';
 import { useQuery } from '@tanstack/react-query';
 import { EllipsisOutlined, RetweetOutlined } from '@ant-design/icons';
@@ -20,6 +11,7 @@ const UserDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [isResetPassword, setIsResetPassword] = useState<boolean>(false);
+  const { resetPassword } = useUser();
 
   const {
     data: userDetail,
@@ -37,21 +29,33 @@ const UserDetail: React.FC = () => {
     }
   }, [id, userDetail, isLoading, isError, navigate]);
 
+  const handleResetPassword = () => {
+    if (userDetail) {
+      setIsResetPassword(true);
+      resetPassword(Number(userDetail.id));
+    } else {
+      console.error('User detail is not available.');
+    }
+  };
+
   const memoizedUserDetail = useMemo(() => userDetail, [userDetail]);
   const menuItems: MenuProps['items'] = [
     {
       key: 'resetPassword',
       label: (
-        <div
-          onClick={() => {
-            setIsResetPassword(true);
-          }}
+        <Popconfirm
+          title='Bạn có chắc chắn muốn reset mật khẩu không?'
+          onConfirm={handleResetPassword}
+          okText='Có'
+          cancelText='Không'
         >
-          <Flex gap={10}>
-            <RetweetOutlined />
-            Reset Password
-          </Flex>
-        </div>
+          <div>
+            <Flex gap={10}>
+              <RetweetOutlined />
+              Reset Password
+            </Flex>
+          </div>
+        </Popconfirm>
       ),
     },
   ];
@@ -76,14 +80,10 @@ const UserDetail: React.FC = () => {
           }}
         >
           Chi tiết người dùng
-          {userDetail?.id && (
-            <span style={{ marginLeft: '8px' }}>#{userDetail?.id}</span>
-          )}
+          {userDetail?.id && <span style={{ marginLeft: '8px' }}>#{userDetail?.id}</span>}
         </Typography.Paragraph>
         <Dropdown overlay={<Menu items={menuItems} />} placement='bottomRight'>
-          <EllipsisOutlined
-            style={{ transform: 'rotate(90deg)', marginRight: 16 }}
-          />
+          <EllipsisOutlined style={{ transform: 'rotate(90deg)', marginRight: 16 }} />
         </Dropdown>
       </Flex>
 
