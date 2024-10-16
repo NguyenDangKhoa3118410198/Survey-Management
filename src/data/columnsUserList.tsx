@@ -1,5 +1,6 @@
-import { EyeOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import { Button, Image, TableProps } from 'antd';
+import { deleteUserById } from 'components/User/services/fetchAPI';
 import { IUser } from 'hooks/useUser';
 import { Link } from 'react-router-dom';
 
@@ -66,6 +67,21 @@ export const columns: TableProps<IUser>['columns'] = [
             <EyeOutlined style={{ color: '#284698', fontSize: '20px' }} />
           </Button>
         </Link>
+      ) : null,
+  },
+  {
+    title: 'Xóa',
+    align: 'center',
+    fixed: 'right',
+    width: 150,
+    render: (record: IUser) =>
+      record && record.id ? (
+        <Button
+          style={{ border: 'none', backgroundColor: 'transparent' }}
+          onClick={() => deleteUserById(record.id)}
+        >
+          <DeleteOutlined style={{ color: '#284698', fontSize: '20px' }} />
+        </Button>
       ) : null,
   },
 ];

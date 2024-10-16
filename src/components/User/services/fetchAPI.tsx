@@ -28,3 +28,11 @@ export const fetchUserbyId = (userId: string) => {
 
   return user;
 };
+
+export const deleteUserById = (userId: number) => {
+  const { deleteUser } = useUser.getState();
+
+  deleteUser(userId);
+
+  return;
+};

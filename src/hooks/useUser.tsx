@@ -27,6 +27,7 @@ interface IUseUser {
   setUserList: (userList: IUser[]) => void;
   addNewUser: (newUser: IUser) => void;
   editUser: (newUser: IUser) => void;
+  deleteUser: (userId: number) => void;
   clearUser: () => void;
 }
 
@@ -44,6 +45,11 @@ const useUser = create<IUseUser>()(
           userList: state.userList.map((user) =>
             user.id === updatedUser.id ? updatedUser : user
           ),
+        })),
+
+      deleteUser: (userId: number) =>
+        set((state) => ({
+          userList: state.userList.filter((user) => user.id !== userId),
         })),
 
       clearUser: () => set({ userList: [] }),
