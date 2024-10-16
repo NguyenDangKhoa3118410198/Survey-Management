@@ -30,7 +30,7 @@ import isEqual from 'lodash/isEqual';
 
 interface FormNewUserProps {
   userDetail?: IUser;
-  setIsResetPassword: any;
+  setIsResetPassword?: any;
   isResetPassword?: any;
 }
 
@@ -448,14 +448,8 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(
           </Item>
           <List name='addresses'>
             {(fields, { add, remove }) => (
-              <>
+              <Item label='Địa chỉ' colon={false}>
                 <Flex>
-                  <Typography.Text
-                    style={{ width: '190px', textAlign: 'left' }}
-                  >
-                    Địa chỉ
-                    <span style={{ color: 'red' }}> *</span>
-                  </Typography.Text>
                   <Flex vertical style={{ width: '100%' }}>
                     {fields.map(({ key, name, ...restField }, index) => {
                       return (
@@ -497,7 +491,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(
                     </Item>
                   </Flex>
                 </Flex>
-              </>
+              </Item>
             )}
           </List>
 
@@ -508,19 +502,22 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(
               width: '100%',
             }}
           >
-            <Button
-              htmlType='button'
-              style={{
-                marginRight: '10px',
-                border: '1px solid var(--main-color)',
-              }}
-              onClick={() => {
-                fillValue();
-                setIsResetPassword(false);
-              }}
-            >
-              Hủy thay đổi
-            </Button>
+            {userDetail && isFormModified && (
+              <Button
+                htmlType='button'
+                style={{
+                  marginRight: '10px',
+                  border: '1px solid var(--main-color)',
+                }}
+                onClick={() => {
+                  fillValue();
+                  setIsResetPassword(false);
+                }}
+              >
+                Hủy thay đổi
+              </Button>
+            )}
+
             <Button
               htmlType='button'
               style={{ marginRight: '10px' }}
