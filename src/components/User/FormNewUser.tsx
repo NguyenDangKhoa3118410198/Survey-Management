@@ -30,494 +30,505 @@ import isEqual from 'lodash/isEqual';
 
 interface FormNewUserProps {
   userDetail?: IUser;
+  setIsResetPassword: any;
+  isResetPassword?: any;
 }
 
 const { Item, List } = Form;
 
-const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
-  const { id } = useParams();
-  const [form] = Form.useForm();
-  const navigate = useNavigate();
-  const { userList, addNewUser, editUser } = useUser();
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const [isUpload, setIsUpload] = useState<boolean>(false);
-  const [deletedAvatar, setDeletedAvatar] = useState<boolean>(false);
-  const [selectedCity, setSelectedCity] = useState<string[]>([]);
-  const [selectedDistrict, setSelectedDistrict] = useState<string[]>([]);
-  const [selectedWard, setSelectedWard] = useState<string[]>([]);
-  const [selectedAddressNumber, setSelectedAddressNumber] = useState<string[]>(
-    []
-  );
-  const [isFormModified, setIsFormModified] = useState<boolean>(false);
-  const [isResetPassword, setIsResetPassword] = useState<boolean>(false);
-  const phoneNumber = useWatch('phoneNumber', form);
+const FormNewUser: React.FC<FormNewUserProps> = React.memo(
+  ({ userDetail, setIsResetPassword, isResetPassword }) => {
+    const { id } = useParams();
+    const [form] = Form.useForm();
+    const navigate = useNavigate();
+    const { userList, addNewUser, editUser } = useUser();
+    const [fileList, setFileList] = useState<UploadFile[]>([]);
+    const [isUpload, setIsUpload] = useState<boolean>(false);
+    const [deletedAvatar, setDeletedAvatar] = useState<boolean>(false);
+    const [selectedCity, setSelectedCity] = useState<string[]>([]);
+    const [selectedDistrict, setSelectedDistrict] = useState<string[]>([]);
+    const [selectedWard, setSelectedWard] = useState<string[]>([]);
+    const [selectedAddressNumber, setSelectedAddressNumber] = useState<
+      string[]
+    >([]);
+    const [isFormModified, setIsFormModified] = useState<boolean>(false);
+    const phoneNumber = useWatch('phoneNumber', form);
 
-  const handleValuesChange = (changedValues: any) => {
-    const initData = { ...userDetail };
-    const newData = { ...initData, ...changedValues };
+    const handleValuesChange = (changedValues: any) => {
+      const initData = { ...userDetail };
+      const newData = { ...initData, ...changedValues };
 
-    if (changedValues.birthDate) {
-      newData.birthDate = dayjs(changedValues.birthDate).format('DD/MM/YYYY');
-    }
+      if (changedValues.birthDate) {
+        newData.birthDate = dayjs(changedValues.birthDate).format('DD/MM/YYYY');
+      }
 
-    setIsFormModified(!isEqual(initData, newData));
-  };
+      setIsFormModified(!isEqual(initData, newData));
+    };
 
-  const isAddressUpdated = (initialAddress: any) => {
-    const currentAddress = [
-      selectedAddressNumber,
-      selectedCity,
-      selectedDistrict,
-      selectedWard,
-    ];
+    const isAddressUpdated = (initialAddress: any) => {
+      const currentAddress = [
+        selectedAddressNumber,
+        selectedCity,
+        selectedDistrict,
+        selectedWard,
+      ];
 
-    return !isEqual(initialAddress, currentAddress);
-  };
+      return !isEqual(initialAddress, currentAddress);
+    };
 
-  useEffect(() => {
-    const initData = { ...userDetail };
-    const addressUpdated = isAddressUpdated(initData.idsAddress);
-    setIsFormModified(addressUpdated);
-  }, [selectedAddressNumber, selectedCity, selectedDistrict, selectedWard]);
+    useEffect(() => {
+      if (isResetPassword) handleCreateRandomPassword();
+    }, [isResetPassword]);
 
-  const { data: cities } = useQuery({
-    queryKey: ['cityVN'],
-    queryFn: fetchCities,
-  });
+    useEffect(() => {
+      const initData = { ...userDetail };
+      const addressUpdated = isAddressUpdated(initData.idsAddress);
+      setIsFormModified(addressUpdated);
+    }, [selectedAddressNumber, selectedCity, selectedDistrict, selectedWard]);
 
-  const fetchDistrictsByCityId = (cityId: string) => {
-    return cityId?.length ? fetchDistricts(cityId) : [];
-  };
-
-  const fetchWardsByDistrictId = (districtId: string) => {
-    return districtId?.length ? fetchWards(districtId) : [];
-  };
-
-  const { data: districts } = useQuery({
-    queryKey: ['districtVN', selectedCity],
-    queryFn: () => {
-      return Promise.all(
-        selectedCity.map((cityId) => fetchDistrictsByCityId(cityId))
-      );
-    },
-    enabled: selectedCity.length > 0,
-  });
-
-  const { data: wards } = useQuery({
-    queryKey: ['wardVN', selectedDistrict],
-    queryFn: () => {
-      return Promise.all(
-        selectedDistrict.map((districtId) => fetchWardsByDistrictId(districtId))
-      );
-    },
-    enabled: selectedDistrict.length > 0,
-  });
-
-  const updateAddressAtIndex = (
-    setter: React.Dispatch<React.SetStateAction<string[]>>,
-    array: string[],
-    index: number,
-    value: string
-  ) => {
-    const updatedArray = [...array];
-    updatedArray[index] = value;
-    setter(updatedArray);
-  };
-
-  const handleCityChange = (value: string, index: number) => {
-    updateAddressAtIndex(setSelectedCity, selectedCity, index, value);
-    updateAddressAtIndex(setSelectedDistrict, selectedDistrict, index, '');
-    updateAddressAtIndex(setSelectedWard, selectedWard, index, '');
-
-    form.resetFields([
-      ['addresses', index, 'district'],
-      ['addresses', index, 'ward'],
-    ]);
-  };
-
-  const handleDistrictChange = (value: string, index: number) => {
-    updateAddressAtIndex(setSelectedDistrict, selectedDistrict, index, value);
-    updateAddressAtIndex(setSelectedWard, selectedWard, index, '');
-
-    form.resetFields([['addresses', index, 'ward']]);
-  };
-
-  const handleWardChange = (value: string, index: number) => {
-    updateAddressAtIndex(setSelectedWard, selectedWard, index, value);
-  };
-
-  const showConfirm = (values: IUser) => {
-    Modal.confirm({
-      title: 'Xác nhận',
-      content: 'Bạn có chắc chắn muốn lưu thông tin này?',
-      onOk: () => submitForm(values),
-      onCancel() {
-        return;
-      },
+    const { data: cities } = useQuery({
+      queryKey: ['cityVN'],
+      queryFn: fetchCities,
     });
-  };
 
-  const fillValue = useCallback(() => {
-    if (userDetail) {
-      const {
-        birthDate,
-        originBirthDate,
-        addresses,
-        avatar,
-        idsAddress,
-        phoneNumber,
-        ...restUserDetail
-      } = userDetail;
+    const fetchDistrictsByCityId = (cityId: string) => {
+      return cityId?.length ? fetchDistricts(cityId) : [];
+    };
 
-      if (idsAddress) {
-        idsAddress.forEach((element, index) => {
-          if (index === 0) {
-            setSelectedAddressNumber([...selectedAddressNumber, ...element]);
-          } else if (index === 1) {
-            setSelectedCity([...selectedCity, ...element]);
-          } else if (index === 2) {
-            setSelectedDistrict([...selectedDistrict, ...element]);
-          } else if (index === 3) {
-            setSelectedWard([...selectedWard, ...element]);
-          }
-        });
-      }
+    const fetchWardsByDistrictId = (districtId: string) => {
+      return districtId?.length ? fetchWards(districtId) : [];
+    };
 
-      form.setFieldsValue({
-        ...restUserDetail,
-        addresses: addresses || [{}],
-        gender: restUserDetail.gender || 'Nam',
-        birthDate: dayjs(originBirthDate) ?? null,
-        phoneNumber: phoneNumber,
-      });
-    }
-  }, [userDetail]);
-
-  useEffect(() => {
-    fillValue();
-  }, [userDetail, form]);
-
-  const submitForm = (values: IUser) => {
-    try {
-      let pathImg = null;
-      if (fileList.length > 0 && fileList[0].response) {
-        pathImg = fileList[0].response.physicalPath ?? null;
-      }
-
-      if (deletedAvatar && !pathImg) {
-        pathImg = null;
-      } else {
-        pathImg = pathImg ?? userDetail?.avatar;
-      }
-
-      const formattedBirthDate =
-        dayjs(values.birthDate).format('DD/MM/YYYY') ?? null;
-
-      const updatedUser = {
-        ...userDetail,
-        ...values,
-        avatar: pathImg,
-        birthDate: formattedBirthDate,
-        originBirthDate: values.birthDate,
-        idsAddress: [
-          selectedAddressNumber,
-          selectedCity,
-          selectedDistrict,
-          selectedWard,
-        ],
-      };
-
-      if (userDetail?.id) {
-        editUser({ ...updatedUser, id: userDetail.id });
-        message.success('Sửa thành công');
-      } else {
-        const newUser = {
-          ...updatedUser,
-          id: userList.length + 1,
-        };
-
-        const isEmailValid = userList.find(
-          (user) => user.email === newUser.email
+    const { data: districts } = useQuery({
+      queryKey: ['districtVN', selectedCity],
+      queryFn: () => {
+        return Promise.all(
+          selectedCity.map((cityId) => fetchDistrictsByCityId(cityId))
         );
+      },
+      enabled: selectedCity.length > 0,
+    });
 
-        if (!!isEmailValid) {
-          message.warning('Email đã tồn tại');
+    const { data: wards } = useQuery({
+      queryKey: ['wardVN', selectedDistrict],
+      queryFn: () => {
+        return Promise.all(
+          selectedDistrict.map((districtId) =>
+            fetchWardsByDistrictId(districtId)
+          )
+        );
+      },
+      enabled: selectedDistrict.length > 0,
+    });
+
+    const updateAddressAtIndex = (
+      setter: React.Dispatch<React.SetStateAction<string[]>>,
+      array: string[],
+      index: number,
+      value: string
+    ) => {
+      const updatedArray = [...array];
+      updatedArray[index] = value;
+      setter(updatedArray);
+    };
+
+    const handleCityChange = (value: string, index: number) => {
+      updateAddressAtIndex(setSelectedCity, selectedCity, index, value);
+      updateAddressAtIndex(setSelectedDistrict, selectedDistrict, index, '');
+      updateAddressAtIndex(setSelectedWard, selectedWard, index, '');
+
+      form.resetFields([
+        ['addresses', index, 'district'],
+        ['addresses', index, 'ward'],
+      ]);
+    };
+
+    const handleDistrictChange = (value: string, index: number) => {
+      updateAddressAtIndex(setSelectedDistrict, selectedDistrict, index, value);
+      updateAddressAtIndex(setSelectedWard, selectedWard, index, '');
+
+      form.resetFields([['addresses', index, 'ward']]);
+    };
+
+    const handleWardChange = (value: string, index: number) => {
+      updateAddressAtIndex(setSelectedWard, selectedWard, index, value);
+    };
+
+    const showConfirm = (values: IUser) => {
+      Modal.confirm({
+        title: 'Xác nhận',
+        content: 'Bạn có chắc chắn muốn lưu thông tin này?',
+        onOk: () => submitForm(values),
+        onCancel() {
           return;
+        },
+      });
+    };
+
+    const fillValue = useCallback(() => {
+      if (userDetail) {
+        const {
+          birthDate,
+          originBirthDate,
+          addresses,
+          avatar,
+          idsAddress,
+          phoneNumber,
+          ...restUserDetail
+        } = userDetail;
+
+        if (idsAddress) {
+          idsAddress.forEach((element, index) => {
+            if (index === 0) {
+              setSelectedAddressNumber([...selectedAddressNumber, ...element]);
+            } else if (index === 1) {
+              setSelectedCity([...selectedCity, ...element]);
+            } else if (index === 2) {
+              setSelectedDistrict([...selectedDistrict, ...element]);
+            } else if (index === 3) {
+              setSelectedWard([...selectedWard, ...element]);
+            }
+          });
         }
 
-        addNewUser(newUser);
-        navigate('/users');
-        message.success('Tạo mới thành công');
+        form.setFieldsValue({
+          ...restUserDetail,
+          addresses: addresses || [{}],
+          gender: restUserDetail.gender || 'Nam',
+          birthDate: dayjs(originBirthDate) ?? null,
+          phoneNumber: phoneNumber,
+        });
       }
-    } catch (error) {
-      console.log('Submit failed', error);
-    }
-  };
+    }, [userDetail]);
 
-  const handleSubmit = (values: IUser) => {
-    showConfirm(values);
-  };
+    useEffect(() => {
+      fillValue();
+    }, [userDetail, form]);
 
-  const handleRemoveAddress = (remove: any, name: number) => {
-    remove(name);
+    const submitForm = (values: IUser) => {
+      try {
+        let pathImg = null;
+        if (fileList.length > 0 && fileList[0].response) {
+          pathImg = fileList[0].response.physicalPath ?? null;
+        }
 
-    const updatedCities = [...selectedCity];
-    updatedCities.splice(name, 1);
-    setSelectedCity(updatedCities);
+        if (deletedAvatar && !pathImg) {
+          pathImg = null;
+        } else {
+          pathImg = pathImg ?? userDetail?.avatar;
+        }
 
-    const updatedDistricts = [...selectedDistrict];
-    updatedDistricts.splice(name, 1);
-    setSelectedDistrict(updatedDistricts);
+        const formattedBirthDate =
+          dayjs(values.birthDate).format('DD/MM/YYYY') ?? null;
 
-    const updatedWards = [...selectedWard];
-    updatedWards.splice(name, 1);
-    setSelectedWard(updatedWards);
-  };
+        const updatedUser = {
+          ...userDetail,
+          ...values,
+          avatar: pathImg,
+          birthDate: formattedBirthDate,
+          originBirthDate: values.birthDate,
+          idsAddress: [
+            selectedAddressNumber,
+            selectedCity,
+            selectedDistrict,
+            selectedWard,
+          ],
+        };
 
-  const handleFileListChange = (newFileList: UploadFile[]) => {
-    setFileList(newFileList);
-  };
+        if (userDetail?.id) {
+          editUser({ ...updatedUser, id: userDetail.id });
+          message.success('Sửa thành công');
+        } else {
+          const newUser = {
+            ...updatedUser,
+            id: userList.length + 1,
+          };
 
-  const handleCreateRandomPassword = () => {
-    const ramdomPassword = defaultPassword;
+          const isEmailValid = userList.find(
+            (user) => user.email === newUser.email
+          );
 
-    setIsFormModified(true);
-    form.setFieldsValue({
-      password: ramdomPassword,
-      verifyPassword: ramdomPassword,
-    });
-  };
+          if (!!isEmailValid) {
+            message.warning('Email đã tồn tại');
+            return;
+          }
 
-  const handleResetImage = () => {
-    setIsUpload(true);
-    setDeletedAvatar(true);
-    setIsFormModified(true);
-  };
+          addNewUser(newUser);
+          navigate('/users');
+          message.success('Tạo mới thành công');
+        }
+      } catch (error) {
+        console.log('Submit failed', error);
+      }
+    };
 
-  const handleChangeAddressNumber = (value: string, index: number) => {
-    updateAddressAtIndex(
-      setSelectedAddressNumber,
-      selectedAddressNumber,
-      index,
-      value
-    );
-  };
+    const handleSubmit = (values: IUser) => {
+      showConfirm(values);
+    };
 
-  return (
-    <>
-      <Form
-        form={form}
-        autoComplete='false'
-        onFinish={handleSubmit}
-        layout='horizontal'
-        requiredMark={customizeRequiredMark}
-        initialValues={{
-          addresses: [{}],
-          gender: 'Nam',
-        }}
-        onValuesChange={handleValuesChange}
-      >
-        <Item label='Ảnh đại diện' colon={false}>
-          <div>
-            {isUpload ? (
-              <>
-                <Item name='avatar' noStyle>
-                  <UploadImage
-                    fileList={fileList}
-                    onChange={handleFileListChange}
-                  />
-                </Item>
-              </>
-            ) : userDetail?.avatar ? (
-              <>
-                <CImage
-                  userDetail={userDetail}
-                  handleResetImage={handleResetImage}
-                />
-              </>
-            ) : (
-              <>
-                <Item name='avatar' noStyle>
-                  <UploadImage
-                    fileList={fileList}
-                    onChange={handleFileListChange}
-                  />
-                </Item>
-              </>
-            )}
-          </div>
-        </Item>
+    const handleRemoveAddress = (remove: any, name: number) => {
+      remove(name);
 
-        <Item
-          label='Họ và tên'
-          name='fullName'
-          colon={false}
-          rules={[{ required: true, message: 'Vui lòng nhập họ và tên' }]}
+      const updatedCities = [...selectedCity];
+      updatedCities.splice(name, 1);
+      setSelectedCity(updatedCities);
+
+      const updatedDistricts = [...selectedDistrict];
+      updatedDistricts.splice(name, 1);
+      setSelectedDistrict(updatedDistricts);
+
+      const updatedWards = [...selectedWard];
+      updatedWards.splice(name, 1);
+      setSelectedWard(updatedWards);
+    };
+
+    const handleFileListChange = (newFileList: UploadFile[]) => {
+      setFileList(newFileList);
+    };
+
+    const handleCreateRandomPassword = () => {
+      const ramdomPassword = defaultPassword;
+
+      setIsFormModified(true);
+      form.setFieldsValue({
+        password: ramdomPassword,
+        verifyPassword: ramdomPassword,
+      });
+    };
+
+    const handleResetImage = () => {
+      setIsUpload(true);
+      setDeletedAvatar(true);
+      setIsFormModified(true);
+    };
+
+    const handleChangeAddressNumber = (value: string, index: number) => {
+      updateAddressAtIndex(
+        setSelectedAddressNumber,
+        selectedAddressNumber,
+        index,
+        value
+      );
+    };
+
+    return (
+      <>
+        <Form
+          form={form}
+          autoComplete='false'
+          onFinish={handleSubmit}
+          layout='horizontal'
+          requiredMark={customizeRequiredMark}
+          initialValues={{
+            addresses: [{}],
+            gender: 'Nam',
+          }}
+          onValuesChange={handleValuesChange}
         >
-          <Input placeholder='Nhập họ và tên' />
-        </Item>
-        <Item
-          label='Email'
-          name='email'
-          colon={false}
-          rules={[
-            { required: true, message: 'Vui lòng nhập email' },
-            {
-              pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-              message: 'Email không hợp lệ',
-            },
-          ]}
-        >
-          <Input placeholder='Nhập email' disabled={!!userDetail && !!id} />
-        </Item>
-        {(!userDetail || (userDetail && isResetPassword)) && (
-          <>
-            <Item
-              label='Mật khẩu'
-              name='password'
-              colon={false}
-              rules={[
-                { required: true, message: 'Vui lòng nhập mật khẩu' },
-                {
-                  pattern:
-                    /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
-                  message:
-                    'Mật khẩu đảm bảo có ít nhất 8 ký tự, ít nhất 1 ký tự chữ và ít nhất 1 ký tự đặc biệt',
-                },
-              ]}
-            >
-              <Input.Password placeholder='Nhập mật khẩu' />
-            </Item>
-
-            <Item
-              label='Xác thực mật khẩu'
-              name='verifyPassword'
-              colon={false}
-              dependencies={['password']}
-              rules={[
-                { required: true, message: 'Vui lòng xác thực mật khẩu' },
-                {
-                  pattern:
-                    /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
-                  message:
-                    'Mật khẩu đảm bảo có ít nhất 8 ký tự, ít nhất 1 ký tự chữ và ít nhất 1 ký tự đặc biệt',
-                },
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if (!value || getFieldValue('password') === value) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject(
-                      new Error('Mật khẩu không trùng khớp')
-                    );
-                  },
-                }),
-              ]}
-            >
-              <Input.Password placeholder='Vui lòng xác thực mật khẩu' />
-            </Item>
-          </>
-        )}
-
-        <Item label='Giới tính' colon={false} name='gender'>
-          <Radio.Group>
-            <Radio value='Nam'>Nam</Radio>
-            <Radio value='Nữ'> Nữ </Radio>
-            <Radio value='Khác'> Khác </Radio>
-          </Radio.Group>
-        </Item>
-        <Item
-          label='Số điện thoại'
-          name='phoneNumber'
-          colon={false}
-          rules={[
-            {
-              pattern: /^\+?\d{10,15}$/,
-              message: 'Số điện thoại không hợp lệ',
-            },
-          ]}
-        >
-          <PhoneInput
-            country={'vn'}
-            value={phoneNumber}
-            countryCodeEditable={false}
-            placeholder='Nhập số điện thoại (không bắt buộc)'
-          />
-        </Item>
-        <Item
-          label='Ngày sinh'
-          name='birthDate'
-          colon={false}
-          rules={[{ required: true, message: 'Vui lòng nhập ngày sinh' }]}
-        >
-          <DatePicker
-            format='DD/MM/YYYY'
-            placeholder='Chọn ngày sinh'
-            disabledDate={(current) =>
-              current && current.isAfter(dayjs().endOf('day'))
-            }
-            style={{ borderRadius: '14px' }}
-          />
-        </Item>
-        <List name='addresses'>
-          {(fields, { add, remove }) => (
-            <>
-              <Flex>
-                <Typography.Text style={{ width: '190px', textAlign: 'left' }}>
-                  Địa chỉ
-                  <span style={{ color: 'red' }}> *</span>
-                </Typography.Text>
-                <Flex vertical style={{ width: '100%' }}>
-                  {fields.map(({ key, name, ...restField }, index) => {
-                    return (
-                      <div key={key}>
-                        <AddressFormItem
-                          itemKey={name}
-                          restField={restField}
-                          name={name}
-                          index={index}
-                          cities={cities ?? []}
-                          districts={districts ?? []}
-                          wards={wards ?? []}
-                          selectedCity={selectedCity ?? []}
-                          selectedDistrict={selectedDistrict ?? []}
-                          handleChangeAddressNumber={handleChangeAddressNumber}
-                          handleCityChange={handleCityChange}
-                          handleDistrictChange={handleDistrictChange}
-                          handleWardChange={handleWardChange}
-                          handleRemoveAddress={handleRemoveAddress}
-                          userDetail={userDetail}
-                          remove={remove}
-                          fields={fields}
-                          form={form}
-                        />
-                      </div>
-                    );
-                  })}
-                  <Item>
-                    <Button
-                      type='dashed'
-                      onClick={() => add()}
-                      block
-                      style={{ borderRadius: '14px' }}
-                    >
-                      + Thêm địa chỉ
-                    </Button>
+          <Item label='Ảnh đại diện' colon={false}>
+            <div>
+              {isUpload ? (
+                <>
+                  <Item name='avatar' noStyle>
+                    <UploadImage
+                      fileList={fileList}
+                      onChange={handleFileListChange}
+                    />
                   </Item>
-                </Flex>
-              </Flex>
+                </>
+              ) : userDetail?.avatar ? (
+                <>
+                  <CImage
+                    userDetail={userDetail}
+                    handleResetImage={handleResetImage}
+                  />
+                </>
+              ) : (
+                <>
+                  <Item name='avatar' noStyle>
+                    <UploadImage
+                      fileList={fileList}
+                      onChange={handleFileListChange}
+                    />
+                  </Item>
+                </>
+              )}
+            </div>
+          </Item>
+
+          <Item
+            label='Họ và tên'
+            name='fullName'
+            colon={false}
+            rules={[{ required: true, message: 'Vui lòng nhập họ và tên' }]}
+          >
+            <Input placeholder='Nhập họ và tên' />
+          </Item>
+          <Item
+            label='Email'
+            name='email'
+            colon={false}
+            rules={[
+              { required: true, message: 'Vui lòng nhập email' },
+              {
+                pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                message: 'Email không hợp lệ',
+              },
+            ]}
+          >
+            <Input placeholder='Nhập email' disabled={!!userDetail && !!id} />
+          </Item>
+          {(!userDetail || (userDetail && isResetPassword)) && (
+            <>
+              <Item
+                label='Mật khẩu'
+                name='password'
+                colon={false}
+                rules={[
+                  { required: true, message: 'Vui lòng nhập mật khẩu' },
+                  {
+                    pattern:
+                      /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
+                    message:
+                      'Mật khẩu đảm bảo có ít nhất 8 ký tự, ít nhất 1 ký tự chữ và ít nhất 1 ký tự đặc biệt',
+                  },
+                ]}
+              >
+                <Input.Password placeholder='Nhập mật khẩu' />
+              </Item>
+
+              <Item
+                label='Xác thực mật khẩu'
+                name='verifyPassword'
+                colon={false}
+                dependencies={['password']}
+                rules={[
+                  { required: true, message: 'Vui lòng xác thực mật khẩu' },
+                  {
+                    pattern:
+                      /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
+                    message:
+                      'Mật khẩu đảm bảo có ít nhất 8 ký tự, ít nhất 1 ký tự chữ và ít nhất 1 ký tự đặc biệt',
+                  },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value || getFieldValue('password') === value) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(
+                        new Error('Mật khẩu không trùng khớp')
+                      );
+                    },
+                  }),
+                ]}
+              >
+                <Input.Password placeholder='Vui lòng xác thực mật khẩu' />
+              </Item>
             </>
           )}
-        </List>
 
-        <Item
-          style={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            width: '100%',
-          }}
-        >
-          {userDetail && (
+          <Item label='Giới tính' colon={false} name='gender'>
+            <Radio.Group>
+              <Radio value='Nam'>Nam</Radio>
+              <Radio value='Nữ'> Nữ </Radio>
+              <Radio value='Khác'> Khác </Radio>
+            </Radio.Group>
+          </Item>
+          <Item
+            label='Số điện thoại'
+            name='phoneNumber'
+            colon={false}
+            rules={[
+              {
+                pattern: /^\+?\d{10,15}$/,
+                message: 'Số điện thoại không hợp lệ',
+              },
+            ]}
+          >
+            <PhoneInput
+              country={'vn'}
+              value={phoneNumber}
+              countryCodeEditable={false}
+              placeholder='Nhập số điện thoại (không bắt buộc)'
+            />
+          </Item>
+          <Item
+            label='Ngày sinh'
+            name='birthDate'
+            colon={false}
+            rules={[{ required: true, message: 'Vui lòng nhập ngày sinh' }]}
+          >
+            <DatePicker
+              format='DD/MM/YYYY'
+              placeholder='Chọn ngày sinh'
+              disabledDate={(current) =>
+                current && current.isAfter(dayjs().endOf('day'))
+              }
+              style={{ borderRadius: '14px' }}
+            />
+          </Item>
+          <List name='addresses'>
+            {(fields, { add, remove }) => (
+              <>
+                <Flex>
+                  <Typography.Text
+                    style={{ width: '190px', textAlign: 'left' }}
+                  >
+                    Địa chỉ
+                    <span style={{ color: 'red' }}> *</span>
+                  </Typography.Text>
+                  <Flex vertical style={{ width: '100%' }}>
+                    {fields.map(({ key, name, ...restField }, index) => {
+                      return (
+                        <div key={key}>
+                          <AddressFormItem
+                            itemKey={name}
+                            restField={restField}
+                            name={name}
+                            index={index}
+                            cities={cities ?? []}
+                            districts={districts ?? []}
+                            wards={wards ?? []}
+                            selectedCity={selectedCity ?? []}
+                            selectedDistrict={selectedDistrict ?? []}
+                            handleChangeAddressNumber={
+                              handleChangeAddressNumber
+                            }
+                            handleCityChange={handleCityChange}
+                            handleDistrictChange={handleDistrictChange}
+                            handleWardChange={handleWardChange}
+                            handleRemoveAddress={handleRemoveAddress}
+                            userDetail={userDetail}
+                            remove={remove}
+                            fields={fields}
+                            form={form}
+                          />
+                        </div>
+                      );
+                    })}
+                    <Item>
+                      <Button
+                        type='dashed'
+                        onClick={() => add()}
+                        block
+                        style={{ borderRadius: '14px' }}
+                      >
+                        + Thêm địa chỉ
+                      </Button>
+                    </Item>
+                  </Flex>
+                </Flex>
+              </>
+            )}
+          </List>
+
+          <Item
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              width: '100%',
+            }}
+          >
             <Button
               htmlType='button'
               style={{
@@ -525,48 +536,36 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
                 border: '1px solid var(--main-color)',
               }}
               onClick={() => {
-                setIsResetPassword(true);
-                handleCreateRandomPassword();
+                fillValue();
+                setIsResetPassword(false);
               }}
             >
-              Reset Password
+              Hủy thay đổi
             </Button>
-          )}
-          <Button
-            htmlType='button'
-            style={{
-              marginRight: '10px',
-              border: '1px solid var(--main-color)',
-            }}
-            onClick={() => {
-              fillValue();
-            }}
-          >
-            Unchange
-          </Button>
-          <Button
-            htmlType='button'
-            style={{ marginRight: '10px' }}
-            onClick={() => navigate('/users')}
-          >
-            Hủy bỏ
-          </Button>
-          <Button
-            type='primary'
-            htmlType='submit'
-            style={{
-              backgroundColor: !isFormModified
-                ? 'lightgray'
-                : 'var(--main-color)',
-            }}
-            disabled={!isFormModified}
-          >
-            {userDetail ? 'Cập nhật' : 'Tạo mới'}
-          </Button>
-        </Item>
-      </Form>
-    </>
-  );
-});
+            <Button
+              htmlType='button'
+              style={{ marginRight: '10px' }}
+              onClick={() => navigate('/users')}
+            >
+              Hủy bỏ
+            </Button>
+            <Button
+              type='primary'
+              htmlType='submit'
+              style={{
+                backgroundColor: !isFormModified
+                  ? 'lightgray'
+                  : 'var(--main-color)',
+              }}
+              disabled={!isFormModified}
+            >
+              {userDetail ? 'Cập nhật' : 'Tạo mới'}
+            </Button>
+          </Item>
+        </Form>
+      </>
+    );
+  }
+);
 
 export default FormNewUser;
