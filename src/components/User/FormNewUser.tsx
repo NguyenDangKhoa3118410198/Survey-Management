@@ -392,14 +392,6 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
             >
               <Input.Password placeholder='Vui lòng xác thực mật khẩu' />
             </Item>
-            <Item label=' ' colon={false} wrapperCol={{ span: 24, offset: 0 }}>
-              <Button
-                icon={<RetweetOutlined />}
-                onClick={handleCreateRandomPassword}
-              >
-                Tạo mật khẩu ngẫu nhiên
-              </Button>
-            </Item>
           </>
         )}
 
