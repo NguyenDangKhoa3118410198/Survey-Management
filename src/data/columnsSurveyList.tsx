@@ -1,5 +1,6 @@
-import { EyeOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import { Button, TableProps } from 'antd';
+import { deleteSurveyById } from 'components/Survey/services/fecthAPI';
 import { ISurvey } from 'hooks/useSurvey';
 import { Link } from 'react-router-dom';
 
@@ -54,5 +55,23 @@ export const columns: TableProps<ISurvey>['columns'] = [
           </Button>
         </Link>
       ) : null,
+  },
+  {
+    title: 'Xóa',
+    align: 'center',
+    fixed: 'right',
+    width: 150,
+    render: (record: ISurvey) => (
+      <Button
+        style={{ border: 'none', backgroundColor: 'transparent' }}
+        onClick={() => {
+          if (record.id) {
+            deleteSurveyById(record.id);
+          }
+        }}
+      >
+        <DeleteOutlined style={{ color: '#284698', fontSize: '20px' }} />
+      </Button>
+    ),
   },
 ];

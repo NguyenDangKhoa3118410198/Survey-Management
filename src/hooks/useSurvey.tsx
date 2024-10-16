@@ -28,6 +28,7 @@ interface IUseSurvey {
   setSurveyList: (surveyList: ISurvey[]) => void;
   addNewSurvey: (survey: ISurvey) => void;
   editSurvey: (updatedSurvey: ISurvey) => void;
+  deleteSurvey: (surveyId: number) => void;
 }
 
 const useSurvey = create<IUseSurvey>()(
@@ -41,6 +42,12 @@ const useSurvey = create<IUseSurvey>()(
         set((state) => ({
           surveyList: state.surveyList.map((survey) =>
             survey.id === updatedSurvey.id ? updatedSurvey : survey
+          ),
+        })),
+      deleteSurvey: (surveyId: number) =>
+        set((state) => ({
+          surveyList: state.surveyList.filter(
+            (survey) => survey.id !== surveyId
           ),
         })),
     }),
