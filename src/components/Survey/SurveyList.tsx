@@ -1,29 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Input, Table, Typography } from 'antd';
+import {
+  Button,
+  Card,
+  DatePicker,
+  Input,
+  Space,
+  Table,
+  Typography,
+} from 'antd';
 import { columns } from 'data/columnsSurveyList';
 import { useNavigate } from 'react-router-dom';
 import useSurvey from 'hooks/useSurvey';
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import useFilter from 'hooks/useFilter';
+import dayjs from 'dayjs';
 
 const SurveyList: React.FC = () => {
   const navigate = useNavigate();
   const { surveyList } = useSurvey();
-  const [filteredSurveyList, setFilteredSurveyList] = useState(surveyList);
-
-  useEffect(() => {
-    setFilteredSurveyList(surveyList);
-  }, [surveyList]);
+  const {
+    filteredData,
+    handleKeyValueFilterChange,
+    handleAllFilterChange,
+    searchParams,
+  } = useFilter({
+    initialData: surveyList,
+  });
 
   const handleCreateSurvey = () => {
     navigate('/surveys/create');
-  };
-
-  const onSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    const filteredList = surveyList.filter((survey) =>
-      survey.surveyName.toLowerCase().includes(value.toLowerCase())
-    );
-    setFilteredSurveyList(filteredList);
   };
 
   return (
@@ -66,7 +71,7 @@ const SurveyList: React.FC = () => {
                 prefix={<SearchOutlined />}
                 placeholder='Nhập từ khóa tìm kiếm'
                 allowClear
-                onChange={onSearch}
+                onChange={(e) => handleAllFilterChange(e.target.value)}
                 style={{
                   width: 200,
                   marginRight: '12px',
@@ -87,6 +92,67 @@ const SurveyList: React.FC = () => {
               </Button>
             </div>
           </div>
+          <Card title='Bộ lọc' style={{ marginBottom: 24 }}>
+            <Space direction='vertical' size='middle' style={{ width: '100%' }}>
+              <Space>
+                <Input
+                  style={{ width: 200 }}
+                  type='text'
+                  value={searchParams.get('id') || ''}
+                  onChange={(e) =>
+                    handleKeyValueFilterChange('id', e.target.value)
+                  }
+                  placeholder='ID'
+                  allowClear
+                />
+                <Input
+                  style={{ width: 200 }}
+                  type='text'
+                  value={searchParams.get('surveyName') || ''}
+                  onChange={(e) =>
+                    handleKeyValueFilterChange('surveyName', e.target.value)
+                  }
+                  placeholder='Tên khảo sát'
+                  allowClear
+                />
+                <Input
+                  style={{ width: 200 }}
+                  type='text'
+                  value={searchParams.get('averageScore') || ''}
+                  onChange={(e) =>
+                    handleKeyValueFilterChange('averageScore', e.target.value)
+                  }
+                  placeholder='Điểm thưởng'
+                  allowClear
+                />
+                {/* <DatePicker
+                  format='DD/MM/YYYY'
+                  value={
+                    searchParams.get('startDate')
+                      ? dayjs(
+                          decodeURIComponent(searchParams.get('startDate')!),
+                          'DD/MM/YYYY'
+                        )
+                      : null
+                  }
+                  onChange={(date, dateString) => {
+                    if (date) {
+                      // Mã hóa ngày trước khi lưu vào URL
+                      handleKeyValueFilterChange(
+                        'startDate',
+                        encodeURIComponent(dateString[0])
+                      );
+                    } else {
+                      // Nếu không chọn ngày, xóa tham số
+                      handleKeyValueFilterChange('startDate', '');
+                    }
+                  }}
+                  placeholder='Chọn ngày bắt đầu'
+                  style={{ width: 200 }}
+                /> */}
+              </Space>
+            </Space>
+          </Card>
 
           <div
             style={{
@@ -97,7 +163,7 @@ const SurveyList: React.FC = () => {
           >
             <Table
               rowKey='id'
-              dataSource={filteredSurveyList}
+              dataSource={filteredData ?? []}
               columns={columns}
               scroll={{ y: 'calc(100vh - 360px)' }}
             />
