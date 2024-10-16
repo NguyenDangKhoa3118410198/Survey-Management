@@ -45,6 +45,9 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
   const [selectedCity, setSelectedCity] = useState<string[]>([]);
   const [selectedDistrict, setSelectedDistrict] = useState<string[]>([]);
   const [selectedWard, setSelectedWard] = useState<string[]>([]);
+  const [selectedAddressNumber, setSelectedAddressNumber] = useState<string[]>(
+    []
+  );
   const [isFormModified, setIsFormModified] = useState<boolean>(false);
   const [isResetPassword, setIsResetPassword] = useState<boolean>(false);
   const phoneNumber = useWatch('phoneNumber', form);
@@ -61,7 +64,12 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
   };
 
   const isAddressUpdated = (initialAddress: any) => {
-    const currentAddress = [selectedCity, selectedDistrict, selectedWard];
+    const currentAddress = [
+      selectedAddressNumber,
+      selectedCity,
+      selectedDistrict,
+      selectedWard,
+    ];
 
     return !isEqual(initialAddress, currentAddress);
   };
@@ -70,7 +78,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
     const initData = { ...userDetail };
     const addressUpdated = isAddressUpdated(initData.idsAddress);
     setIsFormModified(addressUpdated);
-  }, [selectedCity, selectedDistrict, selectedWard]);
+  }, [selectedAddressNumber, selectedCity, selectedDistrict, selectedWard]);
 
   const { data: cities } = useQuery({
     queryKey: ['cityVN'],
@@ -129,7 +137,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
 
   const handleDistrictChange = (value: string, index: number) => {
     updateAddressAtIndex(setSelectedDistrict, selectedDistrict, index, value);
-    updateAddressAtIndex(setSelectedWard, selectedWard, index, ''); // Reset ward
+    updateAddressAtIndex(setSelectedWard, selectedWard, index, '');
 
     form.resetFields([['addresses', index, 'ward']]);
   };
@@ -164,10 +172,12 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
       if (idsAddress) {
         idsAddress.forEach((element, index) => {
           if (index === 0) {
-            setSelectedCity([...selectedCity, ...element]);
+            setSelectedAddressNumber([...selectedAddressNumber, ...element]);
           } else if (index === 1) {
-            setSelectedDistrict([...selectedDistrict, ...element]);
+            setSelectedCity([...selectedCity, ...element]);
           } else if (index === 2) {
+            setSelectedDistrict([...selectedDistrict, ...element]);
+          } else if (index === 3) {
             setSelectedWard([...selectedWard, ...element]);
           }
         });
@@ -209,7 +219,12 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
         avatar: pathImg,
         birthDate: formattedBirthDate,
         originBirthDate: values.birthDate,
-        idsAddress: [selectedCity, selectedDistrict, selectedWard],
+        idsAddress: [
+          selectedAddressNumber,
+          selectedCity,
+          selectedDistrict,
+          selectedWard,
+        ],
       };
 
       if (userDetail?.id) {
@@ -277,6 +292,15 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
     setIsUpload(true);
     setDeletedAvatar(true);
     setIsFormModified(true);
+  };
+
+  const handleChangeAddressNumber = (value: string, index: number) => {
+    updateAddressAtIndex(
+      setSelectedAddressNumber,
+      selectedAddressNumber,
+      index,
+      value
+    );
   };
 
   return (
@@ -457,6 +481,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
                           wards={wards ?? []}
                           selectedCity={selectedCity ?? []}
                           selectedDistrict={selectedDistrict ?? []}
+                          handleChangeAddressNumber={handleChangeAddressNumber}
                           handleCityChange={handleCityChange}
                           handleDistrictChange={handleDistrictChange}
                           handleWardChange={handleWardChange}

@@ -21,6 +21,7 @@ interface AddressFormItemProps {
   selectedDistrict: string[];
   remove: (index: number) => void;
   form: any;
+  handleChangeAddressNumber: any;
 }
 
 const AddressFormItem: React.FC<AddressFormItemProps> = ({
@@ -41,37 +42,61 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
   selectedDistrict,
   remove,
   form,
+  handleChangeAddressNumber,
 }) => {
-  const handleBlur = () => {
+  const validateUniqueAddress = (message: string) => (_: any, value: any) => {
     const allAddresses = form.getFieldValue('addresses') || [];
-    validateUniqueAddress(allAddresses)
-      .then(() => {
-        return;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  const validateUniqueAddress = (allAddresses: any) => {
     const currentAddress = form.getFieldValue(['addresses', index]);
+
+    if (
+      !currentAddress ||
+      !currentAddress.addressNumber ||
+      !currentAddress.city ||
+      !currentAddress.district ||
+      !currentAddress.ward
+    ) {
+      return Promise.resolve();
+    }
+
+    let duplicateIndex = -1;
 
     const isDuplicate = allAddresses.some((addr: any, idx: any) => {
       if (idx !== index) {
-        return (
+        const isSameAddress =
           addr.addressNumber === currentAddress.addressNumber &&
           addr.city === currentAddress.city &&
           addr.district === currentAddress.district &&
-          addr.ward === currentAddress.ward
-        );
+          addr.ward === currentAddress.ward;
+
+        if (isSameAddress) {
+          duplicateIndex = idx;
+          return true;
+        }
       }
       return false;
     });
 
-    if (!isDuplicate) {
+    if (isDuplicate && duplicateIndex !== -1) {
+      form.setFields([
+        {
+          name: ['addresses', index],
+          errors: [message],
+        },
+        {
+          name: ['addresses', duplicateIndex],
+          errors: [message],
+        },
+      ]);
+      return Promise.reject(message);
+    } else {
+      form.setFields([
+        {
+          name: ['addresses', index],
+          errors: [],
+        },
+      ]);
       return Promise.resolve();
     }
-    return Promise.reject('Địa chỉ đã trùng lặp');
   };
 
   return (
@@ -88,24 +113,25 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
         <Item
           {...restField}
           name={[name, 'addressNumber']}
-          style={{ flex: 1, height: '52px' }}
+          style={{ flex: 1 }}
           layout='vertical'
           label='Số nhà'
-          onBlur={handleBlur}
           rules={[
             {
               required: true,
               message: 'Vui lòng nhập số nhà',
             },
-            ({ getFieldValue }) => ({
-              validator() {
-                const allAddresses = getFieldValue('addresses') || [];
-                return validateUniqueAddress(allAddresses);
-              },
-            }),
+            {
+              validator: validateUniqueAddress('Địa chỉ bị trùng lặp'),
+            },
           ]}
         >
-          <Input className='radius' placeholder='Nhập địa chỉ' allowClear />
+          <Input
+            className='radius'
+            placeholder='Nhập địa chỉ'
+            allowClear
+            onChange={(e) => handleChangeAddressNumber(e.target.value, index)}
+          />
         </Item>
         <Item
           {...restField}
@@ -116,14 +142,10 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
               required: true,
               message: 'Vui lòng chọn thành phố',
             },
-            ({ getFieldValue }) => ({
-              validator() {
-                const allAddresses = getFieldValue('addresses') || [];
-                return validateUniqueAddress(allAddresses);
-              },
-            }),
+            {
+              validator: validateUniqueAddress('Địa chỉ bị trùng lặp'),
+            },
           ]}
-          onBlur={handleBlur}
           layout='vertical'
           label='Thành phố'
         >
@@ -152,18 +174,14 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
           {...restField}
           name={[name, 'district']}
           style={{ flex: 1, height: '52px' }}
-          onBlur={handleBlur}
           rules={[
             {
               required: true,
               message: 'Vui lòng chọn quận/huyện',
             },
-            ({ getFieldValue }) => ({
-              validator() {
-                const allAddresses = getFieldValue('addresses') || [];
-                return validateUniqueAddress(allAddresses);
-              },
-            }),
+            {
+              validator: validateUniqueAddress('Địa chỉ bị trùng lặp'),
+            },
           ]}
           dependencies={[['addresses', name, 'city']]}
           layout='vertical'
@@ -193,18 +211,14 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
           {...restField}
           name={[name, 'ward']}
           style={{ flex: 1, height: '52px' }}
-          onBlur={handleBlur}
           rules={[
             {
               required: true,
               message: 'Vui lòng chọn phường/xã!',
             },
-            ({ getFieldValue }) => ({
-              validator() {
-                const allAddresses = getFieldValue('addresses') || [];
-                return validateUniqueAddress(allAddresses);
-              },
-            }),
+            {
+              validator: validateUniqueAddress('Địa chỉ bị trùng lặp'),
+            },
           ]}
           dependencies={[
             ['addresses', name, 'city'],
@@ -240,7 +254,7 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
         )}
       </div>
       {fields.length > 1 && name !== fields.length - 1 && (
-        <Divider style={{ marginBottom: '10px' }} />
+        <Divider style={{ marginBottom: '15px' }} />
       )}
     </>
   );
