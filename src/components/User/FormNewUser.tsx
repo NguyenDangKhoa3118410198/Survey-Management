@@ -326,34 +326,13 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(
           onValuesChange={handleValuesChange}
         >
           <Item label='Ảnh đại diện' colon={false}>
-            <div>
-              {isUpload ? (
-                <>
-                  <Item name='avatar' noStyle>
-                    <UploadImage
-                      fileList={fileList}
-                      onChange={handleFileListChange}
-                    />
-                  </Item>
-                </>
-              ) : userDetail?.avatar ? (
-                <>
-                  <CImage
-                    userDetail={userDetail}
-                    handleResetImage={handleResetImage}
-                  />
-                </>
-              ) : (
-                <>
-                  <Item name='avatar' noStyle>
-                    <UploadImage
-                      fileList={fileList}
-                      onChange={handleFileListChange}
-                    />
-                  </Item>
-                </>
-              )}
-            </div>
+            <Item name='avatar' noStyle>
+              <UploadImage
+                fileList={fileList}
+                onChange={handleFileListChange}
+                avatarImage={userDetail?.avatar}
+              />
+            </Item>
           </Item>
 
           <Item

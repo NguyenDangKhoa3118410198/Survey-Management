@@ -1,16 +1,35 @@
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Upload, UploadFile, UploadProps, Image, Button } from 'antd';
 import ImgCrop from 'antd-img-crop';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface UploadImageProps {
   fileList: UploadFile[];
   onChange: (fileList: UploadFile[]) => void;
+  avatarImage?: any;
 }
 
-const UploadImage: React.FC<UploadImageProps> = ({ fileList, onChange }) => {
+const UploadImage: React.FC<UploadImageProps> = ({
+  fileList,
+  onChange,
+  avatarImage,
+}) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
+
+  useEffect(() => {
+    if (avatarImage) {
+      onChange([
+        {
+          uid: '-1',
+          name: 'initial.png',
+          status: 'done',
+          url: avatarImage,
+          thumbUrl: avatarImage,
+        },
+      ]);
+    }
+  }, [avatarImage]);
 
   type FileType = Exclude<UploadFile['originFileObj'], undefined>;
 
@@ -35,11 +54,6 @@ const UploadImage: React.FC<UploadImageProps> = ({ fileList, onChange }) => {
     setPreviewOpen(true);
   };
 
-  const handleRemove = (file: UploadFile) => {
-    const updatedFileList = fileList.filter((item) => item.uid !== file.uid);
-    onChange(updatedFileList);
-  };
-
   return (
     <>
       <ImgCrop rotationSlider>
@@ -50,7 +64,6 @@ const UploadImage: React.FC<UploadImageProps> = ({ fileList, onChange }) => {
           onChange={handleChange}
           maxCount={1}
           onPreview={handlePreview}
-          showUploadList={{ showRemoveIcon: false }}
         >
           {fileList.length > 0 ? null : (
             <button style={{ border: 0, background: 'none' }} type='button'>
@@ -60,17 +73,6 @@ const UploadImage: React.FC<UploadImageProps> = ({ fileList, onChange }) => {
           )}
         </Upload>
       </ImgCrop>
-
-      {fileList.length > 0 && (
-        <Button
-          type='text'
-          icon={<DeleteOutlined style={{ color: 'red', fontSize: 20 }} />}
-          onClick={() => handleRemove(fileList[0])}
-          style={{ marginTop: 4, width: 102 }}
-        >
-          Xóa ảnh
-        </Button>
-      )}
 
       {previewImage && (
         <Image
