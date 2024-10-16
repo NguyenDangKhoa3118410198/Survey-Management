@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Button,
-  Card,
-  DatePicker,
-  Input,
-  Space,
-  Table,
-  Typography,
-} from 'antd';
+import { Button, Card, DatePicker, Flex, Input, Space, Table, Typography } from 'antd';
 import { columns } from 'data/columnsSurveyList';
 import { useNavigate } from 'react-router-dom';
 import useSurvey from 'hooks/useSurvey';
@@ -18,14 +10,10 @@ import dayjs from 'dayjs';
 const SurveyList: React.FC = () => {
   const navigate = useNavigate();
   const { surveyList } = useSurvey();
-  const {
-    filteredData,
-    handleKeyValueFilterChange,
-    handleAllFilterChange,
-    searchParams,
-  } = useFilter({
-    initialData: surveyList,
-  });
+  const { filteredData, handleKeyValueFilterChange, handleAllFilterChange, searchParams } =
+    useFilter({
+      initialData: surveyList,
+    });
 
   const handleCreateSurvey = () => {
     navigate('/surveys/create');
@@ -94,14 +82,12 @@ const SurveyList: React.FC = () => {
           </div>
           <Card title='Bộ lọc' style={{ marginBottom: 24 }}>
             <Space direction='vertical' size='middle' style={{ width: '100%' }}>
-              <Space>
+              <Flex wrap gap={10}>
                 <Input
                   style={{ width: 200 }}
                   type='text'
                   value={searchParams.get('id') || ''}
-                  onChange={(e) =>
-                    handleKeyValueFilterChange('id', e.target.value)
-                  }
+                  onChange={(e) => handleKeyValueFilterChange('id', e.target.value)}
                   placeholder='ID'
                   allowClear
                 />
@@ -109,9 +95,7 @@ const SurveyList: React.FC = () => {
                   style={{ width: 200 }}
                   type='text'
                   value={searchParams.get('surveyName') || ''}
-                  onChange={(e) =>
-                    handleKeyValueFilterChange('surveyName', e.target.value)
-                  }
+                  onChange={(e) => handleKeyValueFilterChange('surveyName', e.target.value)}
                   placeholder='Tên khảo sát'
                   allowClear
                 />
@@ -119,38 +103,31 @@ const SurveyList: React.FC = () => {
                   style={{ width: 200 }}
                   type='text'
                   value={searchParams.get('averageScore') || ''}
-                  onChange={(e) =>
-                    handleKeyValueFilterChange('averageScore', e.target.value)
-                  }
+                  onChange={(e) => handleKeyValueFilterChange('averageScore', e.target.value)}
                   placeholder='Điểm thưởng'
                   allowClear
                 />
-                {/* <DatePicker
+                <DatePicker
                   format='DD/MM/YYYY'
                   value={
                     searchParams.get('startDate')
-                      ? dayjs(
-                          decodeURIComponent(searchParams.get('startDate')!),
-                          'DD/MM/YYYY'
-                        )
+                      ? dayjs(Number(decodeURIComponent(searchParams.get('startDate')!)))
                       : null
                   }
-                  onChange={(date, dateString) => {
+                  onChange={(date) => {
                     if (date) {
-                      // Mã hóa ngày trước khi lưu vào URL
                       handleKeyValueFilterChange(
                         'startDate',
-                        encodeURIComponent(dateString[0])
+                        encodeURIComponent(date.valueOf().toString())
                       );
                     } else {
-                      // Nếu không chọn ngày, xóa tham số
                       handleKeyValueFilterChange('startDate', '');
                     }
                   }}
                   placeholder='Chọn ngày bắt đầu'
                   style={{ width: 200 }}
-                /> */}
-              </Space>
+                />
+              </Flex>
             </Space>
           </Card>
 

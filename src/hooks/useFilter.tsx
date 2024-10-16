@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import debounce from 'lodash/debounce';
+import dayjs from 'dayjs';
 
 interface IUseFilterProps<T> {
   initialData: T[];
@@ -17,16 +18,30 @@ const useFilter = <T extends object>({ initialData }: IUseFilterProps<T>) => {
 
   const applyKeyValueFilter = (data: T[]) => {
     let filtered = [...data];
+
     searchParams.forEach((value, key) => {
-      filtered = filtered.filter((item) =>
-        String(item[key as keyof T])
-          ?.toLowerCase()
-          .includes(value.toLowerCase())
-      );
+      filtered = filtered.filter((item) => {
+        const itemValue = String(item[key as keyof T]);
+
+        if (key === 'startDate') {
+          const formattedDate = dayjs(itemValue, 'DD/MM/YYYY');
+          console.log(formattedDate);
+
+          if (formattedDate.isValid()) {
+            const dateFromTimestamp = dayjs(Number(value));
+
+            return formattedDate.isSame(dateFromTimestamp, 'day');
+          } else {
+            return false;
+          }
+        }
+
+        return itemValue?.toLowerCase().includes(value.toLowerCase());
+      });
     });
+
     return filtered;
   };
-
   const applyAllFilter = (data: T[]) => {
     if (!allFilter) return data;
     return data.filter((item) =>
