@@ -32,6 +32,53 @@ const UserList: React.FC = () => {
         height: 'calc(100vh - 150px)',
       }}
     >
+      <Card title='Bộ lọc' style={{ marginBottom: 24 }}>
+        <Space direction='vertical' size='middle' style={{ width: '100%' }}>
+          <Space>
+            <Input
+              style={{ width: 200 }}
+              type='text'
+              value={searchParams.get('id') || ''}
+              onChange={(e) => handleKeyValueFilterChange('id', e.target.value)}
+              placeholder='ID'
+              allowClear
+            />
+            <Input
+              style={{ width: 200 }}
+              type='text'
+              value={searchParams.get('fullName') || ''}
+              onChange={(e) =>
+                handleKeyValueFilterChange('fullName', e.target.value)
+              }
+              placeholder='Name'
+              allowClear
+            />
+            <Input
+              style={{ width: 200 }}
+              type='email'
+              value={searchParams.get('email') || ''}
+              onChange={(e) =>
+                handleKeyValueFilterChange('email', e.target.value)
+              }
+              placeholder='Email'
+              allowClear
+            />
+            <Select
+              style={{ width: 200, borderRadius: '0px !important' }}
+              className='filterSelect'
+              value={searchParams.get('gender') || ''}
+              onChange={(value: any) =>
+                handleKeyValueFilterChange('gender', value)
+              }
+            >
+              <Option value=''>Select Gender</Option>
+              <Option value='Nam'>Nam</Option>
+              <Option value='Nữ'>Nữ</Option>
+              <Option value='Khác'>Khác</Option>
+            </Select>
+          </Space>
+        </Space>
+      </Card>
       <div
         style={{
           backgroundColor: '#fff',
@@ -75,55 +122,6 @@ const UserList: React.FC = () => {
             </Button>
           </Space>
         </div>
-        <Card title='Bộ lọc' style={{ marginBottom: 24 }}>
-          <Space direction='vertical' size='middle' style={{ width: '100%' }}>
-            <Space>
-              <Input
-                style={{ width: 200 }}
-                type='text'
-                value={searchParams.get('id') || ''}
-                onChange={(e) =>
-                  handleKeyValueFilterChange('id', e.target.value)
-                }
-                placeholder='ID'
-                allowClear
-              />
-              <Input
-                style={{ width: 200 }}
-                type='text'
-                value={searchParams.get('fullName') || ''}
-                onChange={(e) =>
-                  handleKeyValueFilterChange('fullName', e.target.value)
-                }
-                placeholder='Name'
-                allowClear
-              />
-              <Input
-                style={{ width: 200 }}
-                type='email'
-                value={searchParams.get('email') || ''}
-                onChange={(e) =>
-                  handleKeyValueFilterChange('email', e.target.value)
-                }
-                placeholder='Email'
-                allowClear
-              />
-              <Select
-                style={{ width: 200, borderRadius: '0px !important' }}
-                className='filterSelect'
-                value={searchParams.get('gender') || ''}
-                onChange={(value: any) =>
-                  handleKeyValueFilterChange('gender', value)
-                }
-              >
-                <Option value=''>Select Gender</Option>
-                <Option value='Nam'>Nam</Option>
-                <Option value='Nữ'>Nữ</Option>
-                <Option value='Khác'>Khác</Option>
-              </Select>
-            </Space>
-          </Space>
-        </Card>
 
         <div
           style={{
