@@ -24,12 +24,18 @@ const SurveyList: React.FC = () => {
     handleKeyValueFilterChange,
     handleAllFilterChange,
     searchParams,
+    setSearchParams,
   } = useFilter({
     initialData: surveyList,
   });
 
   const handleCreateSurvey = () => {
     navigate('/surveys/create');
+  };
+
+  const clearFilters = () => {
+    const newParams = new URLSearchParams();
+    setSearchParams(newParams);
   };
 
   return (
@@ -40,9 +46,9 @@ const SurveyList: React.FC = () => {
         height: 'calc(100vh - 64px)',
       }}
     >
-      <Card title='Bộ lọc' style={{ marginBottom: 24 }}>
+      <Card title='Bộ lọc' style={{ marginBottom: 30 }}>
         <Space direction='vertical' size='middle' style={{ width: '100%' }}>
-          <Flex wrap gap={10}>
+          <Flex wrap gap={20}>
             <Input
               style={{ width: 200 }}
               type='text'
@@ -63,7 +69,8 @@ const SurveyList: React.FC = () => {
             />
             <Input
               style={{ width: 200 }}
-              type='text'
+              type='number'
+              min={0}
               value={searchParams.get('averageScore') || ''}
               onChange={(e) =>
                 handleKeyValueFilterChange('averageScore', e.target.value)
@@ -72,6 +79,7 @@ const SurveyList: React.FC = () => {
               allowClear
             />
             <DatePicker
+              className='filterSelect'
               format='DD/MM/YYYY'
               value={
                 searchParams.get('startDate')
@@ -91,9 +99,57 @@ const SurveyList: React.FC = () => {
                 }
               }}
               placeholder='Chọn ngày bắt đầu'
+              style={{ width: 200, borderRadius: 6 }}
+            />
+
+            <DatePicker
+              className='filterSelect'
+              format='DD/MM/YYYY'
+              value={
+                searchParams.get('endDate')
+                  ? dayjs(
+                      Number(decodeURIComponent(searchParams.get('endDate')!))
+                    )
+                  : null
+              }
+              onChange={(date) => {
+                if (date) {
+                  handleKeyValueFilterChange(
+                    'endDate',
+                    encodeURIComponent(date.valueOf().toString())
+                  );
+                } else {
+                  handleKeyValueFilterChange('endDate', '');
+                }
+              }}
+              placeholder='Chọn ngày kết thúc'
+              style={{ width: 200, borderRadius: 6 }}
+            />
+            <Input
               style={{ width: 200 }}
+              type='number'
+              min={0}
+              value={searchParams.get('totalContent') || ''}
+              onChange={(e) =>
+                handleKeyValueFilterChange('totalContent', e.target.value)
+              }
+              placeholder='Tổng số khảo sát'
+              allowClear
             />
           </Flex>
+          <Button
+            type='default'
+            onClick={clearFilters}
+            style={{
+              width: 100,
+              display: 'flex',
+              marginLeft: 'auto',
+              backgroundColor: 'var(--main-color)',
+              color: '#fff',
+            }}
+          >
+            Xóa bộ lọc
+          </Button>
         </Space>
       </Card>
       <div

@@ -1,5 +1,14 @@
 import React from 'react';
-import { Button, Card, Input, Select, Space, Table, Typography } from 'antd';
+import {
+  Button,
+  Card,
+  Flex,
+  Input,
+  Select,
+  Space,
+  Table,
+  Typography,
+} from 'antd';
 import { columns } from 'data/columnsUserList';
 import { useNavigate } from 'react-router-dom';
 import useUser from 'hooks/useUser';
@@ -16,12 +25,18 @@ const UserList: React.FC = () => {
     handleKeyValueFilterChange,
     handleAllFilterChange,
     searchParams,
+    setSearchParams,
   } = useFilter({
     initialData: userList,
   });
 
   const handleCreateUser = () => {
     navigate('/users/create');
+  };
+
+  const clearFilters = () => {
+    const newParams = new URLSearchParams();
+    setSearchParams(newParams);
   };
 
   return (
@@ -32,9 +47,9 @@ const UserList: React.FC = () => {
         height: 'calc(100vh - 150px)',
       }}
     >
-      <Card title='Bộ lọc' style={{ marginBottom: 24 }}>
+      <Card title='Bộ lọc' style={{ marginBottom: 30 }}>
         <Space direction='vertical' size='middle' style={{ width: '100%' }}>
-          <Space>
+          <Flex wrap gap={20}>
             <Input
               style={{ width: 200 }}
               type='text'
@@ -76,8 +91,21 @@ const UserList: React.FC = () => {
               <Option value='Nữ'>Nữ</Option>
               <Option value='Khác'>Khác</Option>
             </Select>
-          </Space>
+          </Flex>
         </Space>
+        <Button
+          type='default'
+          onClick={clearFilters}
+          style={{
+            width: 100,
+            display: 'flex',
+            marginLeft: 'auto',
+            backgroundColor: 'var(--main-color)',
+            color: '#fff',
+          }}
+        >
+          Xóa bộ lọc
+        </Button>
       </Card>
       <div
         style={{
