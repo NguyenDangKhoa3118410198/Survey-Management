@@ -1,5 +1,5 @@
 import { DeleteOutlined, EyeOutlined } from '@ant-design/icons';
-import { Button, TableProps } from 'antd';
+import { Button, message, Popconfirm, TableProps } from 'antd';
 import { deleteSurveyById } from 'components/Survey/services/fecthAPI';
 import { ISurvey } from 'hooks/useSurvey';
 import { Link } from 'react-router-dom';
@@ -62,16 +62,21 @@ export const columns: TableProps<ISurvey>['columns'] = [
     fixed: 'right',
     width: 150,
     render: (record: ISurvey) => (
-      <Button
-        style={{ border: 'none', backgroundColor: 'transparent' }}
-        onClick={() => {
+      <Popconfirm
+        title='Bạn có chắc chắn muốn xóa khảo sát này?'
+        onConfirm={() => {
           if (record.id) {
             deleteSurveyById(record.id);
+            message.success(`Xóa thành công khảo sát ID: ${record.id}`);
           }
         }}
+        okText='Có'
+        cancelText='Không'
       >
-        <DeleteOutlined style={{ color: '#284698', fontSize: '20px' }} />
-      </Button>
+        <Button style={{ border: 'none', backgroundColor: 'transparent' }}>
+          <DeleteOutlined style={{ color: '#284698', fontSize: '20px' }} />
+        </Button>
+      </Popconfirm>
     ),
   },
 ];

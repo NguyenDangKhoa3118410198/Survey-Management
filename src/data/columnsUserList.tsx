@@ -1,5 +1,5 @@
 import { DeleteOutlined, EyeOutlined } from '@ant-design/icons';
-import { Button, Image, TableProps } from 'antd';
+import { Button, Image, message, Popconfirm, TableProps } from 'antd';
 import { deleteUserById } from 'components/User/services/fetchAPI';
 import { IUser } from 'hooks/useUser';
 import { Link } from 'react-router-dom';
@@ -76,12 +76,20 @@ export const columns: TableProps<IUser>['columns'] = [
     width: 150,
     render: (record: IUser) =>
       record && record.id ? (
-        <Button
-          style={{ border: 'none', backgroundColor: 'transparent' }}
-          onClick={() => deleteUserById(record.id)}
+        <Popconfirm
+          title='Bạn có chắc chắn muốn xóa người dùng này?'
+          description='Hành động này không thể hoàn tác.'
+          okText='Có'
+          cancelText='Không'
+          onConfirm={() => {
+            deleteUserById(record.id);
+            message.success(`Xóa thành công người dùng ID: ${record.id}`);
+          }}
         >
-          <DeleteOutlined style={{ color: '#284698', fontSize: '20px' }} />
-        </Button>
+          <Button style={{ border: 'none', backgroundColor: 'transparent' }}>
+            <DeleteOutlined style={{ color: '#284698', fontSize: '20px' }} />
+          </Button>
+        </Popconfirm>
       ) : null,
   },
 ];

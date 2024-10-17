@@ -1,4 +1,13 @@
-import { Divider, Dropdown, Flex, Menu, MenuProps, Popconfirm, Space, Typography } from 'antd';
+import {
+  Divider,
+  Dropdown,
+  Flex,
+  Menu,
+  MenuProps,
+  message,
+  Popconfirm,
+  Typography,
+} from 'antd';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import FormNewUser from './FormNewUser';
@@ -10,7 +19,6 @@ import { EllipsisOutlined, RetweetOutlined } from '@ant-design/icons';
 const UserDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [isResetPassword, setIsResetPassword] = useState<boolean>(false);
   const { resetPassword } = useUser();
 
   const {
@@ -31,8 +39,8 @@ const UserDetail: React.FC = () => {
 
   const handleResetPassword = () => {
     if (userDetail) {
-      setIsResetPassword(true);
       resetPassword(Number(userDetail.id));
+      message.success('Reset Password thành công');
     } else {
       console.error('User detail is not available.');
     }
@@ -80,20 +88,20 @@ const UserDetail: React.FC = () => {
           }}
         >
           Chi tiết người dùng
-          {userDetail?.id && <span style={{ marginLeft: '8px' }}>#{userDetail?.id}</span>}
+          {userDetail?.id && (
+            <span style={{ marginLeft: '8px' }}>#{userDetail?.id}</span>
+          )}
         </Typography.Paragraph>
         <Dropdown overlay={<Menu items={menuItems} />} placement='bottomRight'>
-          <EllipsisOutlined style={{ transform: 'rotate(90deg)', marginRight: 16 }} />
+          <EllipsisOutlined
+            style={{ transform: 'rotate(90deg)', marginRight: 16 }}
+          />
         </Dropdown>
       </Flex>
 
       <Divider style={{ margin: '10px 0' }} />
       <div style={{ padding: '8px 24px' }}>
-        <FormNewUser
-          userDetail={memoizedUserDetail}
-          isResetPassword={isResetPassword}
-          setIsResetPassword={setIsResetPassword}
-        />
+        <FormNewUser userDetail={memoizedUserDetail} />
       </div>
     </div>
   );
