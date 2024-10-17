@@ -1,5 +1,5 @@
 import { EditOutlined, RetweetOutlined } from '@ant-design/icons';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Button,
   DatePicker,
@@ -38,6 +38,7 @@ const { Item, List } = Form;
 
 const FormNewUser: React.FC<FormNewUserProps> = React.memo(() => {
   const { id } = useParams();
+  const queryClient = useQueryClient();
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const { userList, addNewUser, editUser, changeStatusUser } = useUser();
@@ -50,7 +51,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(() => {
   );
   const [isFormModified, setIsFormModified] = useState<boolean>(false);
 
-  const { data: userDetail, refetch } = useQuery<IUser | undefined>({
+  const { data: userDetail } = useQuery<IUser | undefined>({
     queryKey: ['userDetail', id],
     queryFn: () => (id ? fetchUserbyId(id) : undefined),
     enabled: !!id,
@@ -266,7 +267,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(() => {
         navigate('/users');
         message.success('Tạo mới thành công');
       }
-      refetch();
+      setIsFormModified(false);
     } catch (error) {
       console.error('Submit failed', error);
     }
@@ -590,6 +591,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(() => {
                 border: '1px solid var(--main-color)',
               }}
               onClick={() => {
+                queryClient.invalidateQueries({ queryKey: ['userDetail'] });
                 fillValue();
               }}
             >
