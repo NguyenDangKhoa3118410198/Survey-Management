@@ -15,6 +15,7 @@ export interface IUser {
   originBirthDate?: string;
   idsAddress: any[];
   phoneNumber?: string;
+  status?: string;
 }
 
 export interface IAddress {
@@ -31,19 +32,24 @@ interface IUseUser {
   deleteUser: (userId: number) => void;
   resetPassword: (userId: number) => void;
   clearUser: () => void;
+  changeStatusUser: (userId: number, value: string) => void;
+  getStatusById: (userId: number) => string | undefined;
 }
 
 const useUser = create<IUseUser>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       userList: [],
       setUserList: (userList: IUser[]) => set({ userList }),
 
-      addNewUser: (newUser: IUser) => set((state) => ({ userList: [...state.userList, newUser] })),
+      addNewUser: (newUser: IUser) =>
+        set((state) => ({ userList: [...state.userList, newUser] })),
 
       editUser: (updatedUser: IUser) =>
         set((state) => ({
-          userList: state.userList.map((user) => (user.id === updatedUser.id ? updatedUser : user)),
+          userList: state.userList.map((user) =>
+            user.id === updatedUser.id ? updatedUser : user
+          ),
         })),
 
       deleteUser: (userId: number) =>
@@ -64,6 +70,18 @@ const useUser = create<IUseUser>()(
             return user;
           }),
         })),
+
+      changeStatusUser: (userId: number, value: string) =>
+        set((state) => ({
+          userList: state.userList.map((user) =>
+            user.id === userId ? { ...user, status: value } : user
+          ),
+        })),
+
+      getStatusById: (userId: number) => {
+        const user = get().userList.find((user) => user.id === userId);
+        return user ? user.status : undefined;
+      },
 
       clearUser: () => set({ userList: [] }),
     }),

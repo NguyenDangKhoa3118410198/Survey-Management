@@ -22,6 +22,7 @@ interface AddressFormItemProps {
   remove: (index: number) => void;
   form: any;
   handleChangeAddressNumber: any;
+  userStatus: string | undefined;
 }
 
 const AddressFormItem: React.FC<AddressFormItemProps> = ({
@@ -43,6 +44,7 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
   remove,
   form,
   handleChangeAddressNumber,
+  userStatus,
 }) => {
   const validateUniqueAddress = (message: string) => (_: any, value: any) => {
     const allAddresses = form.getFieldValue('addresses') || [];
@@ -168,6 +170,7 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
                   }))
                 : []
             }
+            disabled={userDetail && userStatus !== 'Tạm ngưng'}
           />
         </Item>
         <Item
@@ -193,7 +196,8 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
             onChange={(value) => handleDistrictChange(value, index)}
             disabled={
               (!userDetail && !selectedCity[index]) ||
-              !form.getFieldValue(['addresses', index, 'city'])
+              !form.getFieldValue(['addresses', index, 'city']) ||
+              (userDetail && userStatus !== 'Tạm ngưng')
             }
             allowClear
             optionFilterProp='label'
@@ -234,7 +238,8 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
             allowClear
             disabled={
               (!userDetail && !selectedDistrict[index]) ||
-              !form.getFieldValue(['addresses', index, 'district'])
+              !form.getFieldValue(['addresses', index, 'district']) ||
+              (userDetail && userStatus !== 'Tạm ngưng')
             }
             optionFilterProp='label'
             options={

@@ -1,4 +1,4 @@
-import { RetweetOutlined } from '@ant-design/icons';
+import { EditOutlined, RetweetOutlined } from '@ant-design/icons';
 import { useQuery } from '@tanstack/react-query';
 import {
   Button,
@@ -9,12 +9,18 @@ import {
   message,
   Modal,
   Radio,
+  Tag,
   UploadFile,
 } from 'antd';
 import dayjs from 'dayjs';
 import React, { useCallback, useEffect, useState } from 'react';
-import { customizeRequiredMark, defaultPassword } from 'utils';
-import { fetchCities, fetchDistricts, fetchWards } from './services/fetchAPI';
+import { customizeRequiredMark, defaultPassword, USER_STATUS } from 'utils';
+import {
+  fetchCities,
+  fetchDistricts,
+  fetchUserbyId,
+  fetchWards,
+} from './services/fetchAPI';
 import { useNavigate, useParams } from 'react-router-dom';
 import useUser, { IUser } from 'hooks/useUser';
 import UploadImage from 'components/common/UploadImage';
@@ -30,11 +36,11 @@ interface FormNewUserProps {
 
 const { Item, List } = Form;
 
-const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
+const FormNewUser: React.FC<FormNewUserProps> = React.memo(() => {
   const { id } = useParams();
   const [form] = Form.useForm();
   const navigate = useNavigate();
-  const { userList, addNewUser, editUser } = useUser();
+  const { userList, addNewUser, editUser, changeStatusUser } = useUser();
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [selectedCity, setSelectedCity] = useState<string[]>([]);
   const [selectedDistrict, setSelectedDistrict] = useState<string[]>([]);
@@ -43,7 +49,15 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
     []
   );
   const [isFormModified, setIsFormModified] = useState<boolean>(false);
-  // const phoneNumber = useWatch('phoneNumber', form);
+
+  const { data: userDetail, refetch } = useQuery<IUser | undefined>({
+    queryKey: ['userDetail', id],
+    queryFn: () => (id ? fetchUserbyId(id) : undefined),
+    enabled: !!id,
+  });
+  const [visible, setVisible] = useState(false);
+  const userStatus = useUser.getState().getStatusById(Number(userDetail?.id));
+  const [selectStatus, setSelectStatus] = useState(userStatus || '');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [image, setImage] = useState('');
 
@@ -179,6 +193,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
       }
 
       setImage(avatar ?? null);
+      setSelectStatus(userDetail.status ?? '');
 
       form.setFieldsValue({
         ...restUserDetail,
@@ -225,6 +240,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
           selectedDistrict,
           selectedWard,
         ],
+        status: userStatus || 'Hoạt động',
       };
 
       if (userDetail?.id) {
@@ -234,6 +250,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
         const newUser = {
           ...updatedUser,
           id: userList.length + 1,
+          status: 'Hoạt động',
         };
 
         const isEmailValid = userList.find(
@@ -249,6 +266,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
         navigate('/users');
         message.success('Tạo mới thành công');
       }
+      refetch();
     } catch (error) {
       console.error('Submit failed', error);
     }
@@ -287,8 +305,76 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
     );
   };
 
+  const showModal = () => {
+    setVisible(true);
+    console.log('click');
+  };
+
+  const handleOk = () => {
+    if (userDetail) {
+      changeStatusUser(userDetail.id, selectStatus);
+    }
+    setVisible(false);
+  };
+
+  const handleCancel = () => {
+    setVisible(false);
+  };
+
+  const handleRadioChange = (e: any) => {
+    setSelectStatus(e.target.value);
+  };
+
+  const getTagColor = (status: string | undefined) => {
+    switch (status) {
+      case 'Hoạt động':
+        return 'green';
+      case 'Tạm ngưng':
+        return 'orange';
+      case 'Khóa':
+        return 'red';
+      default:
+        return 'default';
+    }
+  };
+
   return (
     <>
+      {userDetail && (
+        <Flex align='center' justify='flex-end'>
+          <Tag color={getTagColor(userDetail ? userStatus : undefined)}>
+            {userStatus || 'Chưa chọn'}
+          </Tag>
+          <EditOutlined
+            onClick={showModal}
+            style={{
+              border: '1px solid #000',
+              padding: '4px',
+              borderRadius: '4px',
+            }}
+          />
+        </Flex>
+      )}
+
+      <Modal
+        title='Chọn trạng thái'
+        open={visible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <Radio.Group onChange={handleRadioChange}>
+          {userStatus === 'Hoạt động' && (
+            <Radio value='Tạm ngưng'>Tạm ngưng</Radio>
+          )}
+          {userStatus === 'Tạm ngưng' && (
+            <>
+              <Radio value='Hoạt động'>Hoạt động</Radio>
+              <Radio value='Khóa'>Khóa</Radio>
+            </>
+          )}
+        </Radio.Group>
+      </Modal>
+
       <Form
         form={form}
         autoComplete='false'
@@ -300,6 +386,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
           gender: 'Nam',
         }}
         onValuesChange={handleValuesChange}
+        disabled={userDetail && userStatus !== 'Tạm ngưng'}
       >
         <Item label='Ảnh đại diện' colon={false}>
           <Item name='avatar' noStyle>
@@ -401,6 +488,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
           ]}
         >
           <PhoneInput
+            disabled={userDetail && userStatus !== 'Tạm ngưng'}
             country={'vn'}
             value={phoneNumber}
             placeholder='Nhập số điện thoại (không bắt buộc)'
@@ -466,6 +554,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
                           remove={remove}
                           fields={fields}
                           form={form}
+                          userStatus={userStatus}
                         />
                       </div>
                     );
@@ -519,11 +608,14 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(({ userDetail }) => {
             type='primary'
             htmlType='submit'
             style={{
-              backgroundColor: !isFormModified
-                ? 'lightgray'
-                : 'var(--main-color)',
+              backgroundColor:
+                !isFormModified || (userDetail && userStatus !== 'Tạm ngưng')
+                  ? 'lightgray'
+                  : 'var(--main-color)',
             }}
-            disabled={!isFormModified}
+            disabled={
+              !isFormModified || (userDetail && userStatus !== 'Tạm ngưng')
+            }
           >
             {userDetail ? 'Cập nhật' : 'Tạo mới'}
           </Button>

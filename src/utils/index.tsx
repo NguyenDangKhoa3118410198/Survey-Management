@@ -1,4 +1,9 @@
 export const defaultPassword = '1234@abcd';
+export const USER_STATUS = {
+  ACTIVE: 'Hoạt động',
+  SUSPENDED: 'Tạm ngưng',
+  BLOCKED: 'Khoá',
+};
 
 export const customizeRequiredMark = (
   label: React.ReactNode,
