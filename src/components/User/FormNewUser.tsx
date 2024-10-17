@@ -1,6 +1,16 @@
 import { RetweetOutlined } from '@ant-design/icons';
 import { useQuery } from '@tanstack/react-query';
-import { Button, DatePicker, Flex, Form, Input, message, Modal, Radio, UploadFile } from 'antd';
+import {
+  Button,
+  DatePicker,
+  Flex,
+  Form,
+  Input,
+  message,
+  Modal,
+  Radio,
+  UploadFile,
+} from 'antd';
 import dayjs from 'dayjs';
 import React, { useCallback, useEffect, useState } from 'react';
 import { customizeRequiredMark, defaultPassword } from 'utils';
@@ -32,9 +42,12 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(
     const [selectedCity, setSelectedCity] = useState<string[]>([]);
     const [selectedDistrict, setSelectedDistrict] = useState<string[]>([]);
     const [selectedWard, setSelectedWard] = useState<string[]>([]);
-    const [selectedAddressNumber, setSelectedAddressNumber] = useState<string[]>([]);
+    const [selectedAddressNumber, setSelectedAddressNumber] = useState<
+      string[]
+    >([]);
     const [isFormModified, setIsFormModified] = useState<boolean>(false);
     const phoneNumber = useWatch('phoneNumber', form);
+    const [image, setImage] = useState('');
 
     const handleValuesChange = (changedValues: any) => {
       const initData = { ...userDetail };
@@ -48,7 +61,12 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(
     };
 
     const isAddressUpdated = (initialAddress: any) => {
-      const currentAddress = [selectedAddressNumber, selectedCity, selectedDistrict, selectedWard];
+      const currentAddress = [
+        selectedAddressNumber,
+        selectedCity,
+        selectedDistrict,
+        selectedWard,
+      ];
 
       return !isEqual(initialAddress, currentAddress);
     };
@@ -75,7 +93,9 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(
     const { data: districts } = useQuery({
       queryKey: ['districtVN', selectedCity],
       queryFn: () => {
-        return Promise.all(selectedCity.map((cityId) => fetchDistrictsByCityId(cityId)));
+        return Promise.all(
+          selectedCity.map((cityId) => fetchDistrictsByCityId(cityId))
+        );
       },
       enabled: selectedCity.length > 0,
     });
@@ -84,7 +104,9 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(
       queryKey: ['wardVN', selectedDistrict],
       queryFn: () => {
         return Promise.all(
-          selectedDistrict.map((districtId) => fetchWardsByDistrictId(districtId))
+          selectedDistrict.map((districtId) =>
+            fetchWardsByDistrictId(districtId)
+          )
         );
       },
       enabled: selectedDistrict.length > 0,
@@ -160,6 +182,8 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(
           });
         }
 
+        setImage(avatar ?? null);
+
         form.setFieldsValue({
           ...restUserDetail,
           addresses: addresses || [{}],
@@ -190,7 +214,8 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(
           pathImg = values.avatar[0].url ?? null;
         }
 
-        const formattedBirthDate = dayjs(values.birthDate).format('DD/MM/YYYY') ?? null;
+        const formattedBirthDate =
+          dayjs(values.birthDate).format('DD/MM/YYYY') ?? null;
 
         const updatedUser = {
           ...userDetail,
@@ -198,7 +223,12 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(
           avatar: pathImg,
           birthDate: formattedBirthDate,
           originBirthDate: values.birthDate,
-          idsAddress: [selectedAddressNumber, selectedCity, selectedDistrict, selectedWard],
+          idsAddress: [
+            selectedAddressNumber,
+            selectedCity,
+            selectedDistrict,
+            selectedWard,
+          ],
         };
 
         if (userDetail?.id) {
@@ -210,7 +240,9 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(
             id: userList.length + 1,
           };
 
-          const isEmailValid = userList.find((user) => user.email === newUser.email);
+          const isEmailValid = userList.find(
+            (user) => user.email === newUser.email
+          );
 
           if (!!isEmailValid) {
             message.warning('Email đã tồn tại');
@@ -251,7 +283,12 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(
     };
 
     const handleChangeAddressNumber = (value: string, index: number) => {
-      updateAddressAtIndex(setSelectedAddressNumber, selectedAddressNumber, index, value);
+      updateAddressAtIndex(
+        setSelectedAddressNumber,
+        selectedAddressNumber,
+        index,
+        value
+      );
     };
 
     return (
@@ -273,7 +310,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(
               <UploadImage
                 fileList={fileList}
                 onChange={handleFileListChange}
-                avatarImage={userDetail?.avatar}
+                avatarImage={image}
               />
             </Item>
           </Item>
@@ -309,7 +346,8 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(
                 rules={[
                   { required: true, message: 'Vui lòng nhập mật khẩu' },
                   {
-                    pattern: /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
+                    pattern:
+                      /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
                     message:
                       'Mật khẩu đảm bảo có ít nhất 8 ký tự, ít nhất 1 ký tự chữ và ít nhất 1 ký tự đặc biệt',
                   },
@@ -326,7 +364,8 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(
                 rules={[
                   { required: true, message: 'Vui lòng xác thực mật khẩu' },
                   {
-                    pattern: /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
+                    pattern:
+                      /^(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
                     message:
                       'Mật khẩu đảm bảo có ít nhất 8 ký tự, ít nhất 1 ký tự chữ và ít nhất 1 ký tự đặc biệt',
                   },
@@ -335,7 +374,9 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(
                       if (!value || getFieldValue('password') === value) {
                         return Promise.resolve();
                       }
-                      return Promise.reject(new Error('Mật khẩu không trùng khớp'));
+                      return Promise.reject(
+                        new Error('Mật khẩu không trùng khớp')
+                      );
                     },
                   }),
                 ]}
@@ -379,7 +420,9 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(
             <DatePicker
               format='DD/MM/YYYY'
               placeholder='Chọn ngày sinh'
-              disabledDate={(current) => current && current.isAfter(dayjs().endOf('day'))}
+              disabledDate={(current) =>
+                current && current.isAfter(dayjs().endOf('day'))
+              }
               style={{ borderRadius: '14px' }}
             />
           </Item>
@@ -401,7 +444,9 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(
                             wards={wards ?? []}
                             selectedCity={selectedCity ?? []}
                             selectedDistrict={selectedDistrict ?? []}
-                            handleChangeAddressNumber={handleChangeAddressNumber}
+                            handleChangeAddressNumber={
+                              handleChangeAddressNumber
+                            }
                             handleCityChange={handleCityChange}
                             handleDistrictChange={handleDistrictChange}
                             handleWardChange={handleWardChange}
@@ -464,7 +509,9 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(
               type='primary'
               htmlType='submit'
               style={{
-                backgroundColor: !isFormModified ? 'lightgray' : 'var(--main-color)',
+                backgroundColor: !isFormModified
+                  ? 'lightgray'
+                  : 'var(--main-color)',
               }}
               disabled={!isFormModified}
             >

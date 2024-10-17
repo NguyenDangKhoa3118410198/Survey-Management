@@ -10,22 +10,28 @@ interface UploadImageProps {
   avatarImage?: any;
 }
 
-const UploadImage: React.FC<UploadImageProps> = ({ fileList, onChange, avatarImage }) => {
+const UploadImage: React.FC<UploadImageProps> = ({
+  fileList,
+  onChange,
+  avatarImage,
+}) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
-  const uploadInputRef = useRef<HTMLInputElement | null>(null); // Ref cho input file ẩn
+  const uploadInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     if (avatarImage) {
       onChange([
         {
           uid: '-1',
-          name: 'initial.png',
+          name: 'test.png',
           status: 'done',
           url: avatarImage,
           thumbUrl: avatarImage,
         },
       ]);
+    } else {
+      onChange([]);
     }
   }, [avatarImage]);
 
@@ -52,7 +58,9 @@ const UploadImage: React.FC<UploadImageProps> = ({ fileList, onChange, avatarIma
     setPreviewOpen(true);
   };
 
-  const handleFileInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileInputChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const files = event.target.files;
     if (files && files.length > 0) {
       const file = files[0];
@@ -109,6 +117,10 @@ const UploadImage: React.FC<UploadImageProps> = ({ fileList, onChange, avatarIma
     }
   };
 
+  const handleRemove = () => {
+    onChange([]);
+  };
+
   return (
     <>
       <ImgCrop rotationSlider>
@@ -119,6 +131,7 @@ const UploadImage: React.FC<UploadImageProps> = ({ fileList, onChange, avatarIma
           onChange={handleChange}
           maxCount={1}
           onPreview={handlePreview}
+          onRemove={handleRemove}
         >
           {fileList.length > 0 ? null : (
             <button style={{ border: 0, background: 'none' }} type='button'>
@@ -129,7 +142,10 @@ const UploadImage: React.FC<UploadImageProps> = ({ fileList, onChange, avatarIma
         </Upload>
       </ImgCrop>
 
-      <Button onClick={() => uploadInputRef.current?.click()} style={{ marginTop: 10 }}>
+      <Button
+        onClick={() => uploadInputRef.current?.click()}
+        style={{ marginTop: 10 }}
+      >
         Change Image
       </Button>
 
