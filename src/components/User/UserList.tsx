@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Button,
   Card,
@@ -14,6 +14,8 @@ import { useNavigate } from 'react-router-dom';
 import useUser from 'hooks/useUser';
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import useFilter from 'hooks/useFilter';
+import { useQuery } from '@tanstack/react-query';
+import { fetchCities, fetchDistricts, fetchWards } from './services/fetchAPI';
 
 const { Option } = Select;
 
@@ -30,13 +32,61 @@ const UserList: React.FC = () => {
     initialData: userList,
   });
 
+  const [selectedCity, setCity] = useState('');
+  const [selectedDistrict, setDistrict] = useState('');
+
   const handleCreateUser = () => {
     navigate('/users/create');
   };
 
+  useEffect(() => {
+    const newParams = new URLSearchParams(searchParams.toString());
+
+    if (!searchParams.get('city')) {
+      newParams.delete('district');
+      newParams.delete('ward');
+    }
+
+    if (!searchParams.get('district')) {
+      newParams.delete('ward');
+    }
+
+    setSearchParams(newParams);
+  }, [selectedCity, selectedDistrict, searchParams]);
+
+  useEffect(() => {
+    const cityId = searchParams.get('city') || '';
+    const districtId = searchParams.get('district') || '';
+
+    if (cityId) {
+      setCity(cityId);
+    }
+    if (districtId) {
+      setDistrict(districtId);
+    }
+  }, [searchParams]);
+
+  const { data: cities } = useQuery({
+    queryKey: ['cityVN'],
+    queryFn: fetchCities,
+  });
+
+  const { data: districts } = useQuery({
+    queryKey: ['districtVN', selectedCity],
+    queryFn: () => fetchDistricts(selectedCity),
+    enabled: !!selectedCity,
+  });
+
+  const { data: wards } = useQuery({
+    queryKey: ['wardVN'],
+    queryFn: () => fetchWards(selectedDistrict),
+    enabled: !!selectedDistrict,
+  });
   const clearFilters = () => {
     const newParams = new URLSearchParams();
     setSearchParams(newParams);
+    setCity('');
+    setDistrict('');
   };
 
   return (
@@ -91,6 +141,85 @@ const UserList: React.FC = () => {
               <Option value='Nữ'>Nữ</Option>
               <Option value='Khác'>Khác</Option>
             </Select>
+            <Space>
+              <Select
+                style={{ width: 200 }}
+                showSearch
+                placeholder='Chọn thành phố'
+                allowClear
+                optionFilterProp='label'
+                filterSort={(optionA, optionB) =>
+                  (optionA?.label ?? '')
+                    .toLowerCase()
+                    .localeCompare((optionB?.label ?? '').toLowerCase())
+                }
+                value={searchParams.get('city') || ''}
+                onChange={(value: any) => {
+                  setCity(value);
+                  handleKeyValueFilterChange('city', value);
+                }}
+                options={
+                  Array.isArray(cities) && cities.length > 0
+                    ? cities.map((city) => ({
+                        label: city?.full_name,
+                        value: city?.id,
+                      }))
+                    : []
+                }
+              />
+              <Select
+                style={{ width: 200 }}
+                showSearch
+                placeholder='Chọn quận huyện'
+                allowClear
+                optionFilterProp='label'
+                filterSort={(optionA, optionB) =>
+                  (optionA?.label ?? '')
+                    .toLowerCase()
+                    .localeCompare((optionB?.label ?? '').toLowerCase())
+                }
+                value={selectedDistrict}
+                onChange={(value: any) => {
+                  handleKeyValueFilterChange('district', value);
+                  setDistrict(value);
+                }}
+                disabled={!selectedCity}
+                options={
+                  Array.isArray(districts) && districts.length > 0
+                    ? districts.map((district) => ({
+                        label: district?.full_name,
+                        value: district?.id,
+                      }))
+                    : []
+                }
+              />
+              <Select
+                style={{ width: 200 }}
+                showSearch
+                placeholder='Chọn phường xã'
+                allowClear
+                optionFilterProp='label'
+                filterSort={(optionA, optionB) =>
+                  (optionA?.label ?? '')
+                    .toLowerCase()
+                    .localeCompare((optionB?.label ?? '').toLowerCase())
+                }
+                value={searchParams.get('ward') || ''}
+                onChange={(value: any) => {
+                  handleKeyValueFilterChange('ward', value);
+                  setDistrict(value);
+                }}
+                disabled={!selectedCity || !selectedDistrict}
+                options={
+                  Array.isArray(wards) && wards.length > 0
+                    ? wards.map((ward) => ({
+                        label: ward?.full_name,
+                        value: ward?.id,
+                      }))
+                    : []
+                }
+              />
+            </Space>
           </Flex>
         </Space>
         <Button

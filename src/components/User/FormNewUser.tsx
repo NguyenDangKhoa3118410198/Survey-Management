@@ -27,7 +27,6 @@ import UploadImage from 'components/common/UploadImage';
 import PhoneInput, { CountryData } from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import AddressFormItem from './AddressFormItem';
-import { useWatch } from 'antd/es/form/Form';
 import isEqual from 'lodash/isEqual';
 
 interface FormNewUserProps {
@@ -613,11 +612,14 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(() => {
                 htmlType='submit'
                 style={{
                   backgroundColor:
-                    isFormModified && userStatus === 'Tạm ngưng'
+                    (isFormModified && userStatus === 'Tạm ngưng') ||
+                    isFormModified
                       ? 'var(--main-color)'
                       : 'lightgray',
                 }}
-                disabled={!isFormModified || userStatus !== 'Tạm ngưng'}
+                disabled={
+                  !isFormModified || (userDetail && userStatus !== 'Tạm ngưng')
+                }
               >
                 {userDetail ? 'Cập nhật' : 'Tạo mới'}
               </Button>

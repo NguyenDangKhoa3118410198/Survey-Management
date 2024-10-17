@@ -12,7 +12,7 @@ const useFilter = <T extends object>({ initialData }: IUseFilterProps<T>) => {
   const [filteredData, setFilteredData] = useState<T[]>(initialData);
   const [allFilter, setAllFilter] = useState('');
 
-  const debouncedSetAllFilter = debounce((value) => {
+  const debouncedSetAllFilter = debounce((value: string) => {
     setAllFilter(value);
   }, 300);
 
@@ -44,11 +44,28 @@ const useFilter = <T extends object>({ initialData }: IUseFilterProps<T>) => {
     });
 
     searchParams.forEach((value, key) => {
-      if (key !== 'startDate' && key !== 'endDate') {
-        filtered = filtered.filter((item) => {
-          const itemValue = String(item[key as keyof T]).toLowerCase();
-          return itemValue.includes(value.toLowerCase());
+      if (key === 'city') {
+        filtered = filtered.filter((item: any) => {
+          const addresses = item['addresses'] || [];
+          return addresses.some((address: any) => address.city === value);
         });
+      } else if (key == 'district') {
+        filtered = filtered.filter((item: any) => {
+          const addresses = item['addresses'] || [];
+          return addresses.some((address: any) => address.district === value);
+        });
+      } else if (key === 'ward') {
+        filtered = filtered.filter((item: any) => {
+          const addresses = item['addresses'] || [];
+          return addresses.some((address: any) => address.ward === value);
+        });
+      } else {
+        if (key !== 'startDate' && key !== 'endDate') {
+          filtered = filtered.filter((item) => {
+            const itemValue = String(item[key as keyof T]).toLowerCase();
+            return itemValue.includes(value.toLowerCase());
+          });
+        }
       }
     });
 
