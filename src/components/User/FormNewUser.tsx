@@ -18,7 +18,7 @@ import { fetchCities, fetchDistricts, fetchWards } from './services/fetchAPI';
 import { useNavigate, useParams } from 'react-router-dom';
 import useUser, { IUser } from 'hooks/useUser';
 import UploadImage from 'components/common/UploadImage';
-import PhoneInput from 'react-phone-input-2';
+import PhoneInput, { CountryData } from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import AddressFormItem from './AddressFormItem';
 import { useWatch } from 'antd/es/form/Form';
@@ -46,7 +46,8 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(
       string[]
     >([]);
     const [isFormModified, setIsFormModified] = useState<boolean>(false);
-    const phoneNumber = useWatch('phoneNumber', form);
+    // const phoneNumber = useWatch('phoneNumber', form);
+    const [phoneNumber, setPhoneNumber] = useState('');
     const [image, setImage] = useState('');
 
     const handleValuesChange = (changedValues: any) => {
@@ -407,8 +408,25 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(
             <PhoneInput
               country={'vn'}
               value={phoneNumber}
-              countryCodeEditable={false}
               placeholder='Nhập số điện thoại (không bắt buộc)'
+              countryCodeEditable={false}
+              onChange={(phone, country: CountryData | {}) => {
+                if ('dialCode' in country) {
+                  const dialCode = (country as CountryData).dialCode;
+
+                  if (phone.startsWith('0')) {
+                    setPhoneNumber(phone.substring(1));
+                  } else if (phone.startsWith(`+${dialCode}`)) {
+                    setPhoneNumber(phone);
+                  } else {
+                    setPhoneNumber(`+${dialCode}${phone}`);
+                  }
+                } else {
+                  setPhoneNumber(
+                    phone.startsWith('+') ? phone.substring(1) : phone
+                  );
+                }
+              }}
             />
           </Item>
           <Item
