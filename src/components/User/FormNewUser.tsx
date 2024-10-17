@@ -597,28 +597,30 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(() => {
             </Button>
           )}
 
-          <Button
-            htmlType='button'
-            style={{ marginRight: '10px' }}
-            onClick={() => navigate('/users')}
-          >
-            Hủy bỏ
-          </Button>
-          <Button
-            type='primary'
-            htmlType='submit'
-            style={{
-              backgroundColor:
-                !isFormModified || (userDetail && userStatus !== 'Tạm ngưng')
-                  ? 'lightgray'
-                  : 'var(--main-color)',
-            }}
-            disabled={
-              !isFormModified || (userDetail && userStatus !== 'Tạm ngưng')
-            }
-          >
-            {userDetail ? 'Cập nhật' : 'Tạo mới'}
-          </Button>
+          {isFormModified && (
+            <>
+              <Button
+                htmlType='button'
+                style={{ marginRight: '10px' }}
+                onClick={() => navigate('/users')}
+              >
+                Hủy bỏ
+              </Button>
+              <Button
+                type='primary'
+                htmlType='submit'
+                style={{
+                  backgroundColor:
+                    isFormModified && userStatus === 'Tạm ngưng'
+                      ? 'var(--main-color)'
+                      : 'lightgray',
+                }}
+                disabled={!isFormModified || userStatus !== 'Tạm ngưng'}
+              >
+                {userDetail ? 'Cập nhật' : 'Tạo mới'}
+              </Button>
+            </>
+          )}
         </Item>
       </Form>
     </>
