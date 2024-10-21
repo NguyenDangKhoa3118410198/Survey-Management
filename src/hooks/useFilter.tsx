@@ -31,13 +31,30 @@ const useFilter = <T extends object>({ initialData }: IUseFilterProps<T>) => {
 
     filtered = filtered.filter((item) => {
       const itemStartDate = dayjs(item.startDate, 'DD/MM/YYYY');
+      const itemEndDate = item.endDate
+        ? dayjs(item.endDate, 'DD/MM/YYYY')
+        : null;
 
-      if (startDate && itemStartDate.isBefore(startDate)) {
-        return false;
+      if (startDate && endDate) {
+        const isAfterStartDate =
+          itemStartDate.isSame(startDate) || itemStartDate.isAfter(startDate);
+        const isBeforeEndDate = itemEndDate
+          ? itemEndDate.isSame(endDate) || itemEndDate.isBefore(endDate)
+          : true;
+
+        return isAfterStartDate && isBeforeEndDate;
       }
 
-      if (endDate && itemStartDate.isAfter(endDate)) {
-        return false;
+      if (startDate) {
+        return (
+          itemStartDate.isSame(startDate) || itemStartDate.isAfter(startDate)
+        );
+      }
+
+      if (endDate) {
+        return itemEndDate
+          ? itemEndDate.isSame(endDate) || itemEndDate.isBefore(endDate)
+          : false;
       }
 
       return true;
@@ -49,7 +66,7 @@ const useFilter = <T extends object>({ initialData }: IUseFilterProps<T>) => {
           const addresses = item['addresses'] || [];
           return addresses.some((address: any) => address.city === value);
         });
-      } else if (key == 'district') {
+      } else if (key === 'district') {
         filtered = filtered.filter((item: any) => {
           const addresses = item['addresses'] || [];
           return addresses.some((address: any) => address.district === value);
