@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import {
   Button,
   Card,
+  Col,
   DatePicker,
   Flex,
   Input,
+  Row,
   Space,
   Table,
   Typography,
@@ -19,6 +21,11 @@ import dayjs from 'dayjs';
 const SurveyList: React.FC = () => {
   const navigate = useNavigate();
   const { surveyList } = useSurvey();
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const toggleExpand = () => {
+    setIsExpanded((prev) => !prev);
+  };
   const {
     filteredData,
     handleKeyValueFilterChange,
@@ -46,112 +53,145 @@ const SurveyList: React.FC = () => {
         height: 'calc(100vh - 64px)',
       }}
     >
-      <Card title='Bộ lọc' style={{ marginBottom: 30 }}>
-        <Space direction='vertical' size='middle' style={{ width: '100%' }}>
-          <Flex wrap gap={20}>
-            <Input
-              style={{ width: 200 }}
-              type='text'
-              value={searchParams.get('id') || ''}
-              onChange={(e) => handleKeyValueFilterChange('id', e.target.value)}
-              placeholder='ID'
-              allowClear
-            />
-            <Input
-              style={{ width: 200 }}
-              type='text'
-              value={searchParams.get('surveyName') || ''}
-              onChange={(e) =>
-                handleKeyValueFilterChange('surveyName', e.target.value)
-              }
-              placeholder='Tên khảo sát'
-              allowClear
-            />
-            <Input
-              style={{ width: 200 }}
-              type='number'
-              min={0}
-              value={searchParams.get('averageScore') || ''}
-              onChange={(e) =>
-                handleKeyValueFilterChange('averageScore', e.target.value)
-              }
-              placeholder='Điểm thưởng'
-              allowClear
-            />
-            <DatePicker
-              className='filterSelect'
-              format='DD/MM/YYYY'
-              value={
-                searchParams.get('startDate')
-                  ? dayjs(
-                      Number(decodeURIComponent(searchParams.get('startDate')!))
-                    )
-                  : null
-              }
-              onChange={(date) => {
-                if (date) {
-                  handleKeyValueFilterChange(
-                    'startDate',
-                    encodeURIComponent(date.valueOf().toString())
-                  );
-                } else {
-                  handleKeyValueFilterChange('startDate', '');
-                }
-              }}
-              placeholder='Chọn ngày bắt đầu'
-              style={{ width: 200, borderRadius: 6 }}
-            />
-
-            <DatePicker
-              className='filterSelect'
-              format='DD/MM/YYYY'
-              value={
-                searchParams.get('endDate')
-                  ? dayjs(
-                      Number(decodeURIComponent(searchParams.get('endDate')!))
-                    )
-                  : null
-              }
-              onChange={(date) => {
-                if (date) {
-                  handleKeyValueFilterChange(
-                    'endDate',
-                    encodeURIComponent(date.valueOf().toString())
-                  );
-                } else {
-                  handleKeyValueFilterChange('endDate', '');
-                }
-              }}
-              placeholder='Chọn ngày kết thúc'
-              style={{ width: 200, borderRadius: 6 }}
-            />
-            <Input
-              style={{ width: 200 }}
-              type='number'
-              min={0}
-              value={searchParams.get('totalContent') || ''}
-              onChange={(e) =>
-                handleKeyValueFilterChange('totalContent', e.target.value)
-              }
-              placeholder='Tổng số khảo sát'
-              allowClear
-            />
-          </Flex>
-          <Button
-            type='default'
-            onClick={clearFilters}
-            style={{
-              width: 100,
-              display: 'flex',
-              marginLeft: 'auto',
-              backgroundColor: 'var(--main-color)',
-              color: '#fff',
-            }}
+      <Card
+        title='Bộ lọc'
+        style={{ marginBottom: 30 }}
+        extra={
+          <p
+            onClick={toggleExpand}
+            style={{ cursor: 'pointer', color: 'var(--main-color)' }}
           >
-            Xóa bộ lọc
-          </Button>
-        </Space>
+            {isExpanded ? 'Mở rộng' : 'Thu nhỏ'}
+          </p>
+        }
+      >
+        {isExpanded ? (
+          <>
+            <Space direction='vertical' size='middle' style={{ width: '100%' }}>
+              <Row gutter={[20, 20]}>
+                <Col xs={24} sm={12} md={8} lg={6}>
+                  <Input
+                    style={{ width: '100%' }}
+                    type='text'
+                    value={searchParams.get('id') || ''}
+                    onChange={(e) =>
+                      handleKeyValueFilterChange('id', e.target.value)
+                    }
+                    placeholder='ID'
+                    allowClear
+                  />
+                </Col>
+                <Col xs={24} sm={12} md={8} lg={6}>
+                  <Input
+                    style={{ width: '100%' }}
+                    type='text'
+                    value={searchParams.get('surveyName') || ''}
+                    onChange={(e) =>
+                      handleKeyValueFilterChange('surveyName', e.target.value)
+                    }
+                    placeholder='Tên khảo sát'
+                    allowClear
+                  />
+                </Col>
+                <Col xs={24} sm={12} md={8} lg={6}>
+                  <Input
+                    style={{ width: '100%' }}
+                    type='number'
+                    min={0}
+                    value={searchParams.get('averageScore') || ''}
+                    onChange={(e) =>
+                      handleKeyValueFilterChange('averageScore', e.target.value)
+                    }
+                    placeholder='Điểm thưởng'
+                    allowClear
+                  />
+                </Col>
+                <Col xs={24} sm={12} md={8} lg={6}>
+                  <DatePicker
+                    className='filterSelect'
+                    format='DD/MM/YYYY'
+                    value={
+                      searchParams.get('startDate')
+                        ? dayjs(
+                            Number(
+                              decodeURIComponent(searchParams.get('startDate')!)
+                            )
+                          )
+                        : null
+                    }
+                    onChange={(date) => {
+                      if (date) {
+                        handleKeyValueFilterChange(
+                          'startDate',
+                          encodeURIComponent(date.valueOf().toString())
+                        );
+                      } else {
+                        handleKeyValueFilterChange('startDate', '');
+                      }
+                    }}
+                    placeholder='Chọn ngày bắt đầu'
+                    style={{ width: '100%', borderRadius: 6 }}
+                  />
+                </Col>
+                <Col xs={24} sm={12} md={8} lg={6}>
+                  <DatePicker
+                    className='filterSelect'
+                    format='DD/MM/YYYY'
+                    value={
+                      searchParams.get('endDate')
+                        ? dayjs(
+                            Number(
+                              decodeURIComponent(searchParams.get('endDate')!)
+                            )
+                          )
+                        : null
+                    }
+                    onChange={(date) => {
+                      if (date) {
+                        handleKeyValueFilterChange(
+                          'endDate',
+                          encodeURIComponent(date.valueOf().toString())
+                        );
+                      } else {
+                        handleKeyValueFilterChange('endDate', '');
+                      }
+                    }}
+                    placeholder='Chọn ngày kết thúc'
+                    style={{ width: '100%', borderRadius: 6 }}
+                  />
+                </Col>
+                <Col xs={24} sm={12} md={8} lg={6}>
+                  <Input
+                    style={{ width: '100%' }}
+                    type='number'
+                    min={0}
+                    value={searchParams.get('totalContent') || ''}
+                    onChange={(e) =>
+                      handleKeyValueFilterChange('totalContent', e.target.value)
+                    }
+                    placeholder='Tổng số khảo sát'
+                    allowClear
+                  />
+                </Col>
+              </Row>
+              <Button
+                type='default'
+                onClick={clearFilters}
+                style={{
+                  width: 100,
+                  display: 'flex',
+                  marginLeft: 'auto',
+                  backgroundColor: 'var(--main-color)',
+                  color: '#fff',
+                }}
+              >
+                Xóa bộ lọc
+              </Button>
+            </Space>
+          </>
+        ) : null}
       </Card>
+
       <div
         style={{
           display: 'flex',
