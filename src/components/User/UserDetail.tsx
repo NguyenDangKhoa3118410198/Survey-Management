@@ -30,6 +30,7 @@ const UserDetail: React.FC = () => {
     queryFn: () => (id ? fetchUserbyId(id) : undefined),
     enabled: !!id,
   });
+  const userStatus = useUser.getState().getStatusById(Number(userDetail?.id));
 
   useEffect(() => {
     if (!isLoading && userDetail === undefined) {
@@ -39,8 +40,10 @@ const UserDetail: React.FC = () => {
 
   const handleResetPassword = () => {
     if (userDetail) {
-      resetPassword(Number(userDetail.id));
-      message.success('Reset Password thành công');
+      if (userStatus === 'Tạm ngưng') {
+        resetPassword(Number(userDetail.id));
+        message.success('Reset Password thành công');
+      } else message.warning('Tài khoản đang hoạt động hoặc khóa');
     } else {
       console.error('User detail is not available.');
     }
