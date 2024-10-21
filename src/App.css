@@ -30,3 +30,8 @@
 .select-custom .ant-select-selector {
   border-radius: 6px;
 }
+
+.breadcrumb-active {
+  font-weight: bold;
+  text-decoration: underline;
+}

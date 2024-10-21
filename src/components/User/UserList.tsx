@@ -72,12 +72,18 @@ const UserList: React.FC = () => {
   useEffect(() => {
     const cityId = searchParams.get('city') || '';
     const districtId = searchParams.get('district') || '';
+    const wardId = searchParams.get('ward') || '';
 
     if (cityId) {
       setCity(cityId);
     }
+
     if (districtId) {
       setDistrict(districtId);
+    }
+
+    if (wardId) {
+      setWard(wardId);
     }
   }, [searchParams]);
 

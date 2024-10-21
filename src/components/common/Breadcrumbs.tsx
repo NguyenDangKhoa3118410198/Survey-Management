@@ -32,9 +32,15 @@ const Breadcrumbs: React.FC = () => {
       breadcrumbName = 'Chi tiết khảo sát';
     }
 
+    const isActive = url === location.pathname;
+
     return {
       key: url,
-      title: <Link to={url}>{breadcrumbName}</Link>,
+      title: (
+        <Link to={url} className={isActive ? 'breadcrumb-active' : ''}>
+          {breadcrumbName}
+        </Link>
+      ),
     };
   });
 
