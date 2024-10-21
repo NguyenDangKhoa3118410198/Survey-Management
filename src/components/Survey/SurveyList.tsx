@@ -14,7 +14,12 @@ import {
 import { columns } from 'data/columnsSurveyList';
 import { useNavigate } from 'react-router-dom';
 import useSurvey from 'hooks/useSurvey';
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import {
+  CaretDownOutlined,
+  CaretUpOutlined,
+  PlusOutlined,
+  SearchOutlined,
+} from '@ant-design/icons';
 import useFilter from 'hooks/useFilter';
 import dayjs from 'dayjs';
 
@@ -59,9 +64,24 @@ const SurveyList: React.FC = () => {
         extra={
           <p
             onClick={toggleExpand}
-            style={{ cursor: 'pointer', color: 'var(--main-color)' }}
+            style={{
+              cursor: 'pointer',
+              color: 'var(--main-color)',
+              display: 'flex',
+              alignItems: 'center',
+            }}
           >
-            {isExpanded ? 'Thu nhỏ' : 'Mở rộng'}
+            {isExpanded ? (
+              <>
+                <CaretUpOutlined style={{ marginRight: 8 }} />
+                Thu nhỏ
+              </>
+            ) : (
+              <>
+                <CaretDownOutlined style={{ marginRight: 8 }} />
+                Mở rộng
+              </>
+            )}
           </p>
         }
       >
@@ -103,6 +123,19 @@ const SurveyList: React.FC = () => {
                       handleKeyValueFilterChange('averageScore', e.target.value)
                     }
                     placeholder='Điểm thưởng'
+                    allowClear
+                  />
+                </Col>
+                <Col xs={24} sm={12} md={8} lg={6}>
+                  <Input
+                    style={{ width: '100%' }}
+                    type='number'
+                    min={0}
+                    value={searchParams.get('totalContent') || ''}
+                    onChange={(e) =>
+                      handleKeyValueFilterChange('totalContent', e.target.value)
+                    }
+                    placeholder='Tổng số khảo sát'
                     allowClear
                   />
                 </Col>
@@ -158,19 +191,6 @@ const SurveyList: React.FC = () => {
                     }}
                     placeholder='Chọn ngày kết thúc'
                     style={{ width: '100%', borderRadius: 6 }}
-                  />
-                </Col>
-                <Col xs={24} sm={12} md={8} lg={6}>
-                  <Input
-                    style={{ width: '100%' }}
-                    type='number'
-                    min={0}
-                    value={searchParams.get('totalContent') || ''}
-                    onChange={(e) =>
-                      handleKeyValueFilterChange('totalContent', e.target.value)
-                    }
-                    placeholder='Tổng số khảo sát'
-                    allowClear
                   />
                 </Col>
               </Row>

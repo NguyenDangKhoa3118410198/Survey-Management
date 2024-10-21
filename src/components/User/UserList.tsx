@@ -13,7 +13,12 @@ import {
 import { columns } from 'data/columnsUserList';
 import { useNavigate } from 'react-router-dom';
 import useUser from 'hooks/useUser';
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import {
+  CaretDownOutlined,
+  CaretUpOutlined,
+  PlusOutlined,
+  SearchOutlined,
+} from '@ant-design/icons';
 import useFilter from 'hooks/useFilter';
 import { useQuery } from '@tanstack/react-query';
 import { fetchCities, fetchDistricts, fetchWards } from './services/fetchAPI';
@@ -114,9 +119,24 @@ const UserList: React.FC = () => {
         extra={
           <p
             onClick={toggleExpand}
-            style={{ cursor: 'pointer', color: 'var(--main-color)' }}
+            style={{
+              cursor: 'pointer',
+              color: 'var(--main-color)',
+              display: 'flex',
+              alignItems: 'center',
+            }}
           >
-            {isExpanded ? 'Thu nhỏ' : 'Mở rộng'}
+            {isExpanded ? (
+              <>
+                <CaretUpOutlined style={{ marginRight: 8 }} />
+                Thu nhỏ
+              </>
+            ) : (
+              <>
+                <CaretDownOutlined style={{ marginRight: 8 }} />
+                Mở rộng
+              </>
+            )}
           </p>
         }
       >
