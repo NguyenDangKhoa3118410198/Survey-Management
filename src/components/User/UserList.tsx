@@ -55,7 +55,6 @@ const UserList: React.FC = () => {
     if (!searchParams.get('district')) {
       newParams.delete('ward');
     }
-
     setSearchParams(newParams);
   }, [selectedCity, selectedDistrict, searchParams]);
 
@@ -75,7 +74,7 @@ const UserList: React.FC = () => {
     if (wardId) {
       setWard(wardId);
     }
-  }, [searchParams]);
+  }, []);
 
   const { data: cities } = useQuery({
     queryKey: ['cityVN'],
