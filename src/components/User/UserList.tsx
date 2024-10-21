@@ -3,7 +3,6 @@ import {
   Button,
   Card,
   Col,
-  Flex,
   Input,
   Row,
   Select,
@@ -85,10 +84,11 @@ const UserList: React.FC = () => {
   });
 
   const { data: wards } = useQuery({
-    queryKey: ['wardVN'],
+    queryKey: ['wardVN', selectedDistrict],
     queryFn: () => fetchWards(selectedDistrict),
     enabled: !!selectedDistrict,
   });
+
   const clearFilters = () => {
     const newParams = new URLSearchParams();
     setSearchParams(newParams);
@@ -244,7 +244,6 @@ const UserList: React.FC = () => {
                     value={searchParams.get('ward') || ''}
                     onChange={(value: any) => {
                       handleKeyValueFilterChange('ward', value);
-                      setDistrict(value);
                     }}
                     disabled={!selectedCity || !selectedDistrict}
                     options={
