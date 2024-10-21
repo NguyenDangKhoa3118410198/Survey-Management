@@ -35,6 +35,8 @@ const UserList: React.FC = () => {
 
   const [selectedCity, setCity] = useState('');
   const [selectedDistrict, setDistrict] = useState('');
+  const [selectedWard, setWard] = useState('');
+
   const [isExpanded, setIsExpanded] = useState(true);
 
   const toggleExpand = () => {
@@ -51,6 +53,8 @@ const UserList: React.FC = () => {
     if (!searchParams.get('city')) {
       newParams.delete('district');
       newParams.delete('ward');
+      setDistrict('');
+      setWard('');
     }
 
     if (!searchParams.get('district')) {
@@ -188,6 +192,8 @@ const UserList: React.FC = () => {
                     onChange={(value: any) => {
                       setCity(value);
                       handleKeyValueFilterChange('city', value);
+                      setDistrict('');
+                      setWard('');
                     }}
                     options={
                       Array.isArray(cities) && cities.length > 0
@@ -216,6 +222,7 @@ const UserList: React.FC = () => {
                     onChange={(value: any) => {
                       handleKeyValueFilterChange('district', value);
                       setDistrict(value);
+                      setWard('');
                     }}
                     disabled={!selectedCity}
                     options={
@@ -241,9 +248,10 @@ const UserList: React.FC = () => {
                         .toLowerCase()
                         .localeCompare((optionB?.label ?? '').toLowerCase())
                     }
-                    value={searchParams.get('ward') || ''}
+                    value={selectedWard}
                     onChange={(value: any) => {
                       handleKeyValueFilterChange('ward', value);
+                      setWard(value);
                     }}
                     disabled={!selectedCity || !selectedDistrict}
                     options={
