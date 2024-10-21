@@ -44,7 +44,8 @@ const SurveyDetail = () => {
           padding: '8px 24px',
         }}
       >
-        Thông tin chung
+        Chi tiết khảo sát
+        {surveyDetail?.id && <span style={{ marginLeft: '8px' }}>#{surveyDetail?.id}</span>}
       </Typography.Paragraph>
       <Divider style={{ margin: '10px 0' }} />
       <div style={{ padding: '8px 24px' }}>

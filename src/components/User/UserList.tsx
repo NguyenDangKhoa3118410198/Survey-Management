@@ -1,15 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Button,
-  Card,
-  Col,
-  Input,
-  Row,
-  Select,
-  Space,
-  Table,
-  Typography,
-} from 'antd';
+import { Button, Card, Col, Input, Row, Select, Space, Table, Typography } from 'antd';
 import { columns } from 'data/columnsUserList';
 import { useNavigate } from 'react-router-dom';
 import useUser from 'hooks/useUser';
@@ -116,7 +106,7 @@ const UserList: React.FC = () => {
       style={{
         display: 'flex',
         flexDirection: 'column',
-        height: 'calc(100vh - 150px)',
+        overflow: 'auto',
       }}
     >
       <Card
@@ -155,9 +145,7 @@ const UserList: React.FC = () => {
                     style={{ width: '100%' }}
                     type='text'
                     value={searchParams.get('id') || ''}
-                    onChange={(e) =>
-                      handleKeyValueFilterChange('id', e.target.value)
-                    }
+                    onChange={(e) => handleKeyValueFilterChange('id', e.target.value)}
                     placeholder='ID'
                     allowClear
                   />
@@ -167,9 +155,7 @@ const UserList: React.FC = () => {
                     style={{ width: '100%' }}
                     type='text'
                     value={searchParams.get('fullName') || ''}
-                    onChange={(e) =>
-                      handleKeyValueFilterChange('fullName', e.target.value)
-                    }
+                    onChange={(e) => handleKeyValueFilterChange('fullName', e.target.value)}
                     placeholder='Name'
                     allowClear
                   />
@@ -179,9 +165,7 @@ const UserList: React.FC = () => {
                     style={{ width: '100%' }}
                     type='email'
                     value={searchParams.get('email') || ''}
-                    onChange={(e) =>
-                      handleKeyValueFilterChange('email', e.target.value)
-                    }
+                    onChange={(e) => handleKeyValueFilterChange('email', e.target.value)}
                     placeholder='Email'
                     allowClear
                   />
@@ -191,9 +175,7 @@ const UserList: React.FC = () => {
                     style={{ width: '100%' }}
                     className='filterSelect'
                     value={searchParams.get('gender') || ''}
-                    onChange={(value: any) =>
-                      handleKeyValueFilterChange('gender', value)
-                    }
+                    onChange={(value: any) => handleKeyValueFilterChange('gender', value)}
                   >
                     <Option value=''>Select Gender</Option>
                     <Option value='Nam'>Nam</Option>
@@ -364,7 +346,7 @@ const UserList: React.FC = () => {
             rowKey='id'
             dataSource={filteredData ?? []}
             columns={columns}
-            scroll={{ y: 'calc(100vh - 360px)', x: 'auto' }}
+            scroll={{ x: 'max-content' }}
           />
         </div>
       </div>

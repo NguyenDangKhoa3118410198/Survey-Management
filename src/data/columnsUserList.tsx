@@ -6,60 +6,62 @@ import { Link } from 'react-router-dom';
 
 export const columns: TableProps<IUser>['columns'] = [
   {
-    title: 'ID',
+    title: <span style={{ whiteSpace: 'nowrap' }}>ID</span>,
     dataIndex: 'id',
     align: 'center',
-    width: 120,
-    render: (text: string) => <span style={{ color: '#1890FF' }}> {text}</span>,
+    fixed: 'left',
+    width: 80,
+    render: (text: string) => <span style={{ color: '#1890FF' }}>{text}</span>,
   },
   {
-    title: 'Ảnh đại diện',
+    title: <span style={{ whiteSpace: 'nowrap' }}>Ảnh đại diện</span>,
     dataIndex: 'avatar',
     align: 'center',
-    width: 180,
+    width: 140,
     render: (avatar: string) =>
       avatar ? (
         <Image
           src={avatar}
           alt='avatar'
           style={{
-            width: 80,
-            height: 80,
+            width: 50,
+            height: 50,
             objectFit: 'cover',
+            borderRadius: '50%',
           }}
         />
       ) : null,
   },
   {
-    title: 'Họ và tên',
+    title: <span style={{ whiteSpace: 'nowrap' }}>Họ và tên</span>,
     dataIndex: 'fullName',
     render: (text: string) => <span>{text}</span>,
-    width: 250,
+    width: 200,
   },
   {
-    title: 'Email',
+    title: <span style={{ whiteSpace: 'nowrap' }}>Email</span>,
     dataIndex: 'email',
-    minWidth: 250,
+    width: 250,
     render: (text: string) => <span>{text}</span>,
   },
   {
-    title: 'Ngày sinh',
+    title: <span style={{ whiteSpace: 'nowrap' }}>Ngày sinh</span>,
     dataIndex: 'birthDate',
     align: 'center',
-    width: 150,
+    width: 100,
     render: (text: string) => <span>{text}</span>,
   },
   {
-    title: 'Giới tính',
+    title: <span style={{ whiteSpace: 'nowrap' }}>Giới tính</span>,
     dataIndex: 'gender',
-    width: 150,
+    width: 100,
     render: (text: string) => <span>{text}</span>,
   },
   {
-    title: 'Xem chi tiết',
+    title: <span style={{ whiteSpace: 'nowrap' }}>Xem chi tiết</span>,
     align: 'center',
     fixed: 'right',
-    width: 150,
+    width: 100,
     render: (record: IUser) =>
       record && record.id ? (
         <Link to={`/users/${record.id}`}>
@@ -70,10 +72,10 @@ export const columns: TableProps<IUser>['columns'] = [
       ) : null,
   },
   {
-    title: 'Xóa',
+    title: <span style={{ whiteSpace: 'nowrap' }}>Xóa</span>,
     align: 'center',
     fixed: 'right',
-    width: 150,
+    width: 100,
     render: (record: IUser) =>
       record && record.id ? (
         <Popconfirm

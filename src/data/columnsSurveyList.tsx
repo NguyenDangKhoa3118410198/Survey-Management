@@ -9,7 +9,8 @@ export const columns: TableProps<ISurvey>['columns'] = [
     title: 'ID',
     dataIndex: 'id',
     align: 'center',
-    width: 100,
+    fixed: 'left',
+    width: 80,
     render: (text: string) => <span style={{ color: '#1890FF' }}> {text}</span>,
   },
   {
@@ -22,31 +23,35 @@ export const columns: TableProps<ISurvey>['columns'] = [
     title: 'Điểm thưởng',
     dataIndex: 'averageScore',
     align: 'center',
+    width: 120,
     render: (text: string) => <span> {text}</span>,
   },
   {
     title: 'Ngày bắt đầu',
     dataIndex: 'startDate',
     align: 'center',
+    width: 150,
     render: (text: string) => <span> {text}</span>,
   },
   {
     title: 'Ngày kết thúc',
     dataIndex: 'endDate',
     align: 'center',
+    width: 150,
     render: (text: string) => <span> {text}</span>,
   },
   {
     title: 'Tổng nội dung khảo sát',
     dataIndex: 'totalContent',
     align: 'center',
+    width: 150,
     render: (text: string) => <span> {text}</span>,
   },
   {
     title: 'Xem chi tiết',
     align: 'center',
     fixed: 'right',
-    width: 150,
+    width: 100,
     render: (record: ISurvey) =>
       record && record.id ? (
         <Link to={`/surveys/${record.id}`}>
@@ -60,7 +65,7 @@ export const columns: TableProps<ISurvey>['columns'] = [
     title: 'Xóa',
     align: 'center',
     fixed: 'right',
-    width: 150,
+    width: 100,
     render: (record: ISurvey) => (
       <Popconfirm
         title='Bạn có chắc chắn muốn xóa khảo sát này?'

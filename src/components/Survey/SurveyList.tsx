@@ -1,16 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Button,
-  Card,
-  Col,
-  DatePicker,
-  Flex,
-  Input,
-  Row,
-  Space,
-  Table,
-  Typography,
-} from 'antd';
+import { Button, Card, Col, DatePicker, Flex, Input, Row, Space, Table, Typography } from 'antd';
 import { columns } from 'data/columnsSurveyList';
 import { useNavigate } from 'react-router-dom';
 import useSurvey from 'hooks/useSurvey';
@@ -55,7 +44,7 @@ const SurveyList: React.FC = () => {
       style={{
         display: 'flex',
         flexDirection: 'column',
-        height: 'calc(100vh - 64px)',
+        overflowY: 'auto',
       }}
     >
       <Card
@@ -94,9 +83,7 @@ const SurveyList: React.FC = () => {
                     style={{ width: '100%' }}
                     type='text'
                     value={searchParams.get('id') || ''}
-                    onChange={(e) =>
-                      handleKeyValueFilterChange('id', e.target.value)
-                    }
+                    onChange={(e) => handleKeyValueFilterChange('id', e.target.value)}
                     placeholder='ID'
                     allowClear
                   />
@@ -106,9 +93,7 @@ const SurveyList: React.FC = () => {
                     style={{ width: '100%' }}
                     type='text'
                     value={searchParams.get('surveyName') || ''}
-                    onChange={(e) =>
-                      handleKeyValueFilterChange('surveyName', e.target.value)
-                    }
+                    onChange={(e) => handleKeyValueFilterChange('surveyName', e.target.value)}
                     placeholder='Tên khảo sát'
                     allowClear
                   />
@@ -119,9 +104,7 @@ const SurveyList: React.FC = () => {
                     type='number'
                     min={0}
                     value={searchParams.get('averageScore') || ''}
-                    onChange={(e) =>
-                      handleKeyValueFilterChange('averageScore', e.target.value)
-                    }
+                    onChange={(e) => handleKeyValueFilterChange('averageScore', e.target.value)}
                     placeholder='Điểm thưởng'
                     allowClear
                   />
@@ -132,9 +115,7 @@ const SurveyList: React.FC = () => {
                     type='number'
                     min={0}
                     value={searchParams.get('totalContent') || ''}
-                    onChange={(e) =>
-                      handleKeyValueFilterChange('totalContent', e.target.value)
-                    }
+                    onChange={(e) => handleKeyValueFilterChange('totalContent', e.target.value)}
                     placeholder='Tổng số khảo sát'
                     allowClear
                   />
@@ -145,11 +126,7 @@ const SurveyList: React.FC = () => {
                     format='DD/MM/YYYY'
                     value={
                       searchParams.get('startDate')
-                        ? dayjs(
-                            Number(
-                              decodeURIComponent(searchParams.get('startDate')!)
-                            )
-                          )
+                        ? dayjs(Number(decodeURIComponent(searchParams.get('startDate')!)))
                         : null
                     }
                     onChange={(date) => {
@@ -172,11 +149,7 @@ const SurveyList: React.FC = () => {
                     format='DD/MM/YYYY'
                     value={
                       searchParams.get('endDate')
-                        ? dayjs(
-                            Number(
-                              decodeURIComponent(searchParams.get('endDate')!)
-                            )
-                          )
+                        ? dayjs(Number(decodeURIComponent(searchParams.get('endDate')!)))
                         : null
                     }
                     onChange={(date) => {
@@ -277,7 +250,7 @@ const SurveyList: React.FC = () => {
               rowKey='id'
               dataSource={filteredData ?? []}
               columns={columns}
-              scroll={{ y: 'calc(100vh - 360px)', x: 'auto' }}
+              scroll={{ x: 'max-content' }}
             />
           </div>
         </div>

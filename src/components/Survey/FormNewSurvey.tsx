@@ -48,10 +48,7 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
           delete updatedQuestion.ratingOption;
         }
 
-        if (
-          question.questionType !== 'single' &&
-          question.questionType !== 'multiple'
-        ) {
+        if (question.questionType !== 'single' && question.questionType !== 'multiple') {
           delete updatedQuestion.extraOptions;
         }
 
@@ -112,14 +109,35 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
         endDate: originalEndDate ? dayjs(originalEndDate) : null,
         questions: questions?.map((question) => ({
           ...question,
-          extraOptions: question.extraOptions || [
-            { option: '' },
-            { option: '' },
-          ],
+          extraOptions: question.extraOptions || [{ option: '' }, { option: '' }],
         })),
       });
     }
   }, [surveyDetail, form]);
+
+  const handleUnchanged = () => {
+    if (surveyDetail) {
+      const {
+        startDate,
+        endDate,
+        questions,
+        originalStartDate,
+        originalEndDate,
+        ...restUserDetail
+      } = surveyDetail;
+
+      form.setFieldsValue({
+        ...restUserDetail,
+
+        startDate: dayjs(originalStartDate),
+        endDate: originalEndDate ? dayjs(originalEndDate) : null,
+        questions: questions?.map((question) => ({
+          ...question,
+          extraOptions: question.extraOptions || [{ option: '' }, { option: '' }],
+        })),
+      });
+    }
+  };
 
   const handleValuesChange = () => {
     setIsFormModified(true);
@@ -148,9 +166,7 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
       return Promise.resolve();
     }
     if (dayjs(endDate).isBefore(startDate, 'day')) {
-      return Promise.reject(
-        new Error('Ngày kết thúc không được nhỏ hơn ngày bắt đầu')
-      );
+      return Promise.reject(new Error('Ngày kết thúc không được nhỏ hơn ngày bắt đầu'));
     }
     return Promise.resolve();
   };
@@ -196,11 +212,7 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
             colon={false}
             rules={[{ required: true, message: 'Vui lòng nhập điểm thưởng' }]}
           >
-            <InputNumber
-              min={0}
-              style={{ width: '100%' }}
-              placeholder='Nhập điểm thưởng'
-            />
+            <InputNumber min={0} style={{ width: '100%' }} placeholder='Nhập điểm thưởng' />
           </Item>
           <Item
             name='startDate'
@@ -212,9 +224,7 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
               showTime={{ format: 'HH:mm' }}
               format='DD/MM/YYYY - HH:mm'
               onChange={onStartChange}
-              disabledDate={(current) =>
-                current && current.isBefore(dayjs().startOf('day'))
-              }
+              disabledDate={(current) => current && current.isBefore(dayjs().startOf('day'))}
               placeholder='Ngày bắt đầu'
             />
           </Item>
@@ -232,19 +242,13 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
                   return false;
                 }
                 return (
-                  (current.isBefore(dayjs().startOf('day')) ||
-                    disabledEndDate(current)) ??
-                  false
+                  (current.isBefore(dayjs().startOf('day')) || disabledEndDate(current)) ?? false
                 );
               }}
               placeholder='Ngày kết thúc'
             />
           </Item>
-          <Item
-            name='totalContent'
-            label='Tổng nội dung khảo sát'
-            colon={false}
-          >
+          <Item name='totalContent' label='Tổng nội dung khảo sát' colon={false}>
             <InputNumber disabled={true} style={{ width: '100%' }} />
           </Item>
         </div>
@@ -295,10 +299,7 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
                     <Button
                       onClick={() => {
                         add({}, 0);
-                        form.setFieldValue(
-                          'totalContent',
-                          form.getFieldValue('totalContent') + 1
-                        );
+                        form.setFieldValue('totalContent', form.getFieldValue('totalContent') + 1);
                       }}
                       style={{
                         position: 'absolute',
@@ -311,11 +312,7 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
                       + Thêm câu hỏi
                     </Button>
                     {fields.map(({ key, name, ...restField }) => {
-                      const questionType = form.getFieldValue([
-                        'questions',
-                        name,
-                        'questionType',
-                      ]);
+                      const questionType = form.getFieldValue(['questions', name, 'questionType']);
                       return (
                         <div key={key}>
                           <QuestionFormItem
@@ -346,19 +343,25 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
           }}
         >
           {isFormModified && (
-            <Button
-              htmlType='button'
-              style={{
-                marginRight: '10px',
-                border: '1px solid var(--main-color)',
+            <Popconfirm
+              title='Bạn có chắc chắn muốn reset không?'
+              onConfirm={() => {
+                handleUnchanged();
+                setIsFormModified(false);
               }}
-              onClick={() => {
-                form.resetFields();
-                setIsFormModified(true);
-              }}
+              okText='Đồng ý'
+              cancelText='Hủy'
             >
-              Reset
-            </Button>
+              <Button
+                htmlType='button'
+                style={{
+                  marginRight: '10px',
+                  border: '1px solid var(--main-color)',
+                }}
+              >
+                Reset
+              </Button>
+            </Popconfirm>
           )}
 
           <Button
@@ -372,9 +375,7 @@ const FormNewSurvey: React.FC<FormNewSurveyProps> = ({ surveyDetail }) => {
             type='primary'
             htmlType='submit'
             style={{
-              backgroundColor: !isFormModified
-                ? 'lightgray'
-                : 'var(--main-color)',
+              backgroundColor: !isFormModified ? 'lightgray' : 'var(--main-color)',
             }}
             disabled={!isFormModified}
           >

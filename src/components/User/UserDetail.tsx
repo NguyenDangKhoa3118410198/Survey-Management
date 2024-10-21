@@ -1,13 +1,4 @@
-import {
-  Divider,
-  Dropdown,
-  Flex,
-  Menu,
-  MenuProps,
-  message,
-  Popconfirm,
-  Typography,
-} from 'antd';
+import { Divider, Dropdown, Flex, Menu, MenuProps, message, Popconfirm, Typography } from 'antd';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import FormNewUser from './FormNewUser';
@@ -91,14 +82,10 @@ const UserDetail: React.FC = () => {
           }}
         >
           Chi tiết người dùng
-          {userDetail?.id && (
-            <span style={{ marginLeft: '8px' }}>#{userDetail?.id}</span>
-          )}
+          {userDetail?.id && <span style={{ marginLeft: '8px' }}>#{userDetail?.id}</span>}
         </Typography.Paragraph>
         <Dropdown overlay={<Menu items={menuItems} />} placement='bottomRight'>
-          <EllipsisOutlined
-            style={{ transform: 'rotate(90deg)', marginRight: 16 }}
-          />
+          <EllipsisOutlined style={{ transform: 'rotate(90deg)', marginRight: 16 }} />
         </Dropdown>
       </Flex>
 
