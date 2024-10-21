@@ -21,7 +21,7 @@ import dayjs from 'dayjs';
 const SurveyList: React.FC = () => {
   const navigate = useNavigate();
   const { surveyList } = useSurvey();
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
 
   const toggleExpand = () => {
     setIsExpanded((prev) => !prev);
@@ -61,7 +61,7 @@ const SurveyList: React.FC = () => {
             onClick={toggleExpand}
             style={{ cursor: 'pointer', color: 'var(--main-color)' }}
           >
-            {isExpanded ? 'Mở rộng' : 'Thu nhỏ'}
+            {isExpanded ? 'Thu nhỏ' : 'Mở rộng'}
           </p>
         }
       >

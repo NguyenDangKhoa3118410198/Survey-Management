@@ -35,7 +35,7 @@ const UserList: React.FC = () => {
 
   const [selectedCity, setCity] = useState('');
   const [selectedDistrict, setDistrict] = useState('');
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
 
   const toggleExpand = () => {
     setIsExpanded((prev) => !prev);
@@ -112,7 +112,7 @@ const UserList: React.FC = () => {
             onClick={toggleExpand}
             style={{ cursor: 'pointer', color: 'var(--main-color)' }}
           >
-            {isExpanded ? 'Mở rộng' : 'Thu nhỏ'}
+            {isExpanded ? 'Thu nhỏ' : 'Mở rộng'}
           </p>
         }
       >
