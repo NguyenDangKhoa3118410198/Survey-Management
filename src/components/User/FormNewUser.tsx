@@ -8,6 +8,7 @@ import {
   Input,
   message,
   Modal,
+  Popconfirm,
   Radio,
   Tag,
   UploadFile,
@@ -60,6 +61,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(() => {
   const [selectStatus, setSelectStatus] = useState(userStatus || '');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [image, setImage] = useState('');
+  const [isSubmit, setIsSubmit] = useState<boolean>(false);
 
   const handleValuesChange = (changedValues: any) => {
     const initData = { ...userDetail };
@@ -193,6 +195,18 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(() => {
       }
 
       setImage(avatar ?? null);
+      setFileList(
+        (avatar && [
+          {
+            uid: '-1',
+            name: 'test.png',
+            status: 'done',
+            url: avatar,
+            thumbUrl: avatar,
+          },
+        ]) ??
+          []
+      );
       setSelectStatus(userDetail.status ?? '');
 
       form.setFieldsValue({
@@ -210,6 +224,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(() => {
   }, [userDetail, form]);
 
   const submitForm = (values: IUser) => {
+    setIsSubmit(true);
     try {
       let pathImg = null;
 
@@ -269,6 +284,8 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(() => {
       setIsFormModified(false);
     } catch (error) {
       console.error('Submit failed', error);
+    } finally {
+      setIsSubmit(false);
     }
   };
 
@@ -307,7 +324,6 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(() => {
 
   const showModal = () => {
     setVisible(true);
-    console.log('click');
   };
 
   const handleOk = () => {
@@ -386,7 +402,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(() => {
           gender: 'Nam',
         }}
         onValuesChange={handleValuesChange}
-        disabled={userDetail && userStatus !== 'Tạm ngưng'}
+        disabled={(userDetail && userStatus !== 'Tạm ngưng') || isSubmit}
       >
         <Item label='Ảnh đại diện' colon={false}>
           <Item name='avatar' noStyle>
@@ -583,19 +599,25 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(() => {
           }}
         >
           {userDetail && isFormModified && (
-            <Button
-              htmlType='button'
-              style={{
-                marginRight: '10px',
-                border: '1px solid var(--main-color)',
-              }}
-              onClick={() => {
+            <Popconfirm
+              title='Bạn có chắc chắn muốn hủy các thay đổi?'
+              onConfirm={() => {
                 queryClient.invalidateQueries({ queryKey: ['userDetail'] });
                 fillValue();
               }}
+              okText='Yes'
+              cancelText='No'
             >
-              Hủy thay đổi
-            </Button>
+              <Button
+                htmlType='button'
+                style={{
+                  marginRight: '10px',
+                  border: '1px solid var(--main-color)',
+                }}
+              >
+                Hủy thay đổi
+              </Button>
+            </Popconfirm>
           )}
 
           {isFormModified && (
