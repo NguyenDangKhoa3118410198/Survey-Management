@@ -1,4 +1,4 @@
-import { EditOutlined, RetweetOutlined } from '@ant-design/icons';
+import { EditOutlined } from '@ant-design/icons';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Button,
@@ -15,7 +15,7 @@ import {
 } from 'antd';
 import dayjs from 'dayjs';
 import React, { useCallback, useEffect, useState } from 'react';
-import { customizeRequiredMark, defaultPassword, USER_STATUS } from 'utils';
+import { customizeRequiredMark } from 'utils';
 import {
   fetchCities,
   fetchDistricts,
@@ -56,10 +56,12 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(() => {
     queryFn: () => (id ? fetchUserbyId(id) : undefined),
     enabled: !!id,
   });
+
   const [visible, setVisible] = useState(false);
   const userStatus = useUser.getState().getStatusById(Number(userDetail?.id));
   const [selectStatus, setSelectStatus] = useState(userStatus || '');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [countryCode, setCountryCode] = useState('vn');
   const [image, setImage] = useState('');
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
 
@@ -208,13 +210,14 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(() => {
           []
       );
       setSelectStatus(userDetail.status ?? '');
+      setPhoneNumber(phoneNumber || '');
 
       form.setFieldsValue({
         ...restUserDetail,
         addresses: addresses || [{}],
         gender: restUserDetail.gender || 'Nam',
         birthDate: dayjs(originBirthDate) ?? null,
-        phoneNumber: phoneNumber,
+        phoneNumber: phoneNumber || `+${countryCode}`,
       });
     }
   }, [userDetail]);
@@ -227,6 +230,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(() => {
     setIsSubmit(true);
     try {
       let pathImg = null;
+      let formatPhoneNumber = '';
 
       if (userDetail?.avatar?.length === 0) {
         pathImg = userDetail?.avatar;
@@ -238,6 +242,17 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(() => {
 
       if (values?.avatar?.length > 0 && values.avatar[0]?.url) {
         pathImg = values.avatar[0].url ?? null;
+      }
+
+      if (values?.phoneNumber) {
+        const dialCodeLength = countryCode.length;
+
+        const phoneWithoutDialCode = values?.phoneNumber.slice(dialCodeLength);
+
+        if (phoneWithoutDialCode.startsWith('0')) {
+          const replaceString = phoneWithoutDialCode.replace(/^0+/, '');
+          formatPhoneNumber = `${countryCode}${replaceString}`;
+        } else formatPhoneNumber = `${countryCode}${phoneWithoutDialCode}`;
       }
 
       const formattedBirthDate =
@@ -256,6 +271,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(() => {
           selectedWard,
         ],
         status: userStatus || 'Hoạt động',
+        phoneNumber: formatPhoneNumber,
       };
 
       if (userDetail?.id) {
@@ -389,6 +405,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(() => {
             </>
           )}
         </Radio.Group>
+        {userStatus === 'Khóa' && <p>Tài khoản đã bị khóa </p>}
       </Modal>
 
       <Form
@@ -497,21 +514,44 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(() => {
           name='phoneNumber'
           colon={false}
           rules={[
-            {
-              pattern: /^\+?\d{10,15}$/,
-              message: 'Số điện thoại không hợp lệ',
-            },
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                if (!value) {
+                  return Promise.resolve();
+                }
+                const trimmedValue = value.trim().replace('+', '');
+                const countryCodeLength = countryCode.length;
+                const phoneWithoutDialCode =
+                  trimmedValue.slice(countryCodeLength);
+
+                if (
+                  phoneWithoutDialCode.length > 0 &&
+                  /^\d{10,15}$/.test(phoneWithoutDialCode)
+                ) {
+                  return Promise.resolve();
+                }
+                if (phoneWithoutDialCode.length === 0) return Promise.resolve();
+                return Promise.reject(new Error('Số điện thoại không hợp lệ'));
+              },
+            }),
           ]}
         >
           <PhoneInput
             disabled={userDetail && userStatus !== 'Tạm ngưng'}
-            country={'vn'}
-            value={phoneNumber}
+            country={countryCode}
+            value={`${countryCode}${phoneNumber}`}
             placeholder='Nhập số điện thoại (không bắt buộc)'
             countryCodeEditable={false}
             onChange={(phone, country: CountryData | {}) => {
               if ('dialCode' in country) {
                 const dialCode = (country as CountryData).dialCode;
+
+                if (phone.trim() === '') {
+                  setPhoneNumber('');
+                  return;
+                }
+
+                setCountryCode(dialCode);
 
                 if (phone.startsWith('0')) {
                   setPhoneNumber(phone.substring(1));
