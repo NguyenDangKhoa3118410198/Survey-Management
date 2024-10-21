@@ -277,7 +277,7 @@ const SurveyList: React.FC = () => {
               rowKey='id'
               dataSource={filteredData ?? []}
               columns={columns}
-              scroll={{ y: 'calc(100vh - 360px)' }}
+              scroll={{ y: 'calc(100vh - 360px)', x: 'auto' }}
             />
           </div>
         </div>

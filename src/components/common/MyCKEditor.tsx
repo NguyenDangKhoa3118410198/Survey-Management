@@ -28,6 +28,8 @@ const TextEditor: React.FC<TextEditorProps> = ({
             'https://api-dev.estuary.solutions:8443/fico-salex-mediafile-dev/files/upload',
         },
         toolbar: [
+          'undo',
+          'redo',
           'heading',
           '|',
           'bold',
@@ -39,8 +41,6 @@ const TextEditor: React.FC<TextEditorProps> = ({
           'imageUpload',
           'insertTable',
           'mediaEmbed',
-          'undo',
-          'redo',
         ],
       }}
       onReady={(editor) => {
