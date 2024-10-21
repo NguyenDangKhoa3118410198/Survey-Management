@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import {
   Button,
   Card,
+  Col,
   Flex,
   Input,
+  Row,
   Select,
   Space,
   Table,
@@ -34,6 +36,11 @@ const UserList: React.FC = () => {
 
   const [selectedCity, setCity] = useState('');
   const [selectedDistrict, setDistrict] = useState('');
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const toggleExpand = () => {
+    setIsExpanded((prev) => !prev);
+  };
 
   const handleCreateUser = () => {
     navigate('/users/create');
@@ -97,145 +104,178 @@ const UserList: React.FC = () => {
         height: 'calc(100vh - 150px)',
       }}
     >
-      <Card title='Bộ lọc' style={{ marginBottom: 30 }}>
-        <Space direction='vertical' size='middle' style={{ width: '100%' }}>
-          <Flex wrap gap={20}>
-            <Input
-              style={{ width: 200 }}
-              type='text'
-              value={searchParams.get('id') || ''}
-              onChange={(e) => handleKeyValueFilterChange('id', e.target.value)}
-              placeholder='ID'
-              allowClear
-            />
-            <Input
-              style={{ width: 200 }}
-              type='text'
-              value={searchParams.get('fullName') || ''}
-              onChange={(e) =>
-                handleKeyValueFilterChange('fullName', e.target.value)
-              }
-              placeholder='Name'
-              allowClear
-            />
-            <Input
-              style={{ width: 200 }}
-              type='email'
-              value={searchParams.get('email') || ''}
-              onChange={(e) =>
-                handleKeyValueFilterChange('email', e.target.value)
-              }
-              placeholder='Email'
-              allowClear
-            />
-            <Select
-              style={{ width: 200, borderRadius: '0px !important' }}
-              className='filterSelect'
-              value={searchParams.get('gender') || ''}
-              onChange={(value: any) =>
-                handleKeyValueFilterChange('gender', value)
-              }
-            >
-              <Option value=''>Select Gender</Option>
-              <Option value='Nam'>Nam</Option>
-              <Option value='Nữ'>Nữ</Option>
-              <Option value='Khác'>Khác</Option>
-            </Select>
-            <Space>
-              <Select
-                style={{ width: 200 }}
-                showSearch
-                placeholder='Chọn thành phố'
-                allowClear
-                optionFilterProp='label'
-                filterSort={(optionA, optionB) =>
-                  (optionA?.label ?? '')
-                    .toLowerCase()
-                    .localeCompare((optionB?.label ?? '').toLowerCase())
-                }
-                value={searchParams.get('city') || ''}
-                onChange={(value: any) => {
-                  setCity(value);
-                  handleKeyValueFilterChange('city', value);
-                }}
-                options={
-                  Array.isArray(cities) && cities.length > 0
-                    ? cities.map((city) => ({
-                        label: city?.full_name,
-                        value: city?.id,
-                      }))
-                    : []
-                }
-              />
-              <Select
-                style={{ width: 200 }}
-                showSearch
-                placeholder='Chọn quận huyện'
-                allowClear
-                optionFilterProp='label'
-                filterSort={(optionA, optionB) =>
-                  (optionA?.label ?? '')
-                    .toLowerCase()
-                    .localeCompare((optionB?.label ?? '').toLowerCase())
-                }
-                value={selectedDistrict}
-                onChange={(value: any) => {
-                  handleKeyValueFilterChange('district', value);
-                  setDistrict(value);
-                }}
-                disabled={!selectedCity}
-                options={
-                  Array.isArray(districts) && districts.length > 0
-                    ? districts.map((district) => ({
-                        label: district?.full_name,
-                        value: district?.id,
-                      }))
-                    : []
-                }
-              />
-              <Select
-                style={{ width: 200 }}
-                showSearch
-                placeholder='Chọn phường xã'
-                allowClear
-                optionFilterProp='label'
-                filterSort={(optionA, optionB) =>
-                  (optionA?.label ?? '')
-                    .toLowerCase()
-                    .localeCompare((optionB?.label ?? '').toLowerCase())
-                }
-                value={searchParams.get('ward') || ''}
-                onChange={(value: any) => {
-                  handleKeyValueFilterChange('ward', value);
-                  setDistrict(value);
-                }}
-                disabled={!selectedCity || !selectedDistrict}
-                options={
-                  Array.isArray(wards) && wards.length > 0
-                    ? wards.map((ward) => ({
-                        label: ward?.full_name,
-                        value: ward?.id,
-                      }))
-                    : []
-                }
-              />
+      <Card
+        title='Bộ lọc'
+        style={{ marginBottom: 30 }}
+        extra={
+          <p
+            onClick={toggleExpand}
+            style={{ cursor: 'pointer', color: 'var(--main-color)' }}
+          >
+            {isExpanded ? 'Mở rộng' : 'Thu nhỏ'}
+          </p>
+        }
+      >
+        {isExpanded ? (
+          <>
+            <Space direction='vertical' size='middle' style={{ width: '100%' }}>
+              <Row gutter={[20, 20]} wrap>
+                <Col xs={24} sm={12} md={8} lg={6}>
+                  <Input
+                    style={{ width: '100%' }}
+                    type='text'
+                    value={searchParams.get('id') || ''}
+                    onChange={(e) =>
+                      handleKeyValueFilterChange('id', e.target.value)
+                    }
+                    placeholder='ID'
+                    allowClear
+                  />
+                </Col>
+                <Col xs={24} sm={12} md={8} lg={6}>
+                  <Input
+                    style={{ width: '100%' }}
+                    type='text'
+                    value={searchParams.get('fullName') || ''}
+                    onChange={(e) =>
+                      handleKeyValueFilterChange('fullName', e.target.value)
+                    }
+                    placeholder='Name'
+                    allowClear
+                  />
+                </Col>
+                <Col xs={24} sm={12} md={8} lg={6}>
+                  <Input
+                    style={{ width: '100%' }}
+                    type='email'
+                    value={searchParams.get('email') || ''}
+                    onChange={(e) =>
+                      handleKeyValueFilterChange('email', e.target.value)
+                    }
+                    placeholder='Email'
+                    allowClear
+                  />
+                </Col>
+                <Col xs={24} sm={12} md={8} lg={6}>
+                  <Select
+                    style={{ width: '100%' }}
+                    className='filterSelect'
+                    value={searchParams.get('gender') || ''}
+                    onChange={(value: any) =>
+                      handleKeyValueFilterChange('gender', value)
+                    }
+                  >
+                    <Option value=''>Select Gender</Option>
+                    <Option value='Nam'>Nam</Option>
+                    <Option value='Nữ'>Nữ</Option>
+                    <Option value='Khác'>Khác</Option>
+                  </Select>
+                </Col>
+                <Col xs={24} sm={12} md={8} lg={6}>
+                  <Select
+                    style={{ width: '100%' }}
+                    className='select-custom'
+                    showSearch
+                    placeholder='Chọn thành phố'
+                    allowClear
+                    optionFilterProp='label'
+                    filterSort={(optionA, optionB) =>
+                      (optionA?.label ?? '')
+                        .toLowerCase()
+                        .localeCompare((optionB?.label ?? '').toLowerCase())
+                    }
+                    value={searchParams.get('city') || ''}
+                    onChange={(value: any) => {
+                      setCity(value);
+                      handleKeyValueFilterChange('city', value);
+                    }}
+                    options={
+                      Array.isArray(cities) && cities.length > 0
+                        ? cities.map((city) => ({
+                            label: city?.full_name,
+                            value: city?.id,
+                          }))
+                        : []
+                    }
+                  />
+                </Col>
+                <Col xs={24} sm={12} md={8} lg={6}>
+                  <Select
+                    style={{ width: '100%' }}
+                    className='select-custom'
+                    showSearch
+                    placeholder='Chọn quận huyện'
+                    allowClear
+                    optionFilterProp='label'
+                    filterSort={(optionA, optionB) =>
+                      (optionA?.label ?? '')
+                        .toLowerCase()
+                        .localeCompare((optionB?.label ?? '').toLowerCase())
+                    }
+                    value={selectedDistrict}
+                    onChange={(value: any) => {
+                      handleKeyValueFilterChange('district', value);
+                      setDistrict(value);
+                    }}
+                    disabled={!selectedCity}
+                    options={
+                      Array.isArray(districts) && districts.length > 0
+                        ? districts.map((district) => ({
+                            label: district?.full_name,
+                            value: district?.id,
+                          }))
+                        : []
+                    }
+                  />
+                </Col>
+                <Col xs={24} sm={12} md={8} lg={6}>
+                  <Select
+                    style={{ width: '100%' }}
+                    className='select-custom'
+                    showSearch
+                    placeholder='Chọn phường xã'
+                    allowClear
+                    optionFilterProp='label'
+                    filterSort={(optionA, optionB) =>
+                      (optionA?.label ?? '')
+                        .toLowerCase()
+                        .localeCompare((optionB?.label ?? '').toLowerCase())
+                    }
+                    value={searchParams.get('ward') || ''}
+                    onChange={(value: any) => {
+                      handleKeyValueFilterChange('ward', value);
+                      setDistrict(value);
+                    }}
+                    disabled={!selectedCity || !selectedDistrict}
+                    options={
+                      Array.isArray(wards) && wards.length > 0
+                        ? wards.map((ward) => ({
+                            label: ward?.full_name,
+                            value: ward?.id,
+                          }))
+                        : []
+                    }
+                  />
+                </Col>
+              </Row>
             </Space>
-          </Flex>
-        </Space>
-        <Button
-          type='default'
-          onClick={clearFilters}
-          style={{
-            width: 100,
-            display: 'flex',
-            marginLeft: 'auto',
-            backgroundColor: 'var(--main-color)',
-            color: '#fff',
-          }}
-        >
-          Xóa bộ lọc
-        </Button>
+            <Button
+              type='default'
+              onClick={clearFilters}
+              style={{
+                width: 100,
+                display: 'flex',
+                marginLeft: 'auto',
+                backgroundColor: 'var(--main-color)',
+                color: '#fff',
+              }}
+            >
+              Xóa bộ lọc
+            </Button>
+          </>
+        ) : null}
       </Card>
+
       <div
         style={{
           backgroundColor: '#fff',

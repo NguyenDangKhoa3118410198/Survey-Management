@@ -26,3 +26,7 @@
 .filterSelect .ant-select-selector {
   border-radius: 6px;
 }
+
+.select-custom .ant-select-selector {
+  border-radius: 6px;
+}
