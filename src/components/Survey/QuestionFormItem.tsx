@@ -68,7 +68,7 @@ const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
     ]);
   };
 
-  const menuItems: MenuProps['items'] = [
+  const items = [
     {
       key: 'addQuestion',
       label: (
@@ -273,7 +273,7 @@ const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
         justify='flex-end'
         style={{ marginTop: 'auto', marginBottom: '24px' }}
       >
-        <Dropdown overlay={<Menu items={menuItems} />} placement='bottomRight'>
+        <Dropdown menu={{ items }} placement='bottomRight'>
           <Button
             icon={<EllipsisOutlined style={{ transform: 'rotate(90deg)' }} />}
           />

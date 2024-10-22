@@ -17,7 +17,7 @@ const HeaderLayout: React.FC = () => {
     clearUser();
   };
 
-  const menuItems: MenuProps['items'] = [
+  const items = [
     {
       key: 'profile',
       label: (
@@ -86,7 +86,7 @@ const HeaderLayout: React.FC = () => {
   return (
     <Header style={{ padding: 0, backgroundColor: '#284698' }}>
       <div style={{ height: '100%' }}>
-        <Dropdown overlay={<Menu items={menuItems} />} placement='bottomRight'>
+        <Dropdown menu={{ items }} placement='bottomRight'>
           <button
             style={{
               display: 'flex',
