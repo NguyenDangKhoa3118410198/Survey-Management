@@ -405,7 +405,7 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(() => {
             </>
           )}
         </Radio.Group>
-        {userStatus === 'Khóa' && <p>Tài khoản đã bị khóa </p>}
+        {userStatus === 'Khóa' && <p>Tài khoản đã bị khóa.</p>}
       </Modal>
 
       <Form
