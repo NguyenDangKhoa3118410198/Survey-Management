@@ -51,54 +51,29 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
     const currentAddress = form.getFieldValue(['addresses', index]);
 
     if (
-      !currentAddress ||
-      !currentAddress.addressNumber ||
-      !currentAddress.city ||
-      !currentAddress.district ||
-      !currentAddress.ward
+      !currentAddress?.addressNumber ||
+      !currentAddress?.city ||
+      !currentAddress?.district ||
+      !currentAddress?.ward
     ) {
       return Promise.resolve();
     }
 
-    let duplicateIndex = -1;
-
-    const isDuplicate = allAddresses.some((addr: any, idx: any) => {
-      if (idx !== index) {
-        const isSameAddress =
-          addr.addressNumber === currentAddress.addressNumber &&
-          addr.city === currentAddress.city &&
-          addr.district === currentAddress.district &&
-          addr.ward === currentAddress.ward;
-
-        if (isSameAddress) {
-          duplicateIndex = idx;
-          return true;
-        }
-      }
-      return false;
+    const isDuplicate = allAddresses.some((addr: any, idx: number) => {
+      return (
+        idx !== index &&
+        addr.addressNumber === currentAddress.addressNumber &&
+        addr.city === currentAddress.city &&
+        addr.district === currentAddress.district &&
+        addr.ward === currentAddress.ward
+      );
     });
 
-    if (isDuplicate && duplicateIndex !== -1) {
-      form.setFields([
-        {
-          name: ['addresses', index],
-          errors: [message],
-        },
-        {
-          name: ['addresses', duplicateIndex],
-          errors: [message],
-        },
-      ]);
-      return Promise.reject(message);
-    } else {
-      form.setFields([
-        {
-          name: ['addresses', index],
-          errors: [],
-        },
-      ]);
-      return Promise.resolve();
+    if (isDuplicate) {
+      return Promise.reject(new Error(message));
     }
+
+    return Promise.resolve();
   };
 
   return (
@@ -171,6 +146,7 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
                 : []
             }
             disabled={userDetail && userStatus !== 'Tạm ngưng'}
+            onBlur={() => form.validateFields([['addresses', index, 'city']])}
           />
         </Item>
         <Item
@@ -208,6 +184,9 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
                     value: district?.id,
                   }))
                 : []
+            }
+            onBlur={() =>
+              form.validateFields([['addresses', index, 'district']])
             }
           />
         </Item>
@@ -250,6 +229,7 @@ const AddressFormItem: React.FC<AddressFormItemProps> = ({
                   }))
                 : []
             }
+            onBlur={() => form.validateFields([['addresses', index, 'ward']])}
           />
         </Item>
         {fields.length > 1 && (
