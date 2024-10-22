@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Card, Col, Input, Row, Select, Space, Table, Typography } from 'antd';
+import {
+  Button,
+  Card,
+  Col,
+  Input,
+  Row,
+  Select,
+  Space,
+  Table,
+  Typography,
+} from 'antd';
 import { columns } from 'data/columnsUserList';
 import { useNavigate } from 'react-router-dom';
 import useUser from 'hooks/useUser';
@@ -144,7 +154,9 @@ const UserList: React.FC = () => {
                     style={{ width: '100%' }}
                     type='text'
                     value={searchParams.get('id') || ''}
-                    onChange={(e) => handleKeyValueFilterChange('id', e.target.value)}
+                    onChange={(e) =>
+                      handleKeyValueFilterChange('id', e.target.value)
+                    }
                     placeholder='ID'
                     allowClear
                   />
@@ -154,7 +166,9 @@ const UserList: React.FC = () => {
                     style={{ width: '100%' }}
                     type='text'
                     value={searchParams.get('fullName') || ''}
-                    onChange={(e) => handleKeyValueFilterChange('fullName', e.target.value)}
+                    onChange={(e) =>
+                      handleKeyValueFilterChange('fullName', e.target.value)
+                    }
                     placeholder='Name'
                     allowClear
                   />
@@ -164,7 +178,9 @@ const UserList: React.FC = () => {
                     style={{ width: '100%' }}
                     type='email'
                     value={searchParams.get('email') || ''}
-                    onChange={(e) => handleKeyValueFilterChange('email', e.target.value)}
+                    onChange={(e) =>
+                      handleKeyValueFilterChange('email', e.target.value)
+                    }
                     placeholder='Email'
                     allowClear
                   />
@@ -174,7 +190,10 @@ const UserList: React.FC = () => {
                     style={{ width: '100%' }}
                     className='filterSelect'
                     value={searchParams.get('gender') || ''}
-                    onChange={(value: any) => handleKeyValueFilterChange('gender', value)}
+                    onChange={(value: any) =>
+                      handleKeyValueFilterChange('gender', value)
+                    }
+                    allowClear
                   >
                     <Option value=''>Select Gender</Option>
                     <Option value='Nam'>Nam</Option>
@@ -202,14 +221,15 @@ const UserList: React.FC = () => {
                       setDistrict('');
                       setWard('');
                     }}
-                    options={
-                      Array.isArray(cities) && cities.length > 0
+                    options={[
+                      { label: 'Chọn thành phố', value: '' },
+                      ...(Array.isArray(cities) && cities.length > 0
                         ? cities.map((city) => ({
                             label: city?.full_name,
                             value: city?.id,
                           }))
-                        : []
-                    }
+                        : []),
+                    ]}
                   />
                 </Col>
                 <Col xs={24} sm={12} md={8} lg={6}>
@@ -232,14 +252,15 @@ const UserList: React.FC = () => {
                       setWard('');
                     }}
                     disabled={!selectedCity}
-                    options={
-                      Array.isArray(districts) && districts.length > 0
+                    options={[
+                      { label: 'Chọn quận huyện', value: '' },
+                      ...(Array.isArray(districts) && districts.length > 0
                         ? districts.map((district) => ({
                             label: district?.full_name,
                             value: district?.id,
                           }))
-                        : []
-                    }
+                        : []),
+                    ]}
                   />
                 </Col>
                 <Col xs={24} sm={12} md={8} lg={6}>
@@ -261,14 +282,15 @@ const UserList: React.FC = () => {
                       setWard(value);
                     }}
                     disabled={!selectedCity || !selectedDistrict}
-                    options={
-                      Array.isArray(wards) && wards.length > 0
+                    options={[
+                      { label: 'Chọn phường xã', value: '' },
+                      ...(Array.isArray(wards) && wards.length > 0
                         ? wards.map((ward) => ({
                             label: ward?.full_name,
                             value: ward?.id,
                           }))
-                        : []
-                    }
+                        : []),
+                    ]}
                   />
                 </Col>
               </Row>
