@@ -31,7 +31,14 @@
   border-radius: 6px;
 }
 
-.breadcrumb-active {
-  font-weight: bold;
-  text-decoration: underline;
+.breadcrumb {
+  color: gray;
+}
+
+.breadcrumb:hover {
+  color: black;
+}
+
+.ant-breadcrumb a:hover {
+  background-color: transparent;
 }

@@ -6,43 +6,52 @@ interface BreadcrumbMap {
   [key: string]: string;
 }
 
-const Breadcrumbs: React.FC = () => {
+const breadcrumbNameMap: BreadcrumbMap = {
+  '/users': 'Danh sách người dùng',
+  '/users/create': 'Tạo người dùng',
+  '/surveys': 'Danh sách khảo sát',
+  '/surveys/create': 'Tạo khảo sát',
+  '/profile': 'Thông tin người dùng',
+};
+
+const usePathSnippets = () => {
   const location = useLocation();
-  const breadcrumbNameMap: BreadcrumbMap = {
-    '/users': 'Danh sách người dùng',
-    '/users/create': 'Tạo người dùng',
-    '/surveys': 'Danh sách khảo sát',
-    '/surveys/create': 'Tạo khảo sát',
-    '/profile': 'Thông tin người dùng',
-  };
+  return location.pathname.split('/').filter((i) => i);
+};
 
-  const pathSnippets: string[] = location.pathname.split('/').filter((i) => i);
+const getBreadcrumbName = (url: string, snippet: string) => {
+  if (url.startsWith('/users') && /^\d+$/.test(snippet)) {
+    return 'Chi tiết người dùng';
+  }
+  if (url.startsWith('/surveys') && /^\d+$/.test(snippet)) {
+    return 'Chi tiết khảo sát';
+  }
+  return breadcrumbNameMap[url] || snippet;
+};
 
-  const breadcrumbItems = pathSnippets.map((snippet: string, index: number) => {
-    let url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
-    let breadcrumbName = breadcrumbNameMap[url] || snippet;
-
-    if (url.startsWith('/users') && /^\d+$/.test(snippet)) {
-      url = `/users/${snippet}`;
-      breadcrumbName = 'Chi tiết người dùng';
-    }
-
-    if (url.startsWith('/surveys') && /^\d+$/.test(snippet)) {
-      url = `/surveys/${snippet}`;
-      breadcrumbName = 'Chi tiết khảo sát';
-    }
-
-    const isActive = url === location.pathname;
+const useBreadcrumbItems = (pathSnippets: string[], locationPath: string) => {
+  return pathSnippets.map((snippet: string, index: number) => {
+    const url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
+    const breadcrumbName = getBreadcrumbName(url, snippet);
+    const isActive = url === locationPath;
 
     return {
       key: url,
-      title: (
-        <Link to={url} className={isActive ? 'breadcrumb-active' : ''}>
-          {breadcrumbName}
+      title: isActive ? (
+        <span className='breadcrumb-active'>{breadcrumbName}</span>
+      ) : (
+        <Link to={url}>
+          <span className='breadcrumb'>{breadcrumbName}</span>
         </Link>
       ),
     };
   });
+};
+
+const Breadcrumbs: React.FC = () => {
+  const location = useLocation();
+  const pathSnippets = usePathSnippets();
+  const breadcrumbItems = useBreadcrumbItems(pathSnippets, location.pathname);
 
   return (
     <Breadcrumb
