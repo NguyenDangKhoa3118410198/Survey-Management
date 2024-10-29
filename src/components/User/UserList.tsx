@@ -312,24 +312,9 @@ const UserList: React.FC = () => {
         ) : null}
       </Card>
 
-      <div
-        style={{
-          backgroundColor: '#fff',
-          padding: '4px 12px',
-          height: '100%',
-        }}
-      >
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            margin: '10px 0',
-          }}
-        >
-          <Typography.Title level={4} style={{ margin: 0 }}>
-            Danh sách người dùng
-          </Typography.Title>
+      <Card
+        title='Danh sách người dùng'
+        extra={
           <Space>
             <Input
               prefix={<SearchOutlined />}
@@ -354,8 +339,8 @@ const UserList: React.FC = () => {
               Tạo mới
             </Button>
           </Space>
-        </div>
-
+        }
+      >
         <div
           style={{
             flex: 1,
@@ -370,7 +355,7 @@ const UserList: React.FC = () => {
             scroll={{ x: 'max-content' }}
           />
         </div>
-      </div>
+      </Card>
     </div>
   );
 };
