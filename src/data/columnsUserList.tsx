@@ -35,27 +35,23 @@ export const columns: TableProps<IUser>['columns'] = [
   {
     title: <span style={{ whiteSpace: 'nowrap' }}>Họ và tên</span>,
     dataIndex: 'fullName',
-    render: (text: string) => <span>{text}</span>,
     width: 200,
   },
   {
     title: <span style={{ whiteSpace: 'nowrap' }}>Email</span>,
     dataIndex: 'email',
     width: 250,
-    render: (text: string) => <span>{text}</span>,
   },
   {
     title: <span style={{ whiteSpace: 'nowrap' }}>Ngày sinh</span>,
     dataIndex: 'birthDate',
     align: 'center',
     width: 100,
-    render: (text: string) => <span>{text}</span>,
   },
   {
     title: <span style={{ whiteSpace: 'nowrap' }}>Giới tính</span>,
     dataIndex: 'gender',
     width: 100,
-    render: (text: string) => <span>{text}</span>,
   },
   {
     title: <span style={{ whiteSpace: 'nowrap' }}>Xem chi tiết</span>,

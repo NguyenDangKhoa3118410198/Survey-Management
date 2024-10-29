@@ -17,41 +17,36 @@ export const columns: TableProps<ISurvey>['columns'] = [
     title: 'Tên khảo sát',
     dataIndex: 'surveyName',
     align: 'left',
-    render: (text: string) => <span> {text}</span>,
   },
   {
     title: 'Điểm thưởng',
     dataIndex: 'averageScore',
     align: 'center',
-    width: 120,
-    render: (text: string) => <span> {text}</span>,
+    width: 180,
   },
   {
     title: 'Ngày bắt đầu',
     dataIndex: 'startDate',
     align: 'center',
-    width: 150,
-    render: (text: string) => <span> {text}</span>,
+    width: 180,
   },
   {
     title: 'Ngày kết thúc',
     dataIndex: 'endDate',
     align: 'center',
-    width: 150,
-    render: (text: string) => <span> {text}</span>,
+    width: 180,
   },
   {
     title: 'Tổng nội dung khảo sát',
     dataIndex: 'totalContent',
     align: 'center',
-    width: 150,
-    render: (text: string) => <span> {text}</span>,
+    width: 180,
   },
   {
     title: 'Xem chi tiết',
     align: 'center',
     fixed: 'right',
-    width: 100,
+    width: 200,
     render: (record: ISurvey) =>
       record && record.id ? (
         <Link to={`/surveys/${record.id}`}>
