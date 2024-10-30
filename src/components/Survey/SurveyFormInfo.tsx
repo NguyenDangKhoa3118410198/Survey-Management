@@ -15,6 +15,7 @@ import {
 import dayjs, { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
 import QuestionFormItem from './QuestionFormItem';
+import { requiredLabel } from 'utils';
 
 interface ISurveyFormInfoProps {
   form?: any;
@@ -85,7 +86,7 @@ const SurveyFormInfo: React.FC<ISurveyFormInfoProps> = ({
     <Flex vertical gap={20}>
       <Card title='Thông tin chung'>
         <Descriptions column={1} style={{ width: '100%' }} bordered>
-          <Descriptions.Item label='Tên khảo sát'>
+          <Descriptions.Item label={requiredLabel('Tên khảo sát')}>
             <Form.Item
               style={{ width: '100%' }}
               name='surveyName'
@@ -97,7 +98,7 @@ const SurveyFormInfo: React.FC<ISurveyFormInfoProps> = ({
               <Input placeholder='Nhập tên khảo sát' />
             </Form.Item>
           </Descriptions.Item>
-          <Descriptions.Item label='Điểm thưởng'>
+          <Descriptions.Item label={requiredLabel('Điểm thưởng')}>
             <Form.Item
               style={{ width: '100%' }}
               name='averageScore'
@@ -111,7 +112,7 @@ const SurveyFormInfo: React.FC<ISurveyFormInfoProps> = ({
               />
             </Form.Item>
           </Descriptions.Item>
-          <Descriptions.Item label='Ngày bắt đầu'>
+          <Descriptions.Item label={requiredLabel('Ngày bắt đầu')}>
             <Form.Item
               name='startDate'
               rules={[

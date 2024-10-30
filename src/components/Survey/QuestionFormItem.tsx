@@ -9,6 +9,7 @@ import {
 import {
   Button,
   Card,
+  Descriptions,
   Dropdown,
   Flex,
   Form,
@@ -19,6 +20,7 @@ import {
 } from 'antd';
 import TextEditor from 'components/common/MyCKEditor';
 import { useEffect, useState } from 'react';
+import { requiredLabel } from 'utils';
 
 interface IQuestionFormItemProps {
   fieldName: number;
@@ -127,75 +129,78 @@ const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
 
   return (
     <Flex gap={8}>
-      <Card style={{ width: '100%', margin: '12px 5px' }}>
-        <Form.Item
-          {...restField}
-          name={[fieldName, 'questionType']}
-          label='Loại câu hỏi'
-          colon={false}
-          rules={[{ required: true, message: 'Vui lòng chọn loại câu hỏi' }]}
-        >
-          <Select
-            placeholder='Chọn loại câu hỏi'
-            style={{ width: '100%' }}
-            onChange={handleGetExtraInput}
+      <Descriptions
+        column={1}
+        style={{ width: '100%', margin: '20px 10px' }}
+        bordered
+      >
+        <Descriptions.Item label={requiredLabel('Loại câu hỏi')}>
+          <Form.Item
+            {...restField}
+            name={[fieldName, 'questionType']}
+            colon={false}
+            rules={[{ required: true, message: 'Vui lòng chọn loại câu hỏi' }]}
           >
-            <Select.Option value='rating'>Rating</Select.Option>
-            <Select.Option value='text'>Văn bản</Select.Option>
-            <Select.Option value='single'>Đơn lựa chọn</Select.Option>
-            <Select.Option value='multiple'>Nhiều lựa chọn</Select.Option>
-          </Select>
-        </Form.Item>
-
-        <Form.Item
-          {...restField}
-          name={[fieldName, 'question']}
-          label={`Câu hỏi ${Number(qtyField) - fieldName}`}
-          colon={false}
-          rules={[{ required: true, message: 'Vui lòng nhập tên câu hỏi' }]}
+            <Select
+              placeholder='Chọn loại câu hỏi'
+              style={{ width: '100%' }}
+              onChange={handleGetExtraInput}
+            >
+              <Select.Option value='rating'>Rating</Select.Option>
+              <Select.Option value='text'>Văn bản</Select.Option>
+              <Select.Option value='single'>Đơn lựa chọn</Select.Option>
+              <Select.Option value='multiple'>Nhiều lựa chọn</Select.Option>
+            </Select>
+          </Form.Item>
+        </Descriptions.Item>
+        <Descriptions.Item
+          label={requiredLabel(`Câu hỏi ${Number(qtyField) - fieldName}`)}
         >
-          <Input placeholder='Nhập tên câu hỏi' />
-        </Form.Item>
-
-        <Form.Item
-          {...restField}
-          name={[fieldName, 'description']}
-          label='Mô tả'
-          colon={false}
-          rules={[
-            {
-              required: false,
-              message: 'Vui lòng nhập mô tả (không bắt buộc)',
-            },
-          ]}
-        >
-          <TextEditor
-            value={form.getFieldValue('description') || ''}
-            onChange={(data) => form.setFieldsValue({ description: data })}
-            placeholder='Nhập mô tả (không bắt buộc)'
-          />
-        </Form.Item>
-
-        <Form.Item
-          {...restField}
-          name={[fieldName, 'isRequired']}
-          label='Bắt buộc'
-          valuePropName='checked'
-          colon={false}
-        >
-          <Switch
-            checkedChildren={<CheckOutlined />}
-            unCheckedChildren={<CloseOutlined />}
-          />
-        </Form.Item>
+          <Form.Item
+            {...restField}
+            name={[fieldName, 'question']}
+            colon={false}
+            rules={[{ required: true, message: 'Vui lòng nhập tên câu hỏi' }]}
+          >
+            <Input placeholder='Nhập tên câu hỏi' />
+          </Form.Item>
+        </Descriptions.Item>
+        <Descriptions.Item label='Mô tả'>
+          <Form.Item
+            {...restField}
+            name={[fieldName, 'description']}
+            colon={false}
+            rules={[
+              {
+                required: false,
+                message: 'Vui lòng nhập mô tả (không bắt buộc)',
+              },
+            ]}
+          >
+            <TextEditor
+              value={form.getFieldValue('description') || ''}
+              onChange={(data) => form.setFieldsValue({ description: data })}
+              placeholder='Nhập mô tả (không bắt buộc)'
+            />
+          </Form.Item>
+        </Descriptions.Item>
+        <Descriptions.Item label='Bắt buộc'>
+          <Form.Item
+            {...restField}
+            name={[fieldName, 'isRequired']}
+            valuePropName='checked'
+            colon={false}
+          >
+            <Switch
+              checkedChildren={<CheckOutlined />}
+              unCheckedChildren={<CloseOutlined />}
+            />
+          </Form.Item>
+        </Descriptions.Item>
 
         {(showExtraInputByType === 'multiple' ||
           showExtraInputByType === 'single') && (
-          <Flex>
-            <Typography.Text style={{ width: '190px', textAlign: 'left' }}>
-              Phương án
-              <span style={{ color: 'red' }}> *</span>
-            </Typography.Text>
+          <Descriptions.Item label={requiredLabel('Phương án')}>
             <Flex vertical style={{ width: '100%' }}>
               <Form.List
                 name={[fieldName, 'extraOptions']}
@@ -257,9 +262,9 @@ const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
                 )}
               </Form.List>
             </Flex>
-          </Flex>
+          </Descriptions.Item>
         )}
-      </Card>
+      </Descriptions>
       <Flex
         justify='flex-end'
         style={{ marginTop: 'auto', marginBottom: '24px' }}

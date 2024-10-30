@@ -50,3 +50,11 @@ export const generateRandomPassword = (length = 8) => {
 
   return shuffledPassword;
 };
+
+export const requiredLabel = (label: String) => {
+  return (
+    <span>
+      {label} <span style={{ color: '#ff0000ad' }}>*</span>
+    </span>
+  );
+};
