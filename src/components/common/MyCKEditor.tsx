@@ -21,28 +21,30 @@ const TextEditor: React.FC<TextEditorProps> = ({
         const data = editor.getData();
         onChange(data);
       }}
-      config={{
-        placeholder: placeholder,
-        ckfinder: {
-          uploadUrl:
-            'https://api-dev.estuary.solutions:8443/fico-salex-mediafile-dev/files/upload',
-        },
-        toolbar: [
-          'undo',
-          'redo',
-          'heading',
-          '|',
-          'bold',
-          'italic',
-          'link',
-          'bulletedList',
-          'numberedList',
-          'blockQuote',
-          'imageUpload',
-          'insertTable',
-          'mediaEmbed',
-        ],
-      }}
+      config={
+        {
+          placeholder: placeholder,
+          ckfinder: {
+            uploadUrl:
+              'https://api-dev.estuary.solutions:8443/fico-salex-mediafile-dev/files/upload',
+          },
+          toolbar: [
+            'undo',
+            'redo',
+            'heading',
+            '|',
+            'bold',
+            'italic',
+            'link',
+            'bulletedList',
+            'numberedList',
+            'blockQuote',
+            'imageUpload',
+            'insertTable',
+            'mediaEmbed',
+          ],
+        } as any
+      }
       onReady={(editor) => {
         editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
           return {

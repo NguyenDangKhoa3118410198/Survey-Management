@@ -242,20 +242,12 @@ const SurveyList: React.FC = () => {
           </Space>
         }
       >
-        <div
-          style={{
-            flex: 1,
-            overflow: 'auto',
-            margin: '18px 26px 18px 18px',
-          }}
-        >
-          <Table
-            rowKey='id'
-            dataSource={filteredData ?? []}
-            columns={columns}
-            scroll={{ x: 'max-content' }}
-          />
-        </div>
+        <Table
+          rowKey='id'
+          dataSource={filteredData ?? []}
+          columns={columns}
+          scroll={{ x: 'max-content' }}
+        />
       </Card>
     </div>
   );
