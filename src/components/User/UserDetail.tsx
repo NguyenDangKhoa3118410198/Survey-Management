@@ -1,13 +1,4 @@
-import {
-  Divider,
-  Dropdown,
-  Flex,
-  Menu,
-  MenuProps,
-  message,
-  Popconfirm,
-  Typography,
-} from 'antd';
+import { Card, Dropdown, Flex, message, Popconfirm } from 'antd';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import FormNewUser from './FormNewUser';
@@ -72,41 +63,16 @@ const UserDetail: React.FC = () => {
   ];
 
   return (
-    <div
-      style={{
-        backgroundColor: '#fff',
-        height: 'calc(100vh - 150px)',
-        overflowY: 'auto',
-      }}
-    >
-      <Flex justify='space-between' align='center'>
-        <Typography.Paragraph
-          style={{
-            fontSize: '18px',
-            fontWeight: '700',
-            margin: '0',
-            padding: '8px 24px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          Chi tiết người dùng
-          {userDetail?.id && (
-            <span style={{ marginLeft: '8px' }}>#{userDetail?.id}</span>
-          )}
-        </Typography.Paragraph>
-        <Dropdown menu={{ items }} placement='bottomRight'>
-          <EllipsisOutlined
-            style={{ transform: 'rotate(90deg)', marginRight: 16 }}
-          />
+    <Card
+      title={`Chi tiết người dùng #${userDetail?.id}`}
+      extra={
+        <Dropdown menu={{ items }} placement='bottomRight' trigger={['click']}>
+          <EllipsisOutlined style={{ transform: 'rotate(90deg)' }} />
         </Dropdown>
-      </Flex>
-
-      <Divider style={{ margin: '10px 0' }} />
-      <div style={{ padding: '8px 24px' }}>
-        <FormNewUser userDetail={memoizedUserDetail} />
-      </div>
-    </div>
+      }
+    >
+      <FormNewUser userDetail={memoizedUserDetail} />
+    </Card>
   );
 };
 
