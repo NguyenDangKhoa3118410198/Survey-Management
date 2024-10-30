@@ -15,7 +15,6 @@ import {
 import dayjs, { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
 import QuestionFormItem from './QuestionFormItem';
-const { Item, List } = Form;
 
 interface ISurveyFormInfoProps {
   form?: any;
@@ -27,8 +26,6 @@ const SurveyFormInfo: React.FC<ISurveyFormInfoProps> = ({
   surveyDetail,
 }) => {
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
-
-  console.log(form.getFieldValue('totalContent'));
 
   useEffect(() => {
     if (surveyDetail) {
@@ -237,19 +234,6 @@ const SurveyFormInfo: React.FC<ISurveyFormInfoProps> = ({
           )}
         </Form.List>
       </Card>
-      <Form.Item>
-        <Flex justify='flex-end'>
-          {surveyDetail ? (
-            <Button type='primary' htmlType='submit'>
-              Cập nhật
-            </Button>
-          ) : (
-            <Button type='primary' htmlType='submit'>
-              Tạo mới
-            </Button>
-          )}
-        </Flex>
-      </Form.Item>
     </Flex>
   );
 };

@@ -1,5 +1,5 @@
-import { Form, message } from 'antd';
-import React from 'react';
+import { Button, Flex, Form, message } from 'antd';
+import React, { useState } from 'react';
 import SurveyFormInfo from './SurveyFormInfo';
 import { useForm } from 'antd/es/form/Form';
 import useSurvey from 'hooks/useSurvey';
@@ -10,6 +10,11 @@ const SurveyCreate: React.FC = () => {
   const [form] = useForm();
   const navigate = useNavigate();
   const { surveyList, addNewSurvey } = useSurvey();
+  const [isChange, setIsChange] = useState<boolean>(false);
+
+  const handleValueChange = () => {
+    setIsChange(true);
+  };
 
   const handleSubmit = (values: any) => {
     try {
@@ -57,8 +62,30 @@ const SurveyCreate: React.FC = () => {
   };
 
   return (
-    <Form form={form} onFinish={handleSubmit}>
+    <Form
+      form={form}
+      onFinish={handleSubmit}
+      onValuesChange={handleValueChange}
+    >
       <SurveyFormInfo form={form} />
+      {isChange && (
+        <Flex justify='flex-end' style={{ margin: 10 }}>
+          <Button
+            htmlType='button'
+            style={{ marginRight: '10px' }}
+            onClick={() => navigate('/surveys')}
+          >
+            Hủy bỏ
+          </Button>
+          <Button
+            type='primary'
+            htmlType='submit'
+            style={{ backgroundColor: 'var(--main-color)' }}
+          >
+            Tạo mới
+          </Button>
+        </Flex>
+      )}
     </Form>
   );
 };

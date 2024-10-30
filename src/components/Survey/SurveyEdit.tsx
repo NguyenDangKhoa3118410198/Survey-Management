@@ -1,5 +1,5 @@
-import { Form, message } from 'antd';
-import React, { useEffect, useMemo } from 'react';
+import { Button, Flex, Form, message } from 'antd';
+import React, { useEffect, useMemo, useState } from 'react';
 import SurveyFormInfo from './SurveyFormInfo';
 import { useForm } from 'antd/es/form/Form';
 import useSurvey from 'hooks/useSurvey';
@@ -13,6 +13,11 @@ const SurveyEdit: React.FC = () => {
   const [form] = useForm();
   const navigate = useNavigate();
   const { editSurvey } = useSurvey();
+  const [isChange, setIsChange] = useState<boolean>(false);
+
+  const handleValueChange = () => {
+    setIsChange(true);
+  };
 
   const {
     data: surveyDetail,
@@ -21,7 +26,6 @@ const SurveyEdit: React.FC = () => {
   } = useQuery<any>({
     queryKey: ['userSurvey', id],
     queryFn: () => (id ? fetchSurveybyId(id) : undefined),
-    enabled: !!id,
   });
 
   useEffect(() => {
@@ -72,16 +76,64 @@ const SurveyEdit: React.FC = () => {
         console.log(values);
         editSurvey(values);
         message.success('Chỉnh sửa thành công');
-        navigate('/surveys');
       } catch (error) {
         console.log('Edit failed', error);
       }
     }
   };
 
+  const handleReset = () => {
+    if (surveyDetail) {
+      const {
+        startDate,
+        endDate,
+        questions,
+        originalStartDate,
+        originalEndDate,
+        ...restUserDetail
+      } = surveyDetail;
+
+      form.setFieldsValue({
+        ...restUserDetail,
+
+        startDate: dayjs(originalStartDate),
+        endDate: originalEndDate ? dayjs(originalEndDate) : null,
+        questions: questions?.map((question: any) => ({
+          ...question,
+          extraOptions: question.extraOptions || [
+            { option: '' },
+            { option: '' },
+          ],
+        })),
+      });
+    }
+  };
+
   return (
-    <Form form={form} onFinish={handleSubmit}>
+    <Form
+      form={form}
+      onFinish={handleSubmit}
+      onValuesChange={handleValueChange}
+    >
       <SurveyFormInfo form={form} surveyDetail={memoizedSurveyDetail} />
+      {isChange && (
+        <Flex justify='flex-end' style={{ margin: 10 }}>
+          <Button
+            htmlType='button'
+            style={{ marginRight: '10px' }}
+            onClick={handleReset}
+          >
+            Hủy bỏ
+          </Button>
+          <Button
+            type='primary'
+            htmlType='submit'
+            style={{ backgroundColor: 'var(--main-color)' }}
+          >
+            Cập nhật
+          </Button>
+        </Flex>
+      )}
     </Form>
   );
 };
