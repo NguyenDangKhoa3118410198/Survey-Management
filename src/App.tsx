@@ -6,12 +6,12 @@ import LayoutManagement from 'layout/LayoutManagement';
 import UserList from 'components/User/UserList';
 import NewUser from 'components/User/NewUser';
 import SurveyList from 'components/Survey/SurveyList';
-import NewSurvey from 'components/Survey/NewSurvey';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import UserDetail from 'components/User/UserDetail';
 import Notfound from 'layout/Notfound';
-import SurveyDetail from 'components/Survey/SurveyDetail';
 import Profile from 'components/Profile';
+import SurveyCreate from 'components/Survey/SurveyCreate';
+import SurveyEdit from 'components/Survey/SurveyEdit';
 
 const App: React.FC = () => {
   const queryClient = new QueryClient();
@@ -27,8 +27,8 @@ const App: React.FC = () => {
               <Route path='/users/create' element={<NewUser />} />
               <Route path='/users/:id' element={<UserDetail />} />
               <Route path='/surveys' element={<SurveyList />} />
-              <Route path='/surveys/create' element={<NewSurvey />} />
-              <Route path='/surveys/:id' element={<SurveyDetail />} />
+              <Route path='/surveys/create' element={<SurveyCreate />} />
+              <Route path='/surveys/:id' element={<SurveyEdit />} />
             </Route>
           </Route>
           <Route path='/' element={<Login />} />

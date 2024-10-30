@@ -8,12 +8,11 @@ import {
 } from '@ant-design/icons';
 import {
   Button,
+  Card,
   Dropdown,
   Flex,
   Form,
   Input,
-  Menu,
-  MenuProps,
   Select,
   Switch,
   Typography,
@@ -128,15 +127,7 @@ const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
 
   return (
     <Flex gap={8}>
-      <div
-        style={{
-          border: '1px double lightgray',
-          padding: '20px',
-          borderRadius: '8px',
-          marginBottom: '24px',
-          flex: 1,
-        }}
-      >
+      <Card style={{ width: '100%', margin: '12px 5px' }}>
         <Form.Item
           {...restField}
           name={[fieldName, 'questionType']}
@@ -268,7 +259,7 @@ const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
             </Flex>
           </Flex>
         )}
-      </div>
+      </Card>
       <Flex
         justify='flex-end'
         style={{ marginTop: 'auto', marginBottom: '24px' }}
