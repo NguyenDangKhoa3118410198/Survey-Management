@@ -15,6 +15,8 @@ const SurveyEdit: React.FC = () => {
   const { editSurvey } = useSurvey();
   const [isChange, setIsChange] = useState<boolean>(false);
   const queryClient = useQueryClient();
+  const [originalQuestions, setOriginalQuestions] = useState<any>([]);
+  const [treeData, setTreeData] = useState<any>([]);
 
   const handleValueChange = () => {
     setIsChange(true);
@@ -113,6 +115,7 @@ const SurveyEdit: React.FC = () => {
           ],
         })),
       });
+      setTreeData(originalQuestions);
     }
   };
 
@@ -122,7 +125,13 @@ const SurveyEdit: React.FC = () => {
       onFinish={handleSubmit}
       onValuesChange={handleValueChange}
     >
-      <SurveyFormInfo form={form} surveyDetail={memoizedSurveyDetail} />
+      <SurveyFormInfo
+        form={form}
+        surveyDetail={memoizedSurveyDetail}
+        setOriginalQuestions={setOriginalQuestions}
+        setTreeData={setTreeData}
+        treeData={treeData}
+      />
       {isChange && (
         <Flex justify='flex-end' style={{ margin: 10 }}>
           <Button

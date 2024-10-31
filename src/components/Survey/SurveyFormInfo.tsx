@@ -20,14 +20,19 @@ import { requiredLabel } from 'utils';
 interface ISurveyFormInfoProps {
   form?: any;
   surveyDetail?: any;
+  setOriginalQuestions: any;
+  setTreeData: any;
+  treeData: any;
 }
 
 const SurveyFormInfo: React.FC<ISurveyFormInfoProps> = ({
   form,
   surveyDetail,
+  setOriginalQuestions,
+  setTreeData,
+  treeData,
 }) => {
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
-  const [treeData, setTreeData] = useState<any>([]);
 
   useEffect(() => {
     if (surveyDetail) {
@@ -37,6 +42,7 @@ const SurveyFormInfo: React.FC<ISurveyFormInfoProps> = ({
         key: `${index}`,
       }));
       setTreeData(questions);
+      setOriginalQuestions(questions);
     }
   }, [surveyDetail]);
 
