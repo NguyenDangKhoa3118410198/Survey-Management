@@ -37,6 +37,7 @@ const SurveyCreate: React.FC = () => {
 
       values.originalStartDate = values.startDate;
       values.originalEndDate = values.endDate;
+      values.descriptions = values.descriptions || '';
 
       values.id = surveyList.length + 1;
       values.totalContent = values?.questions?.length ?? 0;

@@ -5,7 +5,7 @@ import { useForm } from 'antd/es/form/Form';
 import useSurvey from 'hooks/useSurvey';
 import dayjs from 'dayjs';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchSurveybyId } from './services/fecthAPI';
 
 const SurveyEdit: React.FC = () => {
@@ -14,6 +14,7 @@ const SurveyEdit: React.FC = () => {
   const navigate = useNavigate();
   const { editSurvey } = useSurvey();
   const [isChange, setIsChange] = useState<boolean>(false);
+  const queryClient = useQueryClient();
 
   const handleValueChange = () => {
     setIsChange(true);
@@ -28,6 +29,12 @@ const SurveyEdit: React.FC = () => {
     queryFn: () => (id ? fetchSurveybyId(id) : undefined),
   });
 
+  const refetchSurvey = async () => {
+    if (id) {
+      await queryClient.refetchQueries({ queryKey: ['userSurvey', id] });
+    }
+  };
+
   useEffect(() => {
     if (!isLoading && surveyDetail === undefined) {
       navigate('/404');
@@ -36,7 +43,7 @@ const SurveyEdit: React.FC = () => {
 
   const memoizedSurveyDetail = useMemo(() => surveyDetail, [surveyDetail]);
 
-  const handleSubmit = (values: any) => {
+  const handleSubmit = async (values: any) => {
     values.id = Number(id);
     if (id) {
       try {
@@ -73,8 +80,8 @@ const SurveyEdit: React.FC = () => {
         }
 
         values.endDate = endDate ? endDate.format('DD/MM/YYYY') : undefined;
-        console.log(values);
         editSurvey(values);
+        await refetchSurvey();
         message.success('Chỉnh sửa thành công');
       } catch (error) {
         console.log('Edit failed', error);

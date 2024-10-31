@@ -190,6 +190,7 @@ const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
             name={[fieldName, 'isRequired']}
             valuePropName='checked'
             colon={false}
+            initialValue={false}
           >
             <Switch
               checkedChildren={<CheckOutlined />}

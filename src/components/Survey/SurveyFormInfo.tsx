@@ -10,7 +10,7 @@ import {
   InputNumber,
   Popconfirm,
   PopconfirmProps,
-  Space,
+  Tree,
 } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
@@ -27,6 +27,35 @@ const SurveyFormInfo: React.FC<ISurveyFormInfoProps> = ({
   surveyDetail,
 }) => {
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
+  const [treeData, setTreeData] = useState<any>([]);
+
+  useEffect(() => {
+    if (surveyDetail) {
+      const questions = surveyDetail.questions.map((q: any, index: any) => ({
+        ...q,
+        title: q.question || 'Untitled',
+        key: `${index}`,
+      }));
+      setTreeData(questions);
+    }
+  }, [surveyDetail]);
+
+  const onDrop = (info: any) => {
+    const dragKey = info.dragNode.key;
+    const dropKey = info.node.key;
+
+    const data = [...treeData];
+    const dragIndex = data.findIndex((item: any) => item.key === dragKey);
+    const dropIndex = data.findIndex((item: any) => item.key === dropKey);
+
+    const [draggedItem] = data.splice(dragIndex, 1);
+    data.splice(dropIndex, 0, draggedItem);
+
+    setTreeData(data);
+    form.setFieldsValue({
+      questions: data,
+    });
+  };
 
   useEffect(() => {
     if (surveyDetail) {
@@ -46,6 +75,7 @@ const SurveyFormInfo: React.FC<ISurveyFormInfoProps> = ({
         endDate: originalEndDate ? dayjs(originalEndDate) : null,
         questions: questions?.map((question: any) => ({
           ...question,
+          description: question.description || '',
           extraOptions: question.extraOptions || [
             { option: '' },
             { option: '' },
@@ -170,70 +200,97 @@ const SurveyFormInfo: React.FC<ISurveyFormInfoProps> = ({
         </Descriptions>
       </Card>
       <Card title='Nội dung khảo sát'>
-        <Form.List name='questions'>
-          {(fields, { add, remove }) => (
-            <>
-              <Popconfirm
-                title='Xóa tất cả khảo sát'
-                description='Bạn có chắc chắn muốn xóa tất cả khảo sát?'
-                onConfirm={confirm}
-                okText='Yes'
-                cancelText='No'
-              >
-                <Button
-                  icon={<RedoOutlined />}
-                  style={{
-                    position: 'absolute',
-                    right: '160px',
-                    top: '10px',
-                    border: '1px solid var(--main-color)',
-                  }}
-                >
-                  Xóa tất cả
-                </Button>
-              </Popconfirm>
+        <Flex>
+          <div
+            style={{
+              position: 'fixed',
+            }}
+          >
+            <Tree
+              style={{ border: '1px solid #eee', borderRadius: '5px' }}
+              treeData={treeData}
+              draggable
+              blockNode
+              onDrop={onDrop}
+              titleRender={(nodeData: any) => (
+                <div>
+                  <span>{nodeData?.title}</span> -{' '}
+                  <span>{nodeData?.questionType}</span>
+                </div>
+              )}
+            />
+          </div>
 
-              <Button
-                onClick={() => {
-                  add({}, 0);
-                  const currentTotalContent =
-                    form.getFieldValue('totalContent') || 0;
-                  form.setFieldValue('totalContent', currentTotalContent + 1);
-                }}
-                style={{
-                  position: 'absolute',
-                  right: '20px',
-                  top: '10px',
-                  backgroundColor: 'var(--main-color)',
-                  color: '#fff',
-                }}
-              >
-                + Thêm câu hỏi
-              </Button>
-              {fields.map(({ key, name, ...restField }) => {
-                const questionType = form.getFieldValue([
-                  'questions',
-                  name,
-                  'questionType',
-                ]);
-                return (
-                  <div key={key}>
-                    <QuestionFormItem
-                      key={key}
-                      fieldName={name}
-                      restField={restField}
-                      remove={remove}
-                      qtyField={fields.length}
-                      questionType={questionType}
-                      add={add}
-                      form={form}
-                    />
-                  </div>
-                );
-              })}
-            </>
-          )}
-        </Form.List>
+          <Flex vertical style={{ width: '100%' }}>
+            <Form.List name='questions'>
+              {(fields, { add, remove }) => (
+                <>
+                  <Popconfirm
+                    title='Xóa tất cả khảo sát'
+                    description='Bạn có chắc chắn muốn xóa tất cả khảo sát?'
+                    onConfirm={confirm}
+                    okText='Yes'
+                    cancelText='No'
+                  >
+                    <Button
+                      icon={<RedoOutlined />}
+                      style={{
+                        position: 'absolute',
+                        right: '160px',
+                        top: '10px',
+                        border: '1px solid var(--main-color)',
+                      }}
+                    >
+                      Xóa tất cả
+                    </Button>
+                  </Popconfirm>
+
+                  <Button
+                    onClick={() => {
+                      add({}, 0);
+                      const currentTotalContent =
+                        form.getFieldValue('totalContent') || 0;
+                      form.setFieldValue(
+                        'totalContent',
+                        currentTotalContent + 1
+                      );
+                    }}
+                    style={{
+                      position: 'absolute',
+                      right: '20px',
+                      top: '10px',
+                      backgroundColor: 'var(--main-color)',
+                      color: '#fff',
+                    }}
+                  >
+                    + Thêm câu hỏi
+                  </Button>
+                  {fields.map(({ key, name, ...restField }) => {
+                    const questionType = form.getFieldValue([
+                      'questions',
+                      name,
+                      'questionType',
+                    ]);
+                    return (
+                      <div key={key}>
+                        <QuestionFormItem
+                          key={key}
+                          fieldName={name}
+                          restField={restField}
+                          remove={remove}
+                          qtyField={fields.length}
+                          questionType={questionType}
+                          add={add}
+                          form={form}
+                        />
+                      </div>
+                    );
+                  })}
+                </>
+              )}
+            </Form.List>
+          </Flex>
+        </Flex>
       </Card>
     </Flex>
   );

@@ -9,14 +9,14 @@ interface TextEditorProps {
 }
 
 const TextEditor: React.FC<TextEditorProps> = ({
-  value,
+  value = '',
   onChange,
   placeholder,
 }) => {
   return (
     <CKEditor
       editor={ClassicEditor}
-      data={value}
+      data={value || ''}
       onChange={(event, editor) => {
         const data = editor.getData();
         onChange(data);
