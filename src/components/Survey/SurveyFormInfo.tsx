@@ -16,13 +16,14 @@ import dayjs, { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
 import QuestionFormItem from './QuestionFormItem';
 import { requiredLabel } from 'utils';
+import { useWatch } from 'antd/es/form/Form';
 
 interface ISurveyFormInfoProps {
   form?: any;
   surveyDetail?: any;
-  setOriginalQuestions: any;
-  setTreeData: any;
-  treeData: any;
+  setOriginalQuestions?: any;
+  setTreeData?: any;
+  treeData?: any;
 }
 
 const SurveyFormInfo: React.FC<ISurveyFormInfoProps> = ({
@@ -46,11 +47,30 @@ const SurveyFormInfo: React.FC<ISurveyFormInfoProps> = ({
     }
   }, [surveyDetail]);
 
+  useEffect(() => {
+    const questions = form.getFieldValue('questions') || [];
+    if (questions.length > 0 && treeData.length === 0) {
+      const initializedTreeData = questions.map((q: any, idx: any) => ({
+        ...q,
+        title: q.question || 'Untitled',
+        key: `${idx}`,
+      }));
+      setTreeData(initializedTreeData);
+    }
+  }, [form.getFieldValue('questions')]);
+
   const onDrop = (info: any) => {
     const dragKey = info.dragNode.key;
     const dropKey = info.node.key;
 
-    const data = [...treeData];
+    const data = surveyDetail
+      ? [...treeData]
+      : form.getFieldValue('questions').map((q: any, idx: any) => ({
+          ...q,
+          title: q.question || 'Untitled',
+          key: `${idx}`,
+        }));
+
     const dragIndex = data.findIndex((item: any) => item.key === dragKey);
     const dropIndex = data.findIndex((item: any) => item.key === dropKey);
 
@@ -116,6 +136,44 @@ const SurveyFormInfo: React.FC<ISurveyFormInfoProps> = ({
       );
     }
     return Promise.resolve();
+  };
+
+  const handleAddQuestion = (
+    add: any,
+    fieldName?: any,
+    after?: any,
+    isCopying: boolean = false
+  ) => {
+    const newQuestion = isCopying
+      ? form.getFieldValue(['questions', fieldName])
+      : {};
+    add({ ...newQuestion }, Number(fieldName) + after);
+    form.setFieldValue(
+      'totalContent',
+      Number((form.getFieldValue('totalContent') || 0) + 1)
+    );
+    const newQuestions = form.getFieldValue('questions');
+    const newTreeData = newQuestions.map((q: any, idx: number) => ({
+      ...q,
+      title: q.question || 'Untitled',
+      key: `${idx}`,
+    }));
+    setTreeData(newTreeData);
+  };
+
+  const handleDeleteQuestion = (remove: any, name: any) => {
+    remove(name);
+    form.setFieldValue(
+      'totalContent',
+      Number((form.getFieldValue('totalContent') || 0) - 1)
+    );
+    const newQuestions = form.getFieldValue('questions');
+    const newTreeData = newQuestions.map((q: any, idx: any) => ({
+      ...q,
+      title: q.question || 'Untitled',
+      key: `${idx}`,
+    }));
+    setTreeData(newTreeData);
   };
 
   return (
@@ -210,6 +268,7 @@ const SurveyFormInfo: React.FC<ISurveyFormInfoProps> = ({
           <div
             style={{
               position: 'fixed',
+              left: 160,
             }}
           >
             <Tree
@@ -252,15 +311,7 @@ const SurveyFormInfo: React.FC<ISurveyFormInfoProps> = ({
                   </Popconfirm>
 
                   <Button
-                    onClick={() => {
-                      add({}, 0);
-                      const currentTotalContent =
-                        form.getFieldValue('totalContent') || 0;
-                      form.setFieldValue(
-                        'totalContent',
-                        currentTotalContent + 1
-                      );
-                    }}
+                    onClick={() => handleAddQuestion(add, 0, 0, false)}
                     style={{
                       position: 'absolute',
                       right: '20px',
@@ -283,10 +334,11 @@ const SurveyFormInfo: React.FC<ISurveyFormInfoProps> = ({
                           key={key}
                           fieldName={name}
                           restField={restField}
-                          remove={remove}
+                          remove={() => handleDeleteQuestion(remove, name)}
                           qtyField={fields.length}
                           questionType={questionType}
                           add={add}
+                          handleAdd={handleAddQuestion}
                           form={form}
                         />
                       </div>

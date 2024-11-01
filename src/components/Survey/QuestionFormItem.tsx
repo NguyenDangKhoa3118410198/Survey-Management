@@ -25,11 +25,12 @@ import { requiredLabel } from 'utils';
 interface IQuestionFormItemProps {
   fieldName: number;
   restField: any;
-  remove: (name: number) => void;
+  remove: any;
   qtyField?: number;
   questionType?: string;
-  add: any;
+  handleAdd: any;
   form: any;
+  add: any;
 }
 
 const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
@@ -38,8 +39,9 @@ const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
   remove,
   qtyField,
   questionType,
-  add,
+  handleAdd,
   form,
+  add,
 }) => {
   const [showExtraInputByType, setShowExtraInputByType] = useState('text');
 
@@ -75,11 +77,7 @@ const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
       label: (
         <div
           onClick={() => {
-            add({}, fieldName + 1);
-            form.setFieldValue(
-              'totalContent',
-              form.getFieldValue('totalContent') + 1
-            );
+            handleAdd(add, fieldName, 1, false);
           }}
         >
           <Flex gap={10}>
@@ -94,8 +92,7 @@ const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
       label: (
         <div
           onClick={() => {
-            const newQuestion = form.getFieldValue(['questions', fieldName]);
-            add({ ...newQuestion }, fieldName + 1);
+            handleAdd(add, fieldName, 1, true);
           }}
           style={{ marginLeft: 8 }}
         >
@@ -109,15 +106,7 @@ const QuestionFormItem: React.FC<IQuestionFormItemProps> = ({
     {
       key: 'deleteQuestion',
       label: (
-        <div
-          onClick={() => {
-            remove(fieldName);
-            form.setFieldValue(
-              'totalContent',
-              form.getFieldValue('totalContent') - 1
-            );
-          }}
-        >
+        <div onClick={() => remove(fieldName)}>
           <Flex gap={10}>
             <DeleteOutlined />
             Xoá câu hỏi

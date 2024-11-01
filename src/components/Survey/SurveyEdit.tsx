@@ -119,11 +119,16 @@ const SurveyEdit: React.FC = () => {
     }
   };
 
+  const handleFinishFailed = () => {
+    message.error('Vui lòng kiểm tra lại các trường bắt buộc');
+  };
+
   return (
     <Form
       form={form}
       onFinish={handleSubmit}
       onValuesChange={handleValueChange}
+      onFinishFailed={handleFinishFailed}
     >
       <SurveyFormInfo
         form={form}

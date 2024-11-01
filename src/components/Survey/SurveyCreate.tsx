@@ -11,6 +11,7 @@ const SurveyCreate: React.FC = () => {
   const navigate = useNavigate();
   const { surveyList, addNewSurvey } = useSurvey();
   const [isChange, setIsChange] = useState<boolean>(false);
+  const [treeData, setTreeData] = useState<any>([]);
 
   const handleValueChange = () => {
     setIsChange(true);
@@ -62,13 +63,22 @@ const SurveyCreate: React.FC = () => {
     }
   };
 
+  const handleFinishFailed = () => {
+    message.error('Vui lòng kiểm tra lại các trường bắt buộc');
+  };
+
   return (
     <Form
       form={form}
       onFinish={handleSubmit}
       onValuesChange={handleValueChange}
+      onFinishFailed={handleFinishFailed}
     >
-      <SurveyFormInfo form={form} />
+      <SurveyFormInfo
+        form={form}
+        setTreeData={setTreeData}
+        treeData={treeData}
+      />
       {isChange && (
         <Flex justify='flex-end' style={{ margin: 10 }}>
           <Button
