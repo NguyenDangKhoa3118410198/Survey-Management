@@ -42,3 +42,14 @@
 .ant-breadcrumb a:hover {
   background-color: transparent;
 }
+
+.filter-container {
+  height: 58px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.filter-is-expand-expanded {
+  height: max-content;
+  margin-bottom: 10px;
+}

@@ -60,7 +60,9 @@ const SurveyList: React.FC = () => {
     >
       <Card
         title='Bộ lọc'
-        style={{ marginBottom: 30 }}
+        className={`filter-container ${
+          isExpanded ? 'filter-is-expand-expanded' : ''
+        }`}
         extra={
           <p
             onClick={toggleExpand}
