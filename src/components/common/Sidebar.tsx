@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 
 const Sidebar: React.FC = () => {
   const [selectedKey, setSelectedKey] = useState<string>('users');
+  const [collapsed, setCollapsed] = useState<boolean>(false);
 
   useEffect(() => {
     const currentPath = window.location.pathname;
@@ -25,24 +26,30 @@ const Sidebar: React.FC = () => {
       key: 'users',
       label: (
         <Link to='/users' style={{ fontWeight: '600' }}>
-          <UserOutlined style={{ marginRight: '4px', fontSize: '15px' }} />
           Quản lý người dùng
         </Link>
       ),
+      icon: <UserOutlined />,
     },
     {
       key: 'survey',
       label: (
         <Link to='/surveys' style={{ fontWeight: '600' }}>
-          <FileTextOutlined style={{ marginRight: '4px', fontSize: '15px' }} />
           Quản lý khảo sát
         </Link>
       ),
+      icon: <FileTextOutlined />,
     },
   ];
 
   return (
-    <Sider width={280} className='site-layout-background'>
+    <Sider
+      width={280}
+      collapsible
+      collapsed={collapsed}
+      onCollapse={(collapsedState) => setCollapsed(collapsedState)}
+      className='site-layout-background'
+    >
       <Menu
         mode='inline'
         selectedKeys={[selectedKey]}
