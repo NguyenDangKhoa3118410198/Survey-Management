@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Button, Dropdown, Menu, MenuProps } from 'antd';
+import { Layout, Dropdown, Typography } from 'antd';
 import { Link } from 'react-router-dom';
 import useStore from 'hooks/useStore';
 import {
@@ -85,7 +85,19 @@ const HeaderLayout: React.FC = () => {
 
   return (
     <Header style={{ padding: 0, backgroundColor: '#284698' }}>
-      <div style={{ height: '100%' }}>
+      <div
+        style={{
+          height: '100%',
+          alignItems: 'baseline',
+          justifyContent: 'center',
+          display: 'flex',
+        }}
+      >
+        <Typography.Title style={{ color: '#fff', marginLeft: 40 }} level={2}>
+          <Link to='/' style={{ color: 'inherit', textDecoration: 'none' }}>
+            The Liems
+          </Link>
+        </Typography.Title>
         <Dropdown menu={{ items }} placement='bottomRight' trigger={['click']}>
           <button
             style={{
