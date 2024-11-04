@@ -11,7 +11,11 @@ export const columns: TableProps<ISurvey>['columns'] = [
     align: 'center',
     fixed: 'left',
     width: 80,
-    render: (text: string) => <span style={{ color: '#1890FF' }}> {text}</span>,
+    render: (id: string) => (
+      <Link to={`${id}`} style={{ color: '#1890FF' }}>
+        {id}
+      </Link>
+    ),
   },
   {
     title: 'Tên khảo sát',
