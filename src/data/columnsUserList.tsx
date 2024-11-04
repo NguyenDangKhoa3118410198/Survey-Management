@@ -48,20 +48,21 @@ export const columns: TableProps<IUser>['columns'] = [
     width: 250,
   },
   {
+    title: <span style={{ whiteSpace: 'nowrap' }}>Giới tính</span>,
+    dataIndex: 'gender',
+    width: 100,
+  },
+  {
     title: <span style={{ whiteSpace: 'nowrap' }}>Ngày sinh</span>,
     dataIndex: 'birthDate',
     align: 'center',
     width: 100,
   },
   {
-    title: <span style={{ whiteSpace: 'nowrap' }}>Giới tính</span>,
-    dataIndex: 'gender',
-    width: 100,
-  },
-  {
     title: <span style={{ whiteSpace: 'nowrap' }}>Trạng thái</span>,
     dataIndex: 'status',
     width: 100,
+    align: 'center',
     render: (status) => (
       <Tag color={getTagColor(status ? status : undefined)}>
         {status || 'Chưa chọn'}
