@@ -15,7 +15,7 @@ import {
 } from 'antd';
 import dayjs from 'dayjs';
 import React, { useCallback, useEffect, useState } from 'react';
-import { customizeRequiredMark } from 'utils';
+import { customizeRequiredMark, getTagColor } from 'utils';
 import {
   fetchCities,
   fetchDistricts,
@@ -355,19 +355,6 @@ const FormNewUser: React.FC<FormNewUserProps> = React.memo(() => {
 
   const handleRadioChange = (e: any) => {
     setSelectStatus(e.target.value);
-  };
-
-  const getTagColor = (status: string | undefined) => {
-    switch (status) {
-      case 'Hoạt động':
-        return 'green';
-      case 'Tạm ngưng':
-        return 'orange';
-      case 'Khóa':
-        return 'red';
-      default:
-        return 'default';
-    }
   };
 
   return (

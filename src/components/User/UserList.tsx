@@ -119,7 +119,9 @@ const UserList: React.FC = () => {
       }}
     >
       <Card
-        title='Bộ lọc'
+        title={
+          <p style={{ fontWeight: 700, textTransform: 'uppercase' }}>Bộ lọc</p>
+        }
         className={`filter-container  ${
           isExpanded ? 'filter-is-expand-expanded' : ''
         }`}
@@ -315,7 +317,11 @@ const UserList: React.FC = () => {
       </Card>
 
       <Card
-        title='Danh sách người dùng'
+        title={
+          <p style={{ fontWeight: 700, textTransform: 'uppercase' }}>
+            Danh sách người dùng
+          </p>
+        }
         extra={
           <Space>
             <Input

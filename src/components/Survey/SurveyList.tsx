@@ -59,7 +59,9 @@ const SurveyList: React.FC = () => {
       }}
     >
       <Card
-        title='Bộ lọc'
+        title={
+          <p style={{ fontWeight: 700, textTransform: 'uppercase' }}>Bộ lọc</p>
+        }
         className={`filter-container ${
           isExpanded ? 'filter-is-expand-expanded' : ''
         }`}
@@ -215,7 +217,11 @@ const SurveyList: React.FC = () => {
       </Card>
 
       <Card
-        title='Danh sách khảo sát'
+        title={
+          <p style={{ fontWeight: 700, textTransform: 'uppercase' }}>
+            Danh sách khảo sát
+          </p>
+        }
         extra={
           <Space>
             <Input

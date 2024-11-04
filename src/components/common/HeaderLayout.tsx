@@ -86,7 +86,7 @@ const HeaderLayout: React.FC = () => {
   return (
     <Header style={{ padding: 0, backgroundColor: '#284698' }}>
       <div style={{ height: '100%' }}>
-        <Dropdown menu={{ items }} placement='bottomRight'>
+        <Dropdown menu={{ items }} placement='bottomRight' trigger={['click']}>
           <button
             style={{
               display: 'flex',
