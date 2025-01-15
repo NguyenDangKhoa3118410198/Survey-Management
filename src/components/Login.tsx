@@ -86,6 +86,7 @@ const Login: React.FC = () => {
               color: 'var(--main-color)',
               marginBottom: '30px',
             }}
+            data-testid='title-login'
           >
             <h1
               style={{
@@ -112,10 +113,11 @@ const Login: React.FC = () => {
             ]}
           >
             <Input
+              data-testid='login-page-input-email'
               prefix={<MailOutlined />}
               placeholder='Email'
               style={{
-                border: '3px solid var(--main-color)',
+                border: '2px solid var(--main-color)',
                 padding: '8px 11px',
                 color: 'var(--main-color)',
                 borderRadius: '14px',
@@ -137,16 +139,19 @@ const Login: React.FC = () => {
             style={{ marginBottom: '5px' }}
           >
             <Input.Password
+              data-testid='login-page-input-password'
               prefix={<LockOutlined />}
               placeholder='Vui lòng nhập mật khẩu'
               style={{
-                border: '3px solid var(--main-color)',
+                border: '2px solid var(--main-color)',
                 padding: '8px 11px',
                 color: 'var(--main-color)',
+                marginTop: 12,
               }}
             />
           </Form.Item>
           <Form.Item
+            data-testid='login-page-remember-password'
             name='remember'
             valuePropName='checked'
             style={{ margin: '10px 0' }}
@@ -156,6 +161,7 @@ const Login: React.FC = () => {
 
           <Form.Item>
             <Button
+              data-testid='login-page-btn-login'
               type='primary'
               htmlType='submit'
               style={{

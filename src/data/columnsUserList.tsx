@@ -64,7 +64,7 @@ export const columns: TableProps<IUser>['columns'] = [
     width: 100,
     align: 'center',
     render: (status) => (
-      <Tag color={getTagColor(status ? status : undefined)}>
+      <Tag style={{width: '100px', textAlign: 'center'}} color={getTagColor(status ? status : undefined)}>
         {status || 'Chưa chọn'}
       </Tag>
     ),
