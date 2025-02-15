@@ -1,17 +1,17 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
-import Login from 'components/Login';
-import MainLayout from 'layout';
-import LayoutManagement from 'layout/LayoutManagement';
-import UserList from 'components/User/UserList';
-import NewUser from 'components/User/NewUser';
-import SurveyList from 'components/Survey/SurveyList';
+import Login from './components/Login';
+import MainLayout from './layout/MainLayout';
+import LayoutManagement from './layout/LayoutManagement';
+import UserList from './components/User/UserList';
+import NewUser from './components/User/NewUser';
+import SurveyList from './components/Survey/SurveyList';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import UserDetail from 'components/User/UserDetail';
-import Notfound from 'layout/Notfound';
-import Profile from 'components/Profile';
-import SurveyCreate from 'components/Survey/SurveyCreate';
-import SurveyEdit from 'components/Survey/SurveyEdit';
+import UserDetail from './components/User/UserDetail';
+import Notfound from './layout/Notfound';
+import Profile from './components/Profile';
+import SurveyCreate from './components/Survey/SurveyCreate';
+import SurveyEdit from './components/Survey/SurveyEdit';
 
 const App: React.FC = () => {
   const queryClient = new QueryClient();

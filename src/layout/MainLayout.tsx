@@ -1,8 +1,8 @@
 import { Layout } from 'antd';
 import { Outlet } from 'react-router-dom';
 import React from 'react';
-import HeaderLayout from 'components/common/HeaderLayout';
-import Sidebar from 'components/common/Sidebar';
+import HeaderLayout from '../components/common/HeaderLayout';
+import Sidebar from '../components/common/Sidebar';
 
 const MainLayout: React.FC = () => {
   return (

@@ -1,6 +1,6 @@
 import 'antd/dist/reset.css'; 
 import { BrowserRouter } from 'react-router-dom'
-import Login from './Login'
+import Login from '../components/Login'
 
 describe('<Login />', () => {
   it('renders', () => {

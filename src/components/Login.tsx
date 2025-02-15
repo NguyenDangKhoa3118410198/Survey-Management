@@ -88,15 +88,16 @@ const Login: React.FC = () => {
             }}
             data-testid='title-login'
           >
-            <h1
+            <p
               style={{
+              fontSize: 30,
                 textAlign: 'left',
                 fontWeight: 700,
                 color: 'var(--main-color)',
               }}
             >
               The Liems
-            </h1>
+            </p>
             Admin Panel Management Survey
           </Typography.Title>
           <Form.Item

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Layout, Dropdown, Typography } from 'antd';
 import { Link } from 'react-router-dom';
-import useStore from 'hooks/useStore';
+import useStore from '../../hooks/useStore';
 import {
   InfoCircleOutlined,
   LogoutOutlined,

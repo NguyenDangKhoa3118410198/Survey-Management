@@ -1,9 +1,10 @@
 import { FileTextOutlined, UserOutlined } from '@ant-design/icons';
-import { Menu, MenuProps } from 'antd';
-import Sider from 'antd/es/layout/Sider';
+import { Menu, MenuProps, Layout } from 'antd';
+// import Sider from 'antd/es/layout/Sider';
+
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-
+const { Sider } = Layout;
 const Sidebar: React.FC = () => {
   const [selectedKey, setSelectedKey] = useState<string>('users');
   const [collapsed, setCollapsed] = useState<boolean>(false);
