@@ -21,6 +21,6 @@
       "*": ["*"]
     }
   },
-  "include": ["cypress", "src"],
+  "include": ["src"],
   "exclude": ["src/**/*.jsx", "src/**/*.js"]
 }

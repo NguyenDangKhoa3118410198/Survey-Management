@@ -1,4 +1,3 @@
-import "@testing-library/jest-dom"; // Đảm bảo rằng bạn đã nhập khẩu jest-dom
 import { render, screen } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom"; // Nhập khẩu BrowserRouter
 import Login from "../components/Login";

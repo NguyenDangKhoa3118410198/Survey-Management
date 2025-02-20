@@ -17,6 +17,7 @@ export default {
     "\\.(css|less|scss|sass)$": "identity-obj-proxy",
 
   },
+  setupFilesAfterEnv: ["<rootDir>/src/setupTests.ts"],
 
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"]
 };
